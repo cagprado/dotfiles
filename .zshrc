@@ -6,81 +6,9 @@ setopt notify longlistjobs extendedglob globdots autocd correct autonamedirs
 setopt histignoredups appendhistory histverify histignorespace autolist
 setopt autopushd pushdsilent pushdtohome pushdminus pushdignoredups
 
-# Keybindings ###############################################################
-
-# use VIM bindings and allow backspace past insert point
-bindkey -v
-bindkey '^?' backward-delete-char
-
-# always use 'application mode' of the terminal
-echoti smkx 2>/dev/null
-
-# main (insert) mode
-bindkey '[3~' vi-delete-char                     # Del
-bindkey '[1~' beginning-of-line                  # Home
-bindkey '[4~' end-of-line                        # End
-bindkey '[5~' history-beginning-search-backward  # PgUp
-bindkey '[6~' history-beginning-search-forward   # PgDown
-bindkey 'q'   push-line-or-edit                  # Alt+q
-
-# cmdmode
-bindkey -a '[3~' vi-delete-char                     # Del
-bindkey -a '[1~' beginning-of-line                  # Home
-bindkey -a '[4~' end-of-line                        # End
-bindkey -a '[5~' history-beginning-search-backward  # PgUp
-bindkey -a '[6~' history-beginning-search-forward   # PgDown
-bindkey -a 'q'   push-line-or-edit                  # Alt+q
-
-# Interface #################################################################
-
 # Autoload functions from zsh scripts! Only +x files are selected
 # Old way, keep in case the new one doesn't work: (){ setopt localoptions histsubstpattern; for func in $ZSH_FUNCTIONS/*(N-.x:t); autoload -U $func }
 for func in $ZSH_FUNCTIONS/*(.x:t); do autoload -Uz $func; done
-
-# History
-HISTFILE="$HOME/.zshhist"
-HISTSIZE=1000
-SAVEHIST=1000
-
-# Directories
-cdpath=(~)      # cd <TAB> will always suggest content from paths listed here
-
-# Named Directories
-BIN=~/bin
-ETC=~/etc
-USR=~/usr
-SRC=~/src
-USP=~/usr/usp/pg/doutorado
-OWNCLOUD=~/usr/owncloud
-
-# Dirstack: cd -<TAB> for last visited directories
-DIRSTACKFILE="$HOME/.cache/zsh/dirs"
-DIRSTACKSIZE=20
-
-if [[ -f $DIRSTACKFILE && $#dirstack -eq 0 ]]; then
-  dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
-fi
-chpwd() {
-  print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
-}
-cdUndoKey() {
-  popd      > /dev/null
-  zle       reset-prompt
-  echo
-  ls
-  echo
-}
-cdParentKey() {
-  pushd .. > /dev/null
-  zle      reset-prompt
-  echo
-  ls
-  echo
-}
-zle -N                 cdParentKey
-zle -N                 cdUndoKey
-bindkey '^[[1;3A'      cdParentKey  # alt-up
-bindkey '^[[1;3D'      cdUndoKey    # alt-left
 
 # Aliases ###################################################################
 
@@ -112,20 +40,22 @@ alias root-config='root-config --cflags --libs'
 # ssh and certificates
 alias certutil='certutil -d sql:$HOME/.pki/nssdb'
 alias pk12util='pk12util -d sql:$HOME/.pki/nssdb'
-[[ "$AT_SAMPA_VALUE" = "true" ]] && alias qstat='qstat -u cagprado -t' || alias qstat='ssh cagprado@$SAMPA qstat -u cagprado -t'
 
-# programs and utils
-[[ "$TERM" =~ "linux" ]] && alias alot='alot -C16' || :
-alias dropbox='dropbox-cli'
-alias ifusp='fusessh -p $HOME/ifusp -s caioagp@$IFUSP'
+# ssh
+alias ifusp='fusessh -p $HOME/ifusp -s ifusp'
 alias lp='lp -d $(printer) -o collate=true'
-alias mredson='fusessh -p $HOME/mredson -s cagprado@$(MREDSON)'
-alias msedna='fusessh -p $HOME/msedna -s cagprado@192.168.0.101'
+[[ "$AT_SAMPA_VALUE" = "true" ]] && alias qstat='qstat -u cagprado -t' || alias qstat='ssh cagprado@$SAMPA qstat -u cagprado -t'
+alias sampa='fusessh -p $HOME/sampa -s sampa'
+
+# utils
+alias dropbox='dropbox-cli'
 alias o='xdg-open'
-alias pushnotmuch='notmuch dump | xz -9 | ssh cagprado@$SAMPA "cat > usr/notmuch.xz"'
-alias pullnotmuch='ssh cagprado@$SAMPA "cat usr/notmuch.xz" | xz -d | notmuch restore'
-alias sampa='fusessh -p $HOME/sampa -s cagprado@$SAMPA'
 alias zshfunctions='zcompile -Uz $ZSH_FUNCTIONS $ZSH_FUNCTIONS/*(.x)'
+
+# buggy programs (application mode)
+function app() { echoti smkx && $@ && echoti rmkx }
+alias alot='app alot'
+alias ncmpcpp='app ncmpcpp'
 
 # lists all aliases and scripts
 scripts()
@@ -143,6 +73,20 @@ scripts()
   #for FILE in $BIN/*(.x); do echo $FILE; done
 }
 
+# Colors and fonts ##########################################################
+if [[ "$TERM" =~ linux && -z "$SSH_CONNECTION" ]]; then
+  colors
+  setfont $HOME/.local/share/fonts/bitmap/tamsyn-patched/Tamsyn8x16r.psf.gz
+fi
+[[ -r $HOME/etc/dircolors ]] && eval $(dircolors "$HOME/etc/dircolors")
+export LESS_TERMCAP_so=$(tput setaf 3; tput smso)     # begin standout
+export LESS_TERMCAP_se=$(tput sgr0; tput rmso)        # end standout
+export LESS_TERMCAP_us=$(tput sitm; tput setaf 6)     # begin underline (italic)
+export LESS_TERMCAP_ue=$(tput ritm; tput sgr0)        # end underline
+export LESS_TERMCAP_md=$(tput bold;)                  # begin bold
+export LESS_TERMCAP_mb=$(tput blink)                  # starts blink
+export LESS_TERMCAP_me=$(tput sgr0)                   # end blink/bold/standout/underline
+
 # Completion ################################################################
 zmodload zsh/complist
 autoload -U compinit && compinit
@@ -154,19 +98,172 @@ zstyle ':completion:*:warnings' format "%B$fg[red]%}---- no match for: $fg[white
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select
 zstyle ':completion:*' rehash true
-hosts=($( ( [[ -r $HOME/.ssh/known_hosts ]] && awk '{print $1}' $HOME/.ssh/known_hosts | tr , '\n'; [ -r /etc/ssh/ssh_known_hosts ] && awk '{print $1}' /etc/ssh/ssh_known_hosts | tr , '\n') | sort -u ))
-zstyle ':completion:*' hosts $hosts
+zstyle ':completion:*' hosts $(awk '/^Host [^*]/ { print $2 }' $HOME/.ssh/config | sort -u)
 [[ -f "/usr/share/doc/pkgfile/command-not-found.zsh" ]] && source /usr/share/doc/pkgfile/command-not-found.zsh || :
+
+# ZLE and Keybindings #######################################################
+
+bindkey -v                         # use vim mode
+bindkey '^?' backward-delete-char  # backspace past insert point
+export KEYTIMEOUT=1                # set waiting time for escapes
+
+# define cursor styles (Ss must be defined to a macro, not flag)
+local cursor_normal="$(echoti Ss 2 2>/dev/null)"
+if [[ $? -ne 0 || "$cursor_normal" = "yes" ]]; then
+  local cursor_normal=""
+  local cursor_replace=""
+  local cursor_insert=""
+else
+  local cursor_replace="$(echoti Ss 4 2>/dev/null)"
+  local cursor_insert="$(echoti Ss 6 2>/dev/null)"
+fi
+
+function select-cursor() {
+  # select cursor when init and change keymap
+  if [[ "$KEYMAP" == "vicmd" ]]; then
+    echo -n $cursor_normal
+  elif [[ $ZLE_STATE == *overwrite* ]]; then
+    echo -n $cursor_replace
+  else
+    echo -n $cursor_insert
+  fi
+}
+
+# set zle mode functions
+function zle-line-init() { echoti smkx 2>/dev/null; select-cursor }
+function zle-keymap-select() { select-cursor }
+function zle-line-finish() { echoti rmkx 2>/dev/null }
+function vi-replace-chars() { echo -n $cursor_replace; zle .vi-replace-chars -- "$@"; echo -n $cursor_normal }
+
+zle -N zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-finish
+zle -N vi-replace-chars
+
+# bind special keys (insert and command modes)
+bindkey    "${terminfo[kdch1]}"    vi-delete-char
+bindkey -a "${terminfo[kdch1]}"    vi-delete-char
+bindkey    "${terminfo[khome]}"    beginning-of-line
+bindkey -a "${terminfo[khome]}"    beginning-of-line
+bindkey    "${terminfo[kend]}"     end-of-line
+bindkey -a "${terminfo[kend]}"     end-of-line
+bindkey    "${terminfo[kpp]}"      history-beginning-search-backward
+bindkey -a "${terminfo[kpp]}"      history-beginning-search-backward
+bindkey    "${terminfo[knp]}"      history-beginning-search-forward
+bindkey -a "${terminfo[knp]}"      history-beginning-search-forward
+bindkey    "^[q"                   push-line-or-edit  # Alt+q
+bindkey -a "^[q"                   push-line-or-edit  # Alt+q
+
+# Extra Interface ###########################################################
+
+# History
+HISTFILE="$HOME/.zshhist"
+HISTSIZE=1000
+SAVEHIST=1000
+
+# Directories
+cdpath=(~)      # cd <TAB> will always suggest content from paths listed here
+
+# Named Directories
+BIN=~/bin
+ETC=~/etc
+USR=~/usr
+SRC=~/src
+USP=~/usr/usp/pg/doutorado
+OWNCLOUD=~/usr/owncloud
+
+# Dirstack: cd -<TAB> for last visited directories
+DIRSTACKFILE="$HOME/.cache/zsh/dirs"
+DIRSTACKSIZE=20
+
+if [[ -f $DIRSTACKFILE && $#dirstack -eq 0 ]]; then
+  dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
+fi
+chpwd() {
+  print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
+}
+cdUndoKey() {
+  popd >/dev/null
+  zle reset-prompt
+  echo
+  ls
+  echo
+}
+cdParentKey() {
+  pushd .. > /dev/null
+  zle reset-prompt
+  echo
+  ls
+  echo
+}
+zle -N                 cdParentKey
+zle -N                 cdUndoKey
+bindkey '^[[1;3A'      cdParentKey  # alt-up
+bindkey '^[[1;3D'      cdUndoKey    # alt-left
 
 # Prompt ####################################################################
 zle_highlight=(bg_start_code:'\e[48;5;' bg_default_code:7 default:bg=254)
-function cfg_flag() { $=CFG_COMMAND update-index --refresh >/dev/null || echo "%F{red} %F{default}" }
-# cfg_flag() { /usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME update-index --refresh >/dev/null || echo "%F{red} %F{default}" }
-precmd()
+
+function precmd() { echo -ne '\a' }
+function cfg_flag()
 {
-  echo -ne '\a' # beep when prompt appears (window manager can use it to cue when command ended execution)
+  if [[ "$TERM" =~ "linux" ]]; then
+    $=CFG_COMMAND update-index --refresh >/dev/null || echo "%F{red}*%F{default}"
+  else
+    $=CFG_COMMAND update-index --refresh >/dev/null || echo "%F{red} %F{default}"
+  fi
 }
-setprompt() {
+function batterystatus()
+{
+  # Set location of battery status files
+  local CHARGE=/sys/class/power_supply/BAT0/charge_now
+  local FULL=/sys/class/power_supply/BAT0/charge_full
+  local STATUS=/sys/class/power_supply/BAT0/status
+
+  # If file exists then we have battery
+  if [[ -r $CHARGE ]]; then
+    # Check if it's charging
+    [[ "$(<$STATUS)" = "Charging" ]] && STATUS="%F{blue}" || STATUS=""
+
+    # Eval current charge in battery
+    local FRACTION="$((100 * $(<$CHARGE) / $(<$FULL)))"
+    if [[ "$TERM" =~ "linux" ]]; then
+      if [[ $FRACTION -le 5 ]]; then
+        local ICON="%F{red}%F{blink}${STATUS}····"
+      elif [[ $FRACTION -le 15 ]]; then
+        local ICON="%F{yellow}${STATUS}█···"
+      elif [[ $FRACTION -le 25 ]]; then
+        local ICON="%F{green}${STATUS}█···"
+      elif [[ $FRACTION -le 50 ]]; then
+        local ICON="%F{green}${STATUS}██··"
+      elif [[ $FRACTION -le 75 ]]; then
+        local ICON="%F{green}${STATUS}███·"
+      else
+        local ICON="%F{green}${STATUS}████"
+      fi
+    else
+      if [[ $FRACTION -le 5 ]]; then
+        local ICON="%F{red}${STATUS}  "
+      elif [[ $FRACTION -le 15 ]]; then
+        local ICON="%F{yellow}${STATUS}  "
+      elif [[ $FRACTION -le 25 ]]; then
+        local ICON="%F{green}${STATUS}  "
+      elif [[ $FRACTION -le 50 ]]; then
+        local ICON="%F{green}${STATUS}  "
+      elif [[ $FRACTION -le 75 ]]; then
+        local ICON="%F{green}${STATUS}  "
+      else
+        local ICON="%F{green}${STATUS}  "
+      fi
+    fi
+
+    # Print value
+    echo $ICON
+  fi
+}
+
+function setprompt()
+{
   setopt prompt_subst
   local BLK="%{$(echoti setaf 0)%}"
   local RED="%{$(echoti setaf 1)%}"
@@ -181,53 +278,14 @@ setprompt() {
   local DEF="%{$(echoti sgr0)%}"
   local NOR="%{$DEF$BGR%}"
 
-  PROMPT="${NOR}[$GRE%T$NOR%(1j./$RED%j$NOR.)] %(0?.$BLU.$RED)%n$NOR@$MAG$BOL%m$NOR\$(cfg_flag)%#$NOR "
+  PROMPT="${NOR}[\$(batterystatus)$GRE%T$NOR%(1j./$RED%j$NOR.)] %(0?.$BLU.$RED)%n$NOR@$MAG$BOL%m$NOR\$(cfg_flag)%#$NOR "
   RPROMPT="$NOR @ $MAG%~$DEF"
 }
 setprompt
 
-# Set colors and fonts
-if [[ "$TERM" =~ linux && -z "$SSH_CONNECTION" ]]; then
-  colors
-  setfont $HOME/.local/share/fonts/bitmap/tamsyn-patched/Tamsyn8x16r.psf.gz
-fi
-[[ -r $HOME/etc/dircolors ]] && eval $(dircolors "$HOME/etc/dircolors")
-export LESS_TERMCAP_so=$(tput setaf 3; tput smso)     # begin standout
-export LESS_TERMCAP_se=$(tput sgr0; tput rmso)        # end standout
-export LESS_TERMCAP_us=$(tput sitm; tput setaf 6)     # begin underline (italic)
-export LESS_TERMCAP_ue=$(tput ritm; tput sgr0)        # end underline
-export LESS_TERMCAP_md=$(tput bold;)                  # begin bold
-export LESS_TERMCAP_mb=$(tput blink)                  # starts blink
-export LESS_TERMCAP_me=$(tput sgr0)                   # end blink/bold/standout/underline
-
-# VI-mode set cursor for NORMAL/INSERT/REPLACE
-export KEYTIMEOUT=1
-
-local cursor_normal="$(echoti Ss 2 2>/dev/null)"
-local cursor_replace="$(echoti Ss 4 2>/dev/null)"
-local cursor_insert="$(echoti Ss 6 2>/dev/null)"
-function zle-line-init zle-keymap-select {
-  if [[ "$KEYMAP" == "vicmd" ]]; then
-    echo -n $cursor_normal
-  elif [[ $ZLE_STATE == *overwrite* ]]; then
-    echo -n $cursor_replace
-  else
-    echo -n $cursor_insert
-  fi
-}
-function vi-replace-chars {
-  echo -n $cursor_replace
-  zle .vi-replace-chars -- "$@"
-  echo -n $cursor_normal
-}
-
-zle -N zle-line-init
-zle -N zle-keymap-select
-zle -N vi-replace-chars
-
 # Source syntax highlighting plugin
 if ! atsampa && [[ -f "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  #source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
 # Show a nice cowsay message

@@ -15,21 +15,27 @@ export LESS="-cx3MRFX"
 export LESSOPEN="| /usr/bin/lesspipe.sh %s"
 export LESSCOLORIZER="pygmentize"
 export GNUPGHOME="$HOME/.gnupg"
-export HOMEPRINTER="esc67"
-export SAMPAPRINTER="hphepic"
-export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
+export HOMEPRINTER=""
+export WORKPRINTER="hpiopp"
+export PRINTER=$WORKPRINTER
 export QT_QPA_PLATFORMTHEME=qt5ct
+export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
+export FT2_SUBPIXEL_HINTING=2
+export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
+
+# KEYRING ###################################################################
+if [[ -n "$DESKTOP_SESSION" ]]; then
+  eval $(gnome-keyring-daemon --start)
+  export SSH_AUTH_SOCK
+fi
 
 # HOSTNAMES #################################################################
 export HOSTNAME=$(hostname)
-export MREDSON_ADDR="mredson.home.kg"
-export SAMPA=sampassh.if.usp.br
-export IFUSP=fep.if.usp.br
+export HOME_ADDR="mredson.home.kg"
 [[ "$HOSTNAME" =~ "sampa" ]] && export AT_SAMPA_VALUE=true && export AT_HOME_VALUE=false || export AT_SAMPA_VALUE=false
 
 # HOST SPECIFIC VARIABLES ###################################################
 if [[ "$AT_SAMPA_VALUE" = "true" ]]; then
-  export PRINTER=$SAMPAPRINTER
   export MAKEFLAGS='-j12'
 
   # ALICE
