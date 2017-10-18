@@ -1,8 +1,0 @@
-# vim: ft=dosini
-[DEFAULT]
-oauth_db_filename: ~/.goobook/auth.json
-client_secret_filename: ~/.goobook/client_secret.json
-cache_filename: ~/.goobook/cache
-cache_expiry_hours: 10000
-filter_groupless_contacts: yes
-default_group:
