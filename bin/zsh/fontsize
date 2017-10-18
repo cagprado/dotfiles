@@ -17,14 +17,6 @@ and is case insensitive.
 END
 )
 
-if [[ ! "$TERM" =~ "tmux" && ! "$TERM" =~ "konsole" ]]; then
-  err "This script is only for konsole terminal..."
-  return 1
-fi
-
-local konsole_profile=$HOME/.local/share/konsole/Default.profile
-local font_setting=$(grep '^Font=' $konsole_profile)
-local size=''
 local HELP=false
 local SUMMARY=false
 if ! parse_cmdline '=size h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
@@ -32,6 +24,14 @@ if ! parse_cmdline '=size h|help|long-help>HELP H|short-help|summary>SUMMARY' $@
   return 1
 fi
 help $HELP $SUMMARY $0 $USAGE $DESC $LONGHELP && return
+
+if [[ ! "$TERM" =~ "tmux" && ! "$TERM" =~ "konsole" ]]; then
+  err "This script is only for konsole terminal..."
+  return 1
+fi
+local konsole_profile=$HOME/.local/share/konsole/Default.profile
+local font_setting=$(grep '^Font=' $konsole_profile)
+local size=''
 
 case $size in
   large|LARGE)

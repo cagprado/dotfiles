@@ -2,12 +2,16 @@
 
 # CONFIGURATION #############################################################
 local -a ONCE_PROGRAMS # Should not execute again when wm restarts
-ONCE_PROGRAMS+=("udiskie")
-ONCE_PROGRAMS+=("pasystray")
-ONCE_PROGRAMS+=("nm-applet")
-ONCE_PROGRAMS+=("blueman-applet")
-ONCE_PROGRAMS+=("hp-systray")
-ONCE_PROGRAMS+=("fcitx -r")
+# tray icons
+ONCE_PROGRAMS+=("pasystray")                    # audio
+ONCE_PROGRAMS+=("cbatticon -i standard BAT0")   # battery
+ONCE_PROGRAMS+=("blueberry-tray")               # bluetooth
+ONCE_PROGRAMS+=("ibus-daemon -dxr")             # keyboard IM
+ONCE_PROGRAMS+=("nm-applet")                    # network
+ONCE_PROGRAMS+=("hp-systray")                   # printer
+# utils
+ONCE_PROGRAMS+=("udiskie")                                          # auto-mount
+ONCE_PROGRAMS+=("xss-lock -- sxlock -u'You shall not pass!' -p' '") # lock screen
 
 local -a PROGRAMS      # It’s okay to execute multiple times (overwrite)
 #############################################################################
@@ -27,16 +31,16 @@ help $HELP $SUMMARY $0 $USAGE $DESC && return
 
 local PROGRAM
 for PROGRAM in $ONCE_PROGRAMS; do
-  local PROGRAM_NAME="${PROGRAM% *}"
+  local PROGRAM_NAME="${PROGRAM%% *}"
 
   # check if command exists
   if command -v $PROGRAM_NAME > /dev/null; then
     # then run only if it’s not already...
-    [[ -z "$(ps -Af | grep -o -w ".*$PROGRAM_NAME" | grep -v grep)" ]] && ($=PROGRAM >/dev/null 2>&1 &!) || :
+    [[ -z "$(ps -Af | grep -o -w ".*$PROGRAM_NAME" | grep -v grep)" ]] && (${(Q)${(z)PROGRAM}} >/dev/null 2>&1 &!) || :
   fi
 done
 
 #for PROGRAM in $PROGRAMS; do
-#  local PROGRAM_NAME="${PROGRAM% *}"
-#  command -v ${PROGRAM% *} > /dev/null && ($=PROGRAM >/dev/null 2>&1 &!) || :
+#  local PROGRAM_NAME="${PROGRAM%% *}"
+#  command -v ${PROGRAM% *} > /dev/null && (${(Q)${(z)PROGRAM}} >/dev/null 2>&1 &!) || :
 #done

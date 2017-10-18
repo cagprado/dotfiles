@@ -4,9 +4,7 @@
 local HOSTNAME=$(hostname)
 
 if [[ "$HOSTNAME" = "mredson" ]]; then
-  local MAINMONITOR="eDP"
-elif [[ "$HOSTNAME" = "caiopc" ]]; then
-  local MAINMONITOR="LVDS"
+  local MAINMONITOR="eDP-1"
 fi
 #############################################################################
 
@@ -43,7 +41,7 @@ if ! parse_cmdline 'h|help|long-help>HELP H|short-help|summary>SUMMARY s>SINGLE 
 fi
 help $HELP $SUMMARY $0 $USAGE $DESC $LONGHELP && return
 
-local PRIORITY=("HDMI" "DVI" "VGA")
+local PRIORITY=("DP" "HDMI" "DVI" "VGA")
 
 if [[ "$SINGLE" == "true" || "$CLONE" == "true" ]]; then
   # Single (forced), laptop is fallback
