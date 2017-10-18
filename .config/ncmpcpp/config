@@ -18,14 +18,14 @@ playlist_editor_display_mode = columns
 
 colors_enabled = yes
 header_window_color = default
-state_flags_color = white
+state_flags_color = default
 main_window_color = default
-current_item_prefix = "$(default)$r"
+current_item_prefix = "$(yellow)$r"
 current_item_suffix = "$/r$(end)"
 window_border_color = red
 statusbar_color = yellow
-current_item_inactive_column_prefix = "$(green)"
-current_item_inactive_column_suffix = "$(end)"
+current_item_inactive_column_prefix = "$(green)$r"
+current_item_inactive_column_suffix = "$/r$(end)"
 song_columns_list_format = (1f)[yellow]{: } (20)[yellow]{a} (55)[green]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{lr} (1f)[magenta]{: }
 now_playing_prefix = $b
 now_playing_suffix = $/b
@@ -38,7 +38,7 @@ progressbar_color = black_black
 # MISC OPTIONS ##############################################################
 show_hidden_files_in_local_browser = no
 screen_switcher_mode = playlist, browser, media_library
-startup_screen = media_library
+startup_screen = playlist
 display_volume_level = no
 display_bitrate = no
 display_remaining_time = no

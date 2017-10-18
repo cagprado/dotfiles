@@ -24,6 +24,8 @@ set runtimepath+=~/.vundle/Vundle.vim
 call vundle#begin('~/.vundle')
   Plugin 'VundleVim/Vundle.vim'
 
+  Plugin 'lsrdg/vibusen.vim'                  " Ibus management
+
   Plugin 'lifepillar/vim-solarized8'          " Solarized theme
   Plugin 'chriskempson/base16-vim'            " Base16 vim themes
 

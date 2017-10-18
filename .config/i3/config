@@ -6,12 +6,12 @@
 set $mod Mod4
 focus_follows_mouse no
 floating_modifier $mod
-font pango:Aller 8
+font pango:wmfont 9
 
 # Define some variables
 set $terminal terminal
 set $browser qutebrowser
-set $locker $HOME/bin/zsh/lockscreen
+set $locker loginctl lock-session
 set $player ncmpcpp
 
 # Define workspaces
@@ -23,14 +23,14 @@ set $wsPlay  "8:  "
 set $wsMail  "9:  "
 set $wsShow "10:  "
 set $wsMisc "11:  "
-workspace $wsEdit output eDP1
-workspace $wsTerm output eDP1
-workspace $wsWeb  output HDMI1
-workspace $wsArti output HDMI1
-workspace $wsPlay output HDMI1
-workspace $wsMail output eDP1
-workspace $wsShow output HDMI1
-workspace $wsMisc output eDP1
+workspace $wsEdit output eDP-1
+workspace $wsTerm output eDP-1
+workspace $wsWeb  output DP-1
+workspace $wsArti output DP-1
+workspace $wsPlay output DP-1
+workspace $wsMail output eDP-1
+workspace $wsShow output DP-1
+workspace $wsMisc output eDP-1
 
 # Specify clients to workspaces
 assign [class="Gvim"] $wsEdit
@@ -44,15 +44,13 @@ for_window [class="Wine"] floating enable
 
 # KEY BINDINGS ##############################################################
 # Media keys
-bindsym XF86MonBrightnessDown  exec --no-startup-id xbacklight -dec 10
-bindsym XF86MonBrightnessUp    exec --no-startup-id xbacklight -inc 10
+bindsym XF86MonBrightnessDown  exec --no-startup-id xbacklight  -dec 5
+bindsym XF86MonBrightnessUp    exec --no-startup-id xbacklight  -inc 5
 bindsym XF86Sleep              exec --no-startup-id $locker
 bindsym $mod+Escape            exec --no-startup-id $locker
-bindsym XF86Mail               exec --no-startup-id $terminal -T Mail -e alot
+bindsym Control+$mod+e         exec --no-startup-id $terminal -T Mail -e app alot
 bindsym XF86HomePage           exec --no-startup-id $browser
-bindsym XF86Messenger          exec --no-startup-id $terminal -T weechat -e weechat-curses
-bindsym XF86Tools              exec --no-startup-id $terminal -T Player -e sh -c "tput smkx && exec $player"
-bindsym Shift+XF86AudioPlay    exec --no-startup-id $terminal -T Player -e sh -c "tput smkx && exec $player"
+bindsym Control+$mod+m         exec --no-startup-id $terminal -T Player -e sh -c "tput smkx && exec $player"
 bindsym XF86AudioPlay          exec --no-startup-id mpc toggle
 bindsym XF86AudioPrev          exec --no-startup-id mpc prev
 bindsym XF86AudioNext          exec --no-startup-id mpc next
@@ -138,7 +136,7 @@ bindsym $mod+Shift+minus       move container to workspace number $wsMisc
 # i3 management
 bindsym $mod+Control+r         reload
 bindsym $mod+Control+Shift+r   restart
-bindsym $mod+Shift+q           exit
+bindsym $mod+Shift+q           exec --no-startup-id pkill xss-lock; exit
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
