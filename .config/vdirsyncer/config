@@ -13,7 +13,7 @@
 [storage icloud_card]
 	type = "carddav"
 	url = "https://contacts.icloud.com/11427523394/principal/"
-	username = "cagprado@qq.com"
+	username = "cagprado@outlook.com"
 	password.fetch = ["command", "pass", "appleid/dav"]
 
 [pair card]
@@ -33,7 +33,7 @@
 [storage icloud_cal]
 	type = "caldav"
 	url = "https://caldav.icloud.com/11427523394/principal"
-	username = "cagprado@qq.com"
+	username = "cagprado@outlook.com"
 	password.fetch = ["command", "pass", "appleid/dav"]
 
 [pair cal]
