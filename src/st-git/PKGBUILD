@@ -15,8 +15,8 @@ depends=('libxft')
 makedepends=('ncurses' 'libxext' 'git')
 epoch=1
 # include config.h and any patches you want to have applied here
-source=('git://git.suckless.org/st' 'config.h' 'st-dim.diff' 'st-scrollback-20170329-149c0d3.diff')
-sha1sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
+source=('git://git.suckless.org/st' 'config.h' 'st-dim.diff' 'st-scrollback-20170329-149c0d3.diff' 'st-scrollback-mouse-20170427-5a10aca.diff')
+sha1sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 provides=("${_pkgname}")
 conflicts=("${_pkgname}")
@@ -40,7 +40,7 @@ prepare() {
 		-e 's/LDFLAGS =/LDFLAGS +=/g' \
 		-e 's/_BSD_SOURCE/_DEFAULT_SOURCE/' \
 		-i config.mk
-	sed '/@tic/d' -i Makefile
+	sed '/tic/d' -i Makefile
 	for file in "${source[@]}"; do
 		if [[ "$file" == "config.h" ]]; then
 			# add config.h if present in source array
