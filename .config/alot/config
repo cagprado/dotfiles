@@ -1,254 +1,116 @@
 # vim: ft=dosini cms=#%s
 # alot configuration file
 
-# ask for subject when compose
-ask_subject = True
-
-# automatically remove 'unread' tag when focussing messages in thread mode
-auto_remove_unread = True
-
-# prompt for initial tags when compose
-compose_ask_tags = False
-
-# directory prefix for downloading attachments
-attachment_prefix = '~'
-
-# timeout in (floating point) seconds until partial input is cleared
-input_timeout = 1.0
-
-# confirm exit
-bug_on_exit = False
-
-# offset of next focused buffer if the current one gets closed
-bufferclose_focus_offset = -1
-
-# number of colours to use (it seems it's being ignored)
-#colourmode = 16
-
-# number of spaces used to replace tab characters
-tabwidth = 2
-
-# templates directory that contains your message templates.
-# It will be used if you give `compose --template` a filename without a path prefix.
-template_dir = $XDG_CONFIG_HOME/alot/templates
-
-# directory containing theme files
-themes_dir = /home/cagprado/.config/alot/themes
-
-# name of the theme to use
-theme = default
-
-# apply background colors from ASCII character escapes
-ansi_background = True
-
-# fill threadline with message content
-display_content_in_threadline = False
-
-# headers that get displayed by default
+# GLOBAL CONFIGURATION ######################################################
+# Appearance
 displayed_headers = From,To,Cc,Bcc,Subject,Message-ID
-
-# headers that are hidden in envelope buffers by default
-envelope_headers_blacklist = In-Reply-To,References
-
-# Replace own email addresses with "me" in author lists
-# Uses own addresses and aliases in all configured accounts.
+msg_summary_hides_threadwide_tags = False
+prefer_plaintext = False
+prompt_suffix = :
+search_threads_sort_order = newest_first
+theme = default
+themes_dir = /home/cagprado/.config/alot/themes
+thread_authors_me = Me
+thread_authors_order_by = latest_message
 thread_authors_replace_me = True
+thread_focus_linewise = True
+thread_subject = notmuch
+timestamp_format = %m/%d %H:%M
 
-# Word to replace own addresses with. Works in combination with
-# :ref:`thread_authors_replace_me <thread-authors-replace-me>`
-thread_authors_me = me
-
-# set terminal command used for spawning shell commands
-terminal_cmd = roxterm --separate -e
-
-# editor command
-# if unset, alot will first try the :env:`EDITOR` env variable, then :file:`/usr/bin/editor`
-editor_cmd = vim -f -c 'set filetype=mail'
-
-# file encoding used by your editor
+# Compose
+terminal_cmd = terminal -e
+editor_cmd = vim -c 'set filetype=mail'
+editor_in_thread = False
+editor_spawn = False
 editor_writes_encoding = UTF-8
 
-# use terminal_command to spawn a new terminal for the editor?
-# equivalent to always providing the `--spawn=yes` parameter to compose/edit commands
-editor_spawn = False
-
-# call editor in separate thread.
-# In case your editor doesn't run in the same window as alot, setting true here
-# will make alot non-blocking during edits
-editor_in_thread = False
-
-# Which header fields should be editable in your editor
-# used are those that match the whitelist and don't match the blacklist.
-# in both cases '*' may be used to indicate all fields.
-edit_headers_whitelist = *,
-
-# see :ref:`edit_headers_whitelist <edit-headers-whitelist>`
-edit_headers_blacklist = Content-Type,MIME-Version,References,In-Reply-To
-
-# timeout in seconds after a failed attempt to writeout the database is repeated
-flush_retry_timeout = 5
-
-# where to look up hooks
-hooksfile = ~/.config/alot/hooks.py
-
-# time in secs to display status messages
-notify_timeout = 5
-
-# display status-bar at the bottom of the screen?
-show_statusbar = True
-
-# Format of the status-bar in bufferlist mode.
-# This is a pair of strings to be left and right aligned in the status-bar that may contain variables:
-#
-# * `{buffer_no}`: index of this buffer in the global buffer list
-# * `{total_messages}`: total numer of messages indexed by notmuch
-# * `{pending_writes}`: number of pending write operations to the index
-bufferlist_statusbar = '[{buffer_no}: bufferlist]','{input_queue} total messages: {total_messages}'
-
-# Format of the status-bar in search mode.
-# This is a pair of strings to be left and right aligned in the status-bar.
-# Apart from the global variables listed at :ref:`bufferlist_statusbar <bufferlist-statusbar>`
-# these strings may contain variables:
-#
-# * `{querystring}`: search string
-# * `{result_count}`: number of matching messages
-# * `{result_count_positive}`: 's' if result count is greater than 0.
-search_statusbar = '[{buffer_no}: search] for "{querystring}"','{input_queue} {result_count} of {total_messages} messages'
-
-# Format of the status-bar in thread mode.
-# This is a pair of strings to be left and right aligned in the status-bar.
-# Apart from the global variables listed at :ref:`bufferlist_statusbar <bufferlist-statusbar>`
-# these strings may contain variables:
-#
-# * `{tid}`: thread id
-# * `{subject}`: subject line of the thread
-# * `{authors}`: abbreviated authors string for this thread
-# * `{message_count}`: number of contained messages
-thread_statusbar = '[{buffer_no}: thread] {subject}','{input_queue} total messages: {total_messages}'
-
-# Format of the status-bar in taglist mode.
-# This is a pair of strings to be left and right aligned in the status-bar.
-# These strings may contain variables listed at :ref:`bufferlist_statusbar <bufferlist-statusbar>`
-# that will be substituted accordingly.
-taglist_statusbar = '[{buffer_no}: taglist]','{input_queue} total messages: {total_messages}'
-
-# Format of the status-bar in envelope mode.
-# This is a pair of strings to be left and right aligned in the status-bar.
-# Apart from the global variables listed at :ref:`bufferlist_statusbar <bufferlist-statusbar>`
-# these strings may contain variables:
-#
-# * `{to}`: To-header of the envelope
-envelope_statusbar = '[{buffer_no}: envelope]','{input_queue} total messages: {total_messages}'
-
-# timestamp format in `strftime format syntax <http://docs.python.org/library/datetime.html#strftime-strptime-behavior>`_
-#timestamp_format =
-
-# how to print messages:
-# this specifies a shell command used for printing.
-# threads/messages are piped to this command as plain text.
-# muttprint/a2ps works nicely
-#print_cmd = recode UTF-8..latin1 | enscript --word-wrap --margins=72:72:30:30 -Email -o - | lp
-print_cmd = muttprint -S grey -p - | lp
-
-# initial command when none is given as argument:
-#initial_command = search tag:flagged OR tag:inbox AND NOT tag:killed
-initial_command = search '(is:inbox -is:killed) OR is:flagged'
-
-# default sort order of results in a search
-search_threads_sort_order = newest_first
-
-# in case more than one account has an address book:
-# Set this to True to make tab completion for recipients during compose only
-# look in the abook of the account matching the sender address
+auto_replyto_mailinglist = True
+ask_subject = True
+compose_ask_tags = False
 complete_matching_abook_only = False
 
-# shut down when the last buffer gets closed
-quit_on_last_bclose = False
-
-# value of the User-Agent header used for outgoing mails.
-# setting this to the empty string will cause alot to omit the header all together.
-# The string '{version}' will be replaced by the version string of the running instance.
-user_agent = alot/{version}
-
-# Suffix of the prompt used when waiting for user input
-prompt_suffix = :
-
-# String prepended to line when quoting
-quote_prefix = '> '
-
-# String prepended to subject header on reply
-# only if original subject doesn't start with 'Re:' or this prefix
+bounce_force_address = False
+bounce_force_realname = True
+forward_force_address = False
+forward_force_realname = True
+forward_subject_prefix = 'Fwd: '
+reply_force_address = False
+reply_force_realname = True
 reply_subject_prefix = 'Re: '
 
-# String prepended to subject header on forward
-# only if original subject doesn't start with 'Fwd:' or this prefix
-forward_subject_prefix = 'Fwd: '
+edit_headers_blacklist = Content-Type,MIME-Version,References,In-Reply-To
+edit_headers_whitelist = *,
+envelope_headers_blacklist = In-Reply-To,References
+reply_account_header_priority = From,To,Cc,Envelope-To,X-Envelope-To,Delivered-To
+quote_prefix = '> '
+template_dir = $XDG_CONFIG_HOME/alot/templates
 
-# Always use the proper realname when constructing "From" headers for replies.
-# Set this to False to use the realname string as received in the original message.
-reply_force_realname = True
+# Status
+show_statusbar = True
+bufferlist_statusbar = Bufferlist, {input_queue} total messages: {total_messages}
+envelope_statusbar = Envelope, {input_queue} total messages: {total_messages}
+search_statusbar = Search for "{querystring}", {input_queue} {result_count} of {total_messages} messages
+taglist_statusbar = Taglist, {input_queue} total messages: {total_messages}
+thread_statusbar = Thread {subject}, {input_queue} total messages: {total_messages}
 
-# Always use the accounts main address when constructing "From" headers for replies.
-# Set this to False to use the address string as received in the original message.
-reply_force_address = False
-
-# Always use the proper realname when constructing "From" headers for forwards.
-# Set this to False to use the realname string as received in the original message.
-forward_force_realname = True
-
-# Always use the accounts main address when constructing "From" headers for forwards.
-# Set this to False to use the address string as received in the original message.
-forward_force_address = False
-
-# Always use the proper realname when constructing "Resent-From" headers for bounces.
-# Set this to False to use the realname string as received in the original message.
-bounce_force_realname = True
-
-# Always use the accounts main address when constructing "Resent-From" headers for bounces.
-# Set this to False to use the address string as received in the original message.
-bounce_force_address = False
-
-# When group-reply-ing to an email that has the "Mail-Followup-To" header set,
-# use the content of this header as the new "To" header and leave the "Cc"
-# header empty
-honor_followup_to = False
-
-# When one of the recipients of an email is a subscribed mailing list, set the
-# "Mail-Followup-To" header to the list of recipients without yourself
+# Interface
+attachment_prefix = '~/var/get'
+auto_remove_unread = True
+bufferclose_focus_offset = -1
+bug_on_exit = False
+flush_retry_timeout = 5
 followup_to = False
+handle_mouse = False
+history_size = 50
+honor_followup_to = True
+hooksfile = ~/.config/alot/hooks.py
+initial_command = search 'is:inbox OR is:flagged'
+input_timeout = 1.0
+mailinglists = ''
+notify_timeout = 2
+periodic_hook_frequency = 300
+#print_cmd = recode UTF-8..latin1 | enscript --word-wrap --margins=72:72:30:30 -Email -o - | lp
+print_cmd = muttprint -S grey -p - | lp
+quit_on_last_bclose = False
+tabwidth = 2
+user_agent = alot/{version}
 
-# The list of addresses associated to the mailinglists you are subscribed to
-#mailinglists = force_list(default=list())
+# ACCOUNTS ##################################################################
+[accounts]
+  [[outlook]]
+    address = cagprado@outlook.com
+    realname = Caio Prado
+    sendmail_command = msmtpq -t --read-envelope-from
+    draft_box = maildir:///home/cagprado/var/spool/mail/outlook/Drafts
+    sent_tags = outlook,sent
+    signature = /home/cagprado/.config/alot/signature
+    signature_as_attachment = False
+    sign_by_default = True
+    gpg_key = BCB0AAED
+    encrypt_to_self = True
+    [[[abook]]]
+      type = shellcommand
+      command = khard email --parsable
+      regexp = '^(?P<email>[^@]+@[^\t]+)\t+(?P<name>[^\t]+)'
+      ignorecase = True
 
-# prefer plaintext alternatives over html content in multipart/alternative
-prefer_plaintext = False
+  [[IF]]
+    address = cagprado@if.usp.br
+    aliases = caioagp@if.usp.br
+    realname = Caio Prado
+    sendmail_command = msmtpq -t --read-envelope-from
+    draft_box = maildir:///home/cagprado/var/spool/mail/ifusp/Drafts
+    sent_box = maildir:///home/cagprado/var/spool/mail/ifusp/Sent
+    sent_tags = ifusp,sent
+    signature = /home/cagprado/.config/alot/signature
+    signature_as_attachment = False
+    sign_by_default = True
+    gpg_key = BCB0AAED
+    encrypt_to_self = True
 
-# Key bindings (just need to override the defaults)
-[bindings]
-  / = prompt 'search '
-  [[search]]
-    A = untag inbox,unread
-    R = toggletags delete; move down
-    J = toggletags junk; move down
-
+# TAGS ######################################################################
 [tags]
-#    # for each tag
-#    [[__many__]]
-#        # foreground
-#        fg = string(default=None)
-#        # background
-#        bg = string(default=None)
-#        # foreground if focused
-#        focus_fg = string(default=None)
-#        # background if focused
-#        focus_bg = string(default=None)
-#        # don't display at all?
-#        hidden = boolean(default=False)
-#        # alternative string representation
-#        translated = string(default=None)
-#        # substitution to generate translated from section name
-#        translation = mixed_list(string, string, default=None)
-
+  # Basic
   [[inbox]]
     translated = " "
   [[junk]]
@@ -259,8 +121,10 @@ prefer_plaintext = False
     translated = " "
   [[.mailman.]]
     translated = " "
+  [[delete]]
+    translated =
 
-#  # Flags
+  # Flags
   [[flagged]]
     translated = " "
   [[unread]]
@@ -271,8 +135,6 @@ prefer_plaintext = False
     translated = " "
   [[signed]]
     translated = " "
-  [[killed]]
-    translated = " "
 
   # Lists
   [[lists]]
@@ -297,8 +159,8 @@ prefer_plaintext = False
   # Labels
   [[ccnu]]
     translated = " "
-  [[qqmail]]
-    translated = " "
+  [[outlook]]
+    translated = " "
   [[gmail]]
     translated = " "
   [[admin]]
@@ -311,7 +173,7 @@ prefer_plaintext = False
     translated = " "
   [[family]]
     translated = " "
-  [[fapesp]]
+  [[papers]]
     translated = " "
   [[friends]]
     translated = " "
@@ -319,34 +181,130 @@ prefer_plaintext = False
     translated = " "
   [[teaching]]
     translated = " "
-  [[pessoal]]
+  [[personal]]
     translated = " "
-  [[sbf]]
-    translated = " "
 
-[accounts]
-  [[QQMAIL]]
-    address = cagprado@qq.com
-    realname = Caio Prado
-    sendmail_command = msmtpq -t --read-envelope-from
-    signature = /home/cagprado/.config/alot/signature
-    signature_as_attachment = False
-    sign_by_default = True
-    gpg_key = BCB0AAED
-    [[[abook]]]
-      type = shellcommand
-      command = khard email --parsable
-      regexp = '^(?P<email>[^@]+@[^\t]+)\t+(?P<name>[^\t]+)'
-      ignorecase = True
+# KEY BINDINGS ##############################################################
+[bindings]
+    k = move up
+    j = move down
+    up = move up
+    down = move down
+    ctrl u = move halfpage up
+    ctrl d = move halfpage down
+    page up = move page up
+    page down = move page down
+    home = move first
+    g g = move first
+    end = move last
+    G = move last
+    tab = bnext
+    ' ' = move page down
+    / = prompt 'search '
+    o =
+    1 = search is:inbox OR is:flagged
+    2 = search is:unread
+    3 = search is:flagged
+    4 = search is:qqmail (is:inbox OR is:flagged)
+    5 = search is:ifusp (is:inbox OR is:flagged)
+    0 = search is:sent
+    ( = search is:junk
+    ) = search is:delete
+    '=' = bufferlist
+    ';' =
+    q = exit
+    : = prompt
+    . = repeat
+    f1 = help bindings
+    ? =
+    f2 = flush
+    $ =
+    f5 = refresh
+    @ =
+    \ = taglist
+    # =
+    backspace = bclose
+    d =
+    c = compose
+    m =
 
-  [[IF]]
-    address = cagprado@if.usp.br
-    aliases = caioagp@if.usp.br
-    realname = Caio Prado
-    sendmail_command = msmtpq -t --read-envelope-from
-    sent_box = maildir:///home/cagprado/var/spool/mail/ifusp/Sent
-    sent_tags = ifusp,sent
-    signature = /home/cagprado/.config/alot/signature
-    signature_as_attachment = False
-    sign_by_default = True
-    gpg_key = BCB0AAED
+    [[bufferlist]]
+        d = close
+        x =
+        enter = open
+
+    [[taglist]]
+        enter = select
+
+    [[search]]
+        | = refineprompt
+        enter = select
+        delete = tag delete; untag inbox,unread,flagged
+        d = tag delete; untag inbox,unread,flagged
+        a = untag inbox,unread
+        A = untag inbox,unread,flagged
+        r = toggletags unread; move down
+        R = toggletags unread
+        s =
+        f = toggletags flagged; move down
+        F = toggletags flagged
+        ! =
+        t = prompt 'tag '
+        T = retagprompt
+        u = prompt 'untag '
+        U =
+        & =
+        l = ''
+        O =
+
+    [[envelope]]
+        a = prompt 'attach ~/'
+        e = edit
+        enter = send
+        y =
+        w = save
+        P =
+        f = prompt 'set From '
+        s = refine Subject
+        t = refine To
+        T = refine Cc
+        b = refine Bcc
+        c =
+        x = togglesign
+        X = toggleencrypt
+        S =
+        g f =
+
+    [[thread]]
+        enter = select
+        u = unfold is:unread; fold not is:unread
+        C = fold *
+        c = fold *
+        E = unfold *
+        e = unfold *
+        < = fold
+        > = unfold
+        h = toggleheaders
+        H = togglesource
+        g f =
+        S = save
+        s = save --all
+        t = reply
+        T = reply --spawn True
+        r = reply --all
+        R = reply --all --spawn True
+        f = forward
+        F = forward --spawn True
+        g =
+        p = print --add_tags
+        P = print --all --separately --add_tags
+        | = prompt 'pipeto '
+        n =
+        b =
+        J = move next
+        K = move previous
+        ' ' = move page down
+        'g j' = move next sibling
+        'g k' = move previous sibling
+        'g h' = move parent
+        'g l' = move first reply

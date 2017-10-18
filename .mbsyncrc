@@ -5,64 +5,56 @@ Remove Both
 SyncState *
 
 ## ACCOUNTS #################################################################
+IMAPAccount outlook
+Host imap-mail.outlook.com
+User cagprado@outlook.com
+PassCmd "pass microsoft/password"
+SSLType IMAPS
+
 IMAPAccount ifusp
 Host mail.if.usp.br
 User caioagp
 PassCmd "pass ifusp/password"
 SSLType IMAPS
 CertificateFile ~/etc/certificates/CCIFUSP-CA.crt
-
-IMAPAccount qqmail
-Host imap.qq.com
-User cagprado
-PassCmd "pass qq/authorization"
-SSLType IMAPS
+Timeout 60
 
 ## LOCAL STORAGE ############################################################
+MaildirStore outlook-local
+AltMap yes
+Path ~/var/spool/mail/outlook/
+Inbox ~/var/spool/mail/outlook/INBOX
+
 MaildirStore ifusp-local
 AltMap yes
 Path  ~/var/spool/mail/ifusp/
 Inbox ~/var/spool/mail/ifusp/INBOX
 
-MaildirStore qqmail-local
-AltMap yes
-Path  ~/var/spool/mail/qqmail/
-Inbox ~/var/spool/mail/qqmail/INBOX
-
 ## REMOTE STORAGE ###########################################################
+IMAPStore outlook
+Account outlook
+
 IMAPStore ifusp
 Account ifusp
 
-IMAPStore qqmail
-Account qqmail
-
 ## CHANNELS #################################################################
 
-# IFUSP - All folders together
+# OUTLOOK
+Channel outlook
+Master :outlook:Inbox
+Slave :outlook-local:INBOX
+
+Channel outlook-inbox
+Master :outlook:
+Slave :outlook-local:
+Patterns "Sent" "Drafts" "Junk"
+
+Group outlook
+Channel outlook
+Channel outlook-folders
+
+# IFUSP
 Channel ifusp
 Master :ifusp:
 Slave :ifusp-local:
 Patterns * !Trash
-
-# QQMAIL
-Channel qqmail-inbox
-Master :qqmail:
-Slave :qqmail-local:
-
-Channel qqmail-sent
-Master :qqmail:"Sent Messages"
-Slave :qqmail-local:Sent
-
-Channel qqmail-junk
-Master :qqmail:Junk
-Slave :qqmail-local:Junk
-
-Channel qqmail-drafts
-Master :qqmail:Drafts
-Slave :qqmail-local:Drafts
-
-Group qqmail
-Channel qqmail-inbox
-Channel qqmail-sent
-Channel qqmail-junk
-Channel qqmail-drafts

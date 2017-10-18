@@ -5,11 +5,11 @@
 # Move mails marked as junk from INBOX to Junk folder.
 # Move mails without junk mark from Junk to INBOX folder.
 [MailMover]
-folders = ifusp/INBOX ifusp/Junk qqmail/INBOX qqmail/Junk
+folders = ifusp/INBOX ifusp/Junk outlook/INBOX outlook/Junk
 ifusp/INBOX = 'tag:junk':ifusp/Junk
 ifusp/Junk  = 'NOT tag:junk':ifusp/INBOX
-qqmail/INBOX = 'tag:junk':qqmail/Junk
-qqmail/Junk  = 'NOT tag:junk':qqmail/INBOX
+outlook/INBOX = 'tag:junk':outlook/Junk
+outlook/Junk  = 'NOT tag:junk':outlook/INBOX
 
 # DEFINE CUSTOM FILTERS #####################################################
 
@@ -133,7 +133,7 @@ query = to:cagprado+monitoria@gmail.com
 
 [Pessoal(Filter)]
 message = 'Tagging personal messages as "pessoal"'
-tags = +pessoal
+tags = +personal
 query = from:@ifood.com.br
 
 [SBF(Filter)]
