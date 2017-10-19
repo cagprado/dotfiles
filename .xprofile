@@ -6,7 +6,8 @@ xset s off -dpms
 $HOME/bin/zsh/setmonitors
 $HOME/bin/zsh/watchmonitors&
 
-# Export variables
+# Set keyboard and IM
+setxkbmap -layout caio_us
 export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
