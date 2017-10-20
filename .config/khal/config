@@ -1,31 +1,38 @@
+# vim: ft=dosini
 [default]
-default_command = calendar
-highlight_event_days = True
-timedelta = 7d
-
-[locale]
-timeformat = %H:%M
-dateformat = %m/%d/%Y
-longdateformat = %m/%d/%Y
-datetimeformat = %m/%d/%Y %H:%M
-longdatetimeformat = %m/%d/%Y %H:%M
+  highlight_event_days = True
+  print_new = event
+  show_all_days = False
+  timedelta = 10d
 
 [highlight_days]
-default_color = 1
-method = fg
-multiple = 1
+  color = ''
+  default_color = 3
+  method = fg
+  multiple = 1
+
+[locale]
+  firstweekday = 6
 
 [view]
-bold_for_light_color = False
+  bold_for_light_color = False
+  dynamic_days = True
+  event_view_always_visible = False
+  event_view_weighting = 1
+  frame = width
+  theme = light
 
 
 [calendars]
-  [[local_cal]]
-  path = ~/.config/vdirsyncer/data/calendars/*
-  type = discover
-  color = 3
+  [[contacts]]
+    type = birthdays
+    color = 2
+    path = ~/.config/vdirsyncer/data/contacts/contacts
 
-  [[local_card]]
-  path = ~/.config/vdirsyncer/data/contacts/contacts
-  type = birthdays
-  color = 5
+  [[personal]]
+    type = calendar
+    path = ~/.config/vdirsyncer/data/calendars/personal
+
+  [[work]]
+    type = calendar
+    path = ~/.config/vdirsyncer/data/calendars/work
