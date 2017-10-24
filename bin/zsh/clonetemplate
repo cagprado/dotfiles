@@ -24,7 +24,7 @@ END
 local CURRENTDIR="$(pwd)"
 local CLONEDIR="$CURRENTDIR"
 local TEMPLATEDIR="$HOME/src/templates"
-local TEMPLATEGIT="mredson.homenet.org:git/templates.git"
+local TEMPLATEGIT="git@gitlab.com:cagprado/templates.git"
 local NOCHECKGIT="false"
 local TEMPLATE=''
 
