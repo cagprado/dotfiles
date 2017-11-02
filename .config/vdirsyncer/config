@@ -4,41 +4,41 @@
 	status_path = "~/.config/vdirsyncer/status"
 
 # CONTACTS ##################################################################
-[storage local_card]
+[storage local_contacts]
 	type = "filesystem"
 	path = "~/.config/vdirsyncer/data/contacts"
 	fileext = ".vcf"
 	encoding = "utf-8"
 
-[storage icloud_card]
+[storage remote_contacts]
 	type = "carddav"
-	url = "https://contacts.icloud.com/11427523394/principal/"
-	username = "cagprado@outlook.com"
+	url = "https://contacts.icloud.com"
+	username = "cagprado@yandex.com"
 	password.fetch = ["command", "pass", "appleid/dav"]
 
-[pair card]
-	a = "local_card"
-	b = "icloud_card"
+[pair contacts]
+	a = "local_contacts"
+	b = "remote_contacts"
 	metadata = ["displayname"]
 	conflict_resolution = ["command", "vimdiff"]
 	collections = [["contacts", "contacts", "card"]]
 
 # CALENDAR ##################################################################
-[storage local_cal]
+[storage local_calendar]
 	type = "filesystem"
 	path = "~/.config/vdirsyncer/data/calendars"
 	fileext = ".ics"
 	encoding = "utf-8"
 
-[storage icloud_cal]
+[storage remote_calendar]
 	type = "caldav"
-	url = "https://caldav.icloud.com/11427523394/principal"
-	username = "cagprado@outlook.com"
+	url = "https://caldav.icloud.com"
+	username = "cagprado@yandex.com"
 	password.fetch = ["command", "pass", "appleid/dav"]
 
-[pair cal]
-	a = "local_cal"
-	b = "icloud_cal"
+[pair calendar]
+	a = "local_calendar"
+	b = "remote_calendar"
 	metadata = ["color", "displayname"]
 	conflict_resolution = ["command", "vimdiff"]
 	collections = [
