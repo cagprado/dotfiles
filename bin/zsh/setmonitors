@@ -89,4 +89,4 @@ while [[ $IDX -le $#MONITORS ]]; do
 done
 
 xrandr $=MONITORS
-feh --bg-scale $HOME/usr/img/arch/wallpaper
+feh --bg-scale $HOME/usr/me/pictures/wallpaper/current
