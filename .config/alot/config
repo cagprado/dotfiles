@@ -77,12 +77,13 @@ user_agent = alot/{version}
 
 # ACCOUNTS ##################################################################
 [accounts]
-  [[outlook]]
-    address = cagprado@outlook.com
+  [[yandex]]
+    address = cagprado@yandex.com
     realname = Caio Prado
     sendmail_command = msmtpq -t --read-envelope-from
-    draft_box = maildir:///home/cagprado/var/spool/mail/outlook/Drafts
-    sent_tags = outlook,sent
+    draft_box = maildir:///home/cagprado/var/spool/mail/yandex/Drafts
+    sent_box = maildir:///home/cagprado/var/spool/mail/yandex/Sent
+    sent_tags = yandex,sent
     signature = /home/cagprado/.config/alot/signature
     signature_as_attachment = False
     sign_by_default = True
@@ -159,8 +160,8 @@ user_agent = alot/{version}
   # Labels
   [[ccnu]]
     translated = " "
-  [[outlook]]
-    translated = " "
+  [[yandex]]
+    translated = " "
   [[gmail]]
     translated = " "
   [[admin]]

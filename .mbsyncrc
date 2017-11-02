@@ -5,10 +5,10 @@ Remove Both
 SyncState *
 
 ## ACCOUNTS #################################################################
-IMAPAccount outlook
-Host imap-mail.outlook.com
-User cagprado@outlook.com
-PassCmd "pass microsoft/password"
+IMAPAccount yandex
+Host imap.yandex.com
+User cagprado@yandex.com
+PassCmd "pass yandex/password"
 SSLType IMAPS
 
 IMAPAccount ifusp
@@ -20,10 +20,10 @@ CertificateFile ~/etc/certificates/CCIFUSP-CA.crt
 Timeout 60
 
 ## LOCAL STORAGE ############################################################
-MaildirStore outlook-local
+MaildirStore yandex-local
 AltMap yes
-Path ~/var/spool/mail/outlook/
-Inbox ~/var/spool/mail/outlook/INBOX
+Path ~/var/spool/mail/yandex/
+Inbox ~/var/spool/mail/yandex/INBOX
 
 MaildirStore ifusp-local
 AltMap yes
@@ -31,27 +31,27 @@ Path  ~/var/spool/mail/ifusp/
 Inbox ~/var/spool/mail/ifusp/INBOX
 
 ## REMOTE STORAGE ###########################################################
-IMAPStore outlook
-Account outlook
+IMAPStore yandex
+Account yandex
 
 IMAPStore ifusp
 Account ifusp
 
 ## CHANNELS #################################################################
 
-# OUTLOOK
-Channel outlook
-Master :outlook:Inbox
-Slave :outlook-local:INBOX
+# YANDEX
+Channel yandex
+Master :yandex:
+Slave :yandex-local:
+Patterns INBOX Drafts Sent
 
-Channel outlook-inbox
-Master :outlook:
-Slave :outlook-local:
-Patterns "Sent" "Drafts" "Junk"
+Channel yandex-spam
+Master :yandex:Spam
+Slave :yandex-local:Junk
 
-Group outlook
-Channel outlook
-Channel outlook-folders
+Group yandex
+Channel yandex
+Channel yandex-spam
 
 # IFUSP
 Channel ifusp
