@@ -5,7 +5,7 @@ local -a ONCE_PROGRAMS # Should not execute again when wm restarts
 # tray icons
 ONCE_PROGRAMS+=("pasystray")                    # audio
 ONCE_PROGRAMS+=("cbatticon -i standard BAT0")   # battery
-ONCE_PROGRAMS+=("blueberry-tray")               # bluetooth
+ONCE_PROGRAMS+=("blueman-applet")               # bluetooth
 ONCE_PROGRAMS+=("ibus-daemon -dxr")             # keyboard IM
 ONCE_PROGRAMS+=("nm-applet")                    # network
 ONCE_PROGRAMS+=("hp-systray")                   # printer
