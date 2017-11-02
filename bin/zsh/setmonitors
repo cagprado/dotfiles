@@ -1,28 +1,23 @@
 #!/bin/zsh
 
-# CONFIGURATION #############################################################
-local HOSTNAME=$(hostname)
-
-if [[ "$HOSTNAME" = "mredson" ]]; then
-  local MAINMONITOR="eDP-1"
-fi
-#############################################################################
-
 autoload +X parse_cmdline help err war
 
-local USAGE="%Busage:%b $0 [option]"
+local USAGE="%Busage:%b $0 [option] [RESOLUTION...]"
 local DESC="Set resolution and positon of multiple monitors in X."
 local LONGHELP
 LONGHELP=$(<<END
 Default behaviour is to check all connected monitors and set them to their
-preferred behaviour. This can be changed with the available options:
-  %B-s%b
-      Single mode: This is default when a single monitor is connected. If
-      multiple options are available, assume the first one that is not the
-      laptop screen, useful for a TV setup.
-  %B-x%b
-      Clone mode: All screens will have the same output. Resolution is scaled
-      for different resolution monitors.
+preferred resolution and clone.
+  %B-m%b
+      Multihead mode: Activate all connected monitors to their preferred
+      resolution and different workspaces.
+      Without this option, all screens will share the same workspace.
+  %B-p 'NAMES...'%b
+      Set the preference order of monitors (single string with space separated
+      list.
+  %B[RESOLUTION...]%b
+      Force the resolution given in command line. List is applied in the same
+      as the preferred order.
 
 %BKNOWN ISSUES%b
   This script has only been tested with a maximum of two available monitors.
@@ -30,85 +25,68 @@ preferred behaviour. This can be changed with the available options:
 END
 )
 
+# PARSE COMMAND LINE OPTIONS
 local HELP=false
 local SUMMARY=false
-local SINGLE=false
-local CLONE=false
-local -a MONITORS PRIORITY
-if ! parse_cmdline 'h|help|long-help>HELP H|short-help|summary>SUMMARY s>SINGLE x>CLONE' $@; then
+local MULTIPLE=false
+local PRIORITY
+local -a RESOLUTION
+if ! parse_cmdline '=RESOLUTION h|help|long-help>HELP H|short-help|summary>SUMMARY m>MULTIPLE :p>PRIORITY' $@; then
   print -P "$USAGE"
   return 1
 fi
 help $HELP $SUMMARY $0 $USAGE $DESC $LONGHELP && return
 
-local PRIORITY=("DP" "HDMI" "DVI" "VGA")
-
-if [[ "$SINGLE" == "true" || "$CLONE" == "true" ]]; then
-  # Single (forced), laptop is fallback
-  PRIORITY+=$MAINMONITOR
-else
-  # Auto (multiple monitors, or no external monitor), primary is laptop
-  PRIORITY=($MAINMONITOR $PRIORITY)
+if [[ -z "$PRIORITY" ]]; then
+  [[ "$(hostname)" = "mredson" ]] && PRIORITY='eDP-1 HDMI-2 DP-2 HDMI-1 DP-1'
 fi
+[[ "$MULTIPLE" = "false" ]] && RESOLUTION=(${(Oa)RESOLUTION}) &&  PRIORITY=(${(Oa)=PRIORITY}) || PRIORITY=($=PRIORITY)
 
-if [[ "$CLONE" == "true" ]]; then
-  [[ "$SINGLE" == "true" ]] && war "Clone mode used, ignoring -s flag..."
-  MONITORS=$(xrandr -q | sed -n -e 's/^\([^ ]*\) \(disconnected\).*/--output \1 --off/p' -e 's/^\([^ ]*\) \(connected\).*/--output \1 --scale 1x1 --auto/p' -e 's/^ *\([0-9]*\)x\([0-9]*\) .*[+].*$/\1\n\2/p')
-  MONITORS=(${(f)MONITORS})  # (f) split at \n
+# GET LIST OF MONITORS
+local MONITORS=$(xrandr -q | sed -n '
+  s/^\([^ ]*\) \(connected\).*/\1/p
+  s/^\([^ ]*\) \(disconnected\).*/--output \1 --off/p
+  s/^ *\([0-9]*x[0-9]*\)[^+]*[+][^+]*$/\1/p
+')
+MONITORS=(${(f)MONITORS})  # (f) split at \n
 
-  # Look for the primary monitor
-  local ITEM IDX PRIMARY X0 Y0 X Y
-  for ITEM in $PRIORITY; do
-    IDX=${MONITORS[(i)*${ITEM}*--auto]}
-    if [[ $IDX -le $#MONITORS ]]; then
-      MONITORS[$IDX]+=' --primary'
-      PRIMARY=${${${MONITORS[$IDX]}#--output }%--scale*}
-      # Get primary resolution values
-      Y0="$MONITORS[$((IDX+2))]."
-      MONITORS[$((IDX+2))]=()
-      X0="$MONITORS[$((IDX+1))]."
-      MONITORS[$((IDX+1))]=()
-      break
+# Look for the primary monitor
+local ITEM IDX PRIMARY PRIMARY_RESOLUTION
+for ITEM in $PRIORITY; do
+  IDX=${MONITORS[(i)${ITEM}]}
+  if [[ $IDX -le $#MONITORS ]]; then
+    PRIMARY=$MONITORS[$IDX]
+
+    [[ -z "$RESOLUTION[1]" ]] && RESOLUTION[1]=("$MONITORS[$((IDX+1))]")
+    MONITORS[$((IDX+1))]=()
+    PRIMARY_RESOLUTION=$RESOLUTION[1]
+
+    # Build command
+    MONITORS[$IDX]=("--output $PRIMARY --mode $RESOLUTION[1] --scale 1x1 --primary")
+    RESOLUTION[1]=()
+    break
+  fi
+done
+
+
+# Setup other screens
+IDX=1
+while [[ $IDX -le $#MONITORS ]]; do
+  if [[ ! "$MONITORS[$IDX]" =~ "--output" ]]; then
+    [[ -z "$RESOLUTION[1]" ]] && RESOLUTION[1]=("$MONITORS[$((IDX+1))]")
+    MONITORS[$((IDX+1))]=()
+
+    # Build command
+    local AUX=$MONITORS[$IDX]
+    if [[ "$MULTIPLE" = "true" ]]; then
+      MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale 1x1 --left-of $PRIMARY")
+    else
+      MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale-from $PRIMARY_RESOLUTION --same-as $PRIMARY")
     fi
-  done
+    PRIMARY=$AUX
+  fi
+  ((IDX+=1))
+done
 
-  # Set scale for the other monitors
-  for ITEM in $MONITORS; do
-    if [[ "$ITEM" =~ "--auto$" ]]; then
-      IDX=${MONITORS[(i)*$ITEM]}
-      Y="${MONITORS[$((IDX+2))]}"
-      MONITORS[$((IDX+2))]=()
-      X="${MONITORS[$((IDX+1))]}"
-      MONITORS[$((IDX+1))]=()
-      MONITORS[$IDX]="${${MONITORS[$IDX]}/1x1/$((X0/X))x$((Y0/Y))} --same-as $PRIMARY"
-    fi
-  done
-
-  xrandr $=MONITORS
-else
-  # Parse list of available monitors
-  MONITORS=$(xrandr -q | sed -n -e 's/^\([^ ]*\) \(disconnected\).*/--output \1 --off/p' -e 's/^\([^ ]*\) \(connected\).*/--output \1 --scale 1x1 --auto/p')
-  MONITORS=(${(f)MONITORS})  # (f) split at \n
-
-  # Look for the primary monitor
-  local ITEM PRIMARY
-  for ITEM in $PRIORITY; do
-    local IDX=${MONITORS[(i)*${ITEM}*--auto]}
-    if [[ $IDX -le $#MONITORS ]]; then
-      MONITORS[$IDX]+=' --primary'
-      PRIMARY=${${${MONITORS[$IDX]}#--output }%--scale*}
-      break
-    fi
-  done
-
-  # If single mode is used turn off all but priority
-  [[ $SINGLE = "true" ]] && MONITORS=(${MONITORS/%--auto/--off})
-
-  # Set position of secondary monitor
-  MONITORS=(${MONITORS/%--auto/--auto --left-of $PRIMARY})
-
-  xrandr $=MONITORS
-fi
-
-# Set wallpaper after all is done
+xrandr $=MONITORS
 feh --bg-scale $HOME/usr/img/arch/wallpaper

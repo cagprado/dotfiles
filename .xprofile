@@ -3,8 +3,7 @@
 
 # Setup screens
 xset s off -dpms
-$HOME/bin/zsh/setmonitors
-$HOME/bin/zsh/watchmonitors&
+$HOME/bin/zsh/setmonitors -m
 
 # Set keyboard and IM
 setxkbmap -layout caio_us

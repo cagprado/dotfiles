@@ -1,3 +1,0 @@
-#!/bin/sh
-# Xsetup - run as root before the login dialog appears
-FPATH=/home/cagprado/bin/zsh.zwc:$FPATH /home/cagprado/bin/zsh/setmonitors -x
