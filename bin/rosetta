@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd "/home/cagprado/.wine/drive_c/Program Files/Rosetta Stone/Rosetta Stone Version 3"
-wine RosettaStoneVersion3.exe

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-ADDRESS=$(xclip -o -selection c)
-
-notify-send "Trying to play video on $ADDRESS"
-mpv -fs "$ADDRESS"
-if [ $? -ne 0 ]; then
-  notify-send -u critical -t 5000 "Failed to play video on $ADDRESS"
-fi

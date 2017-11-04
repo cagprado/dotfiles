@@ -1,9 +1,0 @@
-#!/bin/zsh
-
-TTY="$(tty)"
-
-if [[ "$TTY" == "not a tty" ]]; then
-  roxterm -T weechat -e /usr/bin/weechat-curses
-else
-  /usr/bin/weechat-curses
-fi

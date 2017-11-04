@@ -1,8 +1,0 @@
-#!/bin/sh
-# This script fixes an issue with color dump output of elinks, which doesn’t
-# correctly reset attributes at the end of a line.
-
-CHARSET="$1"
-FILENAME="$2"
-
-elinks -force-html -dump -dump-color-mode 1 -dump-charset utf8 -eval "set document.codepage.assume = '"$CHARSET"'" "$FILENAME" | sed 's/$/[m/'

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd "/home/cagprado/.wine/drive_c/Program Files (x86)/World of Warcraft"
-wine "World of Warcraft Launcher.exe"

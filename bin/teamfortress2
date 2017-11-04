@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ "$(hostname)" == "caiopc" ]; then
-  LIBGL_DRIVERS_PATH=/usr/lib32/xorg/modules/dri wine ~/.wine/drive_c/Program\ Files/Steam/steam.exe -applaunch 440 -nointro -nod3d9ex
-else
-  wine ~/.wine/drive_c/Program\ Files/Steam/steam.exe -applaunch 440 -nointro -nod3d9ex
-fi
