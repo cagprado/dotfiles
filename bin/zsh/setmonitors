@@ -6,18 +6,18 @@ local USAGE="%Busage:%b $0 [option] [RESOLUTION...]"
 local DESC="Set resolution and positon of multiple monitors in X."
 local LONGHELP
 LONGHELP=$(<<END
-Default behaviour is to check all connected monitors and set them to their
-preferred resolution and clone.
+Default behaviour enables all connected outputs with the same workspace.
+These options change the default:
   %B-m%b
-      Multihead mode: Activate all connected monitors to their preferred
-      resolution and different workspaces.
-      Without this option, all screens will share the same workspace.
+      Multihead mode: Activates all connected outputs to their preferred
+      resolution and different workspaces side-by-side.
   %B-p 'NAMES...'%b
-      Set the preference order of monitors (single string with space separated
-      list.
+      Set the preference order of monitors as a space separated list given as
+      a single string to the shell.
   %B[RESOLUTION...]%b
-      Force the resolution given in command line. List is applied in the same
-      as the preferred order.
+      Force the resolution for a given output instead of choosing the
+      preferrable one.  This space separated list follows the same order as
+      the preference list.
 
 %BKNOWN ISSUES%b
   This script has only been tested with a maximum of two available monitors.
