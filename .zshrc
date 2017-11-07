@@ -43,7 +43,7 @@ alias pk12util='pk12util -d sql:$HOME/.pki/nssdb'
 
 # ssh
 alias ifusp='fusessh -p $HOME/ifusp -s ifusp'
-alias lp='lp -d $(printer) -o collate=true'
+alias lp='lp -d $PRINTER -o collate=true'
 [[ "$AT_SAMPA_VALUE" = "true" ]] && alias qstat='qstat -u cagprado -t' || alias qstat='ssh cagprado@$SAMPA qstat -u cagprado -t'
 alias sampa='fusessh -p $HOME/sampa -s sampa'
 
@@ -284,8 +284,8 @@ function setprompt()
 setprompt
 
 # Source syntax highlighting plugin
-if ! atsampa && [[ -f "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if [[ -f "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
 # Show a nice cowsay message

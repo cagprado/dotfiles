@@ -13,18 +13,12 @@ if ! parse_cmdline 'h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
 fi
 help $HELP $SUMMARY $0 $USAGE $DESC && return
 
-# first send whatever needs to be sent
-$HOME/bin/msmtp-queue -r
+$HOME/bin/msmtp-queue -r    # send all
+afew -m                     # reorganize mails (only one host should do it)
+notmuch search --output=files is:delete | xargs -d'\n' -L 1 rm -f # remove deleted
 
-# put everything in place, before deleting
-[[ "$(hostname)" == "mredson" ]] && afew -m
+mbsync -a                   # sync imap
+notmuch new                 # update database
+afew -tn                    # initial tags
 
-# now we delete the tag 'delete'
-notmuch search --output=files is:delete | xargs -d'\n' -L 1 rm -f
-
-# finally sync and get new messages and tags
-mbsync -a
-notmuch new
-afew -tn
-
-pkill -SIGRTMIN+10 i3blocks
+pkill -SIGRTMIN+10 i3blocks # tip i3 to update mail count

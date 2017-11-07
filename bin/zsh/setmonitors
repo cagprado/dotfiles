@@ -2,6 +2,11 @@
 
 autoload +X parse_cmdline help err war
 
+# Configuration
+if [[ "$HOSTNAME" = "mredson" ]]; then
+  local PRIORITY='eDP-1 HDMI-2 DP-2 HDMI-1 DP-1'
+fi
+
 local USAGE="%Busage:%b $0 [option] [RESOLUTION...]"
 local DESC="Set resolution and positon of multiple monitors in X."
 local LONGHELP
@@ -29,7 +34,6 @@ END
 local HELP=false
 local SUMMARY=false
 local MULTIPLE=false
-local PRIORITY
 local -a RESOLUTION
 if ! parse_cmdline '=RESOLUTION h|help|long-help>HELP H|short-help|summary>SUMMARY m>MULTIPLE :p>PRIORITY' $@; then
   print -P "$USAGE"
@@ -37,12 +41,15 @@ if ! parse_cmdline '=RESOLUTION h|help|long-help>HELP H|short-help|summary>SUMMA
 fi
 help $HELP $SUMMARY $0 $USAGE $DESC $LONGHELP && return
 
-if [[ -z "$PRIORITY" ]]; then
-  [[ "$(hostname)" = "mredson" ]] && PRIORITY='eDP-1 HDMI-2 DP-2 HDMI-1 DP-1'
+# Order lists based on chosen configuration
+if [[ "$MULTIPLE" = "false" ]]; then
+  RESOLUTION=(${(Oa)RESOLUTION})
+  PRIORITY=(${(Oa)=PRIORITY})
+else
+  PRIORITY=($=PRIORITY)
 fi
-[[ "$MULTIPLE" = "false" ]] && RESOLUTION=(${(Oa)RESOLUTION}) &&  PRIORITY=(${(Oa)=PRIORITY}) || PRIORITY=($=PRIORITY)
 
-# GET LIST OF MONITORS
+# Get list of monitors
 local MONITORS=$(xrandr -q | sed -n '
   s/^\([^ ]*\) \(connected\).*/\1/p
   s/^\([^ ]*\) \(disconnected\).*/--output \1 --off/p
@@ -68,7 +75,6 @@ for ITEM in $PRIORITY; do
   fi
 done
 
-
 # Setup other screens
 IDX=1
 while [[ $IDX -le $#MONITORS ]]; do
@@ -88,5 +94,6 @@ while [[ $IDX -le $#MONITORS ]]; do
   ((IDX+=1))
 done
 
+# Finally run command and update background
 xrandr $=MONITORS
 feh --bg-scale $HOME/usr/me/pictures/wallpaper/current

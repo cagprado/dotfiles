@@ -22,8 +22,7 @@ if [[ -z "$COMMAND" ]]; then
 fi
 
 # execute function
-local DIR="$(pwd)"
-if [[ "$AT_SAMPA" != "true" ]]; then
+if [[ ! "$HOSTNAME" =~ "sampa" ]]; then
   echo "ERROR: This script should be called only from sampa cluster..."
   return 1
 fi
