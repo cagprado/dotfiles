@@ -10,7 +10,7 @@ if [[ "$EXT" == "pdf" ]]; then
   TMPNAME="mkmovie-$$"
 
   pdfseparate "$INPUT" $TMPNAME-%d.pdf
-  parallel convert -define png:color-type=2 -flatten -density 100 {} {.}.png ::: $TMPNAME-*.pdf
+  parallel convert -define png:color-type=2 -flatten -density 300 {} {.}.png ::: $TMPNAME-*.pdf
   ffmpeg -y -r 12 -i $TMPNAME-%d.png -vf "scale=1920:trunc(ow/a/2)*2" -c:v libx264 -preset slow -crf 19 -c:a null ${INPUT%.pdf}.mkv
   rm ${TMPNAME}-*.{pdf,png}
 else
