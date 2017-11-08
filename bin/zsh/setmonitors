@@ -85,7 +85,7 @@ while [[ $IDX -le $#MONITORS ]]; do
     # Build command
     local AUX=$MONITORS[$IDX]
     if [[ "$MULTIPLE" = "true" ]]; then
-      MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale 1x1 --left-of $PRIMARY")
+      MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale 1x1 --right-of $PRIMARY")
     else
       MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale-from $PRIMARY_RESOLUTION --same-as $PRIMARY")
     fi
