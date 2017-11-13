@@ -11,11 +11,12 @@ local USAGE="%Busage:%b $0 [option] [RESOLUTION...]"
 local DESC="Set resolution and positon of multiple monitors in X."
 local LONGHELP
 LONGHELP=$(<<END
-Default behaviour enables all connected outputs with the same workspace.
+Default behaviour enables all connected outputs to their preferred resolution
+and different workspaces side-by-side.
 These options change the default:
-  %B-m%b
-      Multihead mode: Activates all connected outputs to their preferred
-      resolution and different workspaces side-by-side.
+  %B-s%b
+      Single mode: Activates all connected outputs to their preferred
+      resolution but clone the workspace on all of them.
   %B-p 'NAMES...'%b
       Set the preference order of monitors as a space separated list given as
       a single string to the shell.
@@ -33,16 +34,16 @@ END
 # PARSE COMMAND LINE OPTIONS
 local HELP=false
 local SUMMARY=false
-local MULTIPLE=false
+local SINGLE=false
 local -a RESOLUTION
-if ! parse_cmdline '=RESOLUTION h|help|long-help>HELP H|short-help|summary>SUMMARY m>MULTIPLE :p>PRIORITY' $@; then
+if ! parse_cmdline '=RESOLUTION h|help|long-help>HELP H|short-help|summary>SUMMARY s>SINGLE :p>PRIORITY' $@; then
   print -P "$USAGE"
   return 1
 fi
 help $HELP $SUMMARY $0 $USAGE $DESC $LONGHELP && return
 
 # Order lists based on chosen configuration
-if [[ "$MULTIPLE" = "false" ]]; then
+if [[ "$SINGLE" = "true" ]]; then
   RESOLUTION=(${(Oa)RESOLUTION})
   PRIORITY=(${(Oa)=PRIORITY})
 else
@@ -53,7 +54,7 @@ fi
 local MONITORS=$(xrandr -q | sed -n '
   s/^\([^ ]*\) \(connected\).*/\1/p
   s/^\([^ ]*\) \(disconnected\).*/--output \1 --off/p
-  s/^ *\([0-9]*x[0-9]*\)[^+]*[+][^+]*$/\1/p
+  s/^ *\([0-9]*x[0-9]*\).*[+][^VH]*$/\1/p
 ')
 MONITORS=(${(f)MONITORS})  # (f) split at \n
 
@@ -84,10 +85,10 @@ while [[ $IDX -le $#MONITORS ]]; do
 
     # Build command
     local AUX=$MONITORS[$IDX]
-    if [[ "$MULTIPLE" = "true" ]]; then
-      MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale 1x1 --right-of $PRIMARY")
-    else
+    if [[ "$SINGLE" = "true" ]]; then
       MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale-from $PRIMARY_RESOLUTION --same-as $PRIMARY")
+    else
+      MONITORS[$IDX]=("--output $MONITORS[$IDX] --mode $RESOLUTION[1] --scale 1x1 --right-of $PRIMARY")
     fi
     PRIMARY=$AUX
   fi
