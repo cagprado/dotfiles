@@ -38,6 +38,8 @@ call vundle#begin('~/.vundle')
   Plugin 'tpope/vim-surround'                 " Module for surrounding moves
   Plugin 'SirVer/ultisnips'                   " Snippets engine
 
+  Plugin 'lervag/vimtex'                      " LaTeX plugin
+
   "Plugin 'honza/vim-snippets'                 " Snippets collection
   "Plugin 'klen/python-mode'                   " Python syntax plugin
   "Plugin 'tpope/vim-fugitive'
@@ -178,6 +180,12 @@ let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 
 " PYTHON-MODE ###############################################################
 let g:pymode_python = 'python3'
+
+" VIMTEX ####################################################################
+let g:vimtex_fold_enabled = 1
+let g:vimtex_fold_types = {
+  \ 'envs' : { 'blacklist' : ['center'], },
+  \}
 
 " FUNCTIONS/AUTOCMD #########################################################
 
