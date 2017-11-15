@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd /usr/lib/netease-cloud-music
+exec /usr/lib/netease-cloud-music/netease-cloud-music --no-sandbox $*
