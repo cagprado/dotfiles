@@ -14,8 +14,8 @@ xkb_symbols "basic" {
     key <AE03> { [3,            numbersign,      sterling,             threeeighths         ] };
     key <AE04> { [4,            dollar,          U2113,                onehalf              ] };
     key <AE05> { [5,            percent,         division,             fiveeighths          ] };
-    key <AE06> { [6,            dead_circumflex, dead_macron,          threequarters        ] };
-    key <AE07> { [7,            ampersand,       dead_caron,           seveneighths         ] };
+    key <AE06> { [6,            dead_circumflex, dead_caron,           threequarters        ] };
+    key <AE07> { [7,            ampersand,       dead_macron,          seveneighths         ] };
     key <AE08> { [8,            asterisk,        infinity,             multiply             ] };
     key <AE09> { [9,            parenleft,       partdifferential,     nabla                ] };
     key <AE10> { [0,            parenright,      emptyset,             zerosubscript        ] };
