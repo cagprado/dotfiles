@@ -1,0 +1,17 @@
+# Rime schema
+# encoding: utf-8
+
+patch:
+  schema:
+    name: Luna Pinyin
+
+  switches:
+    - name: ascii_mode
+      reset: 0
+      states: [ 中文 (Chinese), 西文 (Western) ]
+    - name: full_shape
+      states: [ 半角 (Half), 全角 (Full) ]
+    - name: simplification
+      states: [ 漢字 (Traditional), 汉字 (Simplified) ]
+    - name: ascii_punct
+      states: [ 。，, ．， ]

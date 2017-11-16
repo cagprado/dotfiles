@@ -1,0 +1,17 @@
+# Rime schema settings
+# encoding: utf-8
+
+patch:
+  schema:
+    name: Wubi86
+
+  switches:
+    - name: ascii_mode
+      reset: 0
+      states: [ 中文 (Chinese), 西文 (Western) ]
+    - name: full_shape
+      states: [ 半角 (Half), 全角 (Full) ]
+    - name: extended_charset
+      states: [ 常用 (Common), 增廣 (Extended) ]
+    - name: ascii_punct
+      states: [ 。，, ．， ]
