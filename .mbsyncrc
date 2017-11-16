@@ -11,6 +11,13 @@ User cagprado@yandex.com
 PassCmd "pass yandex/password"
 SSLType IMAPS
 
+IMAPAccount ccnu
+Host imap.exmail.qq.com
+#Host hwimap.exmail.qq.com  # overseas
+User cagprado@mail.ccnu.edu.cn
+PassCmd "pass ccnu/password"
+SSLType IMAPS
+
 IMAPAccount ifusp
 Host mail.if.usp.br
 User caioagp
@@ -25,6 +32,11 @@ AltMap yes
 Path ~/var/spool/mail/yandex/
 Inbox ~/var/spool/mail/yandex/INBOX
 
+MaildirStore ccnu-local
+AltMap yes
+Path  ~/var/spool/mail/ccnu/
+Inbox ~/var/spool/mail/ccnu/INBOX
+
 MaildirStore ifusp-local
 AltMap yes
 Path  ~/var/spool/mail/ifusp/
@@ -33,6 +45,9 @@ Inbox ~/var/spool/mail/ifusp/INBOX
 ## REMOTE STORAGE ###########################################################
 IMAPStore yandex
 Account yandex
+
+IMAPStore ccnu
+Account ccnu
 
 IMAPStore ifusp
 Account ifusp
@@ -52,6 +67,20 @@ Slave :yandex-local:Junk
 Group yandex
 Channel yandex
 Channel yandex-spam
+
+# CCNU
+Channel ccnu
+Master :ccnu:
+Slave :ccnu-local:
+Patterns INBOX Drafts Junk
+
+Channel ccnu-sent
+Master :ccnu:"Sent Messages"
+Slave :ccnu-local:Sent
+
+Group ccnu
+Channel ccnu
+Channel ccnu-sent
 
 # IFUSP
 Channel ifusp

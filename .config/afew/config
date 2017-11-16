@@ -5,9 +5,11 @@
 # Move mails marked as junk from INBOX to Junk folder.
 # Move mails without junk mark from Junk to INBOX folder.
 [MailMover]
-folders = ifusp/INBOX ifusp/Junk yandex/INBOX yandex/Junk
+folders = ifusp/INBOX ifusp/Junk ccnu/INBOX ccnu/Junk yandex/INBOX yandex/Junk
 ifusp/INBOX = 'tag:junk':ifusp/Junk
 ifusp/Junk  = 'NOT tag:junk':ifusp/INBOX
+ccnu/INBOX = 'tag:junk':ccnu/Junk
+ccnu/Junk  = 'NOT tag:junk':ccnu/INBOX
 yandex/INBOX = 'tag:junk':yandex/Junk
 yandex/Junk  = 'NOT tag:junk':yandex/INBOX
 
