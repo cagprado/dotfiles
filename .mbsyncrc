@@ -12,8 +12,7 @@ PassCmd "pass yandex/password"
 SSLType IMAPS
 
 IMAPAccount ccnu
-Host imap.exmail.qq.com
-#Host hwimap.exmail.qq.com  # overseas
+Host hwimap.exmail.qq.com
 User cagprado@mail.ccnu.edu.cn
 PassCmd "pass ccnu/password"
 SSLType IMAPS
