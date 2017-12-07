@@ -5,14 +5,14 @@ path=/home/cagprado/var/spool/mail
 [user]
 name=Caio Prado
 primary_email=cagprado@yandex.com
-other_email=cagprado@if.usp.br
+other_email=cagprado@mail.ccnu.edu.cn;cagprado@if.usp.br
 
 [new]
 tags=new
 ignore=.isyncuidmap.db;.mbsyncstate;.mbsyncstate.journal;.mbsyncstate.lock;.mbsyncstate.new
 
 [search]
-exclude_tags=delete;junk
+exclude_tags=delete;spam
 
 [maildir]
 synchronize_flags=true

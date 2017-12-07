@@ -2,24 +2,20 @@
 # vim: ft=dosini
 
 # MOVE MODE #################################################################
-# Move mails marked as junk from INBOX to Junk folder.
-# Move mails without junk mark from Junk to INBOX folder.
+# Move mails marked as spam from INBOX to Spam folder.
+# Move mails without spam mark from Spam to INBOX folder.
 [MailMover]
-folders = ifusp/INBOX ifusp/Junk ccnu/INBOX ccnu/Junk yandex/INBOX yandex/Junk
-ifusp/INBOX = 'tag:junk':ifusp/Junk
-ifusp/Junk  = 'NOT tag:junk':ifusp/INBOX
-ccnu/INBOX = 'tag:junk':ccnu/Junk
-ccnu/Junk  = 'NOT tag:junk':ccnu/INBOX
-yandex/INBOX = 'tag:junk':yandex/Junk
-yandex/Junk  = 'NOT tag:junk':yandex/INBOX
+folders = yandex/INBOX yandex/Spam
+yandex/INBOX = 'tag:spam':yandex/Spam
+yandex/Spam = 'NOT tag:spam':yandex/INBOX
 
 # DEFINE CUSTOM FILTERS #####################################################
 
-#Junk
-[Junk(Filter)]
-message = 'Mark known spammers as junk'
+#Spam
+[Spam(Filter)]
+message = 'Mark known spammers as spam'
 query = from:postmaster@spam1.korea.ac.kr
-tags = -new;-unread;+junk
+tags = -new;-unread;+spam
 
 #Important
 [Important(Filter)]
@@ -28,9 +24,9 @@ query = is:doctor
 tags = +flagged
 
 #Archivers
-[ArchiveJunkDraft(Filter)]
-message = 'Archiving draft and junk messages'
-query = is:draft or is:junk
+[ArchiveSpamDraft(Filter)]
+message = 'Archiving draft and spam messages'
+query = is:draft or is:spam
 tags = -new;-unread
 
 [ArchiveSent(Filter)]
@@ -165,13 +161,12 @@ query = from:cuaso@usp.br
 
 # First we apply tags following folders
 [FolderNameFilter]
-maildir_separator = /
-folder_transforms = Drafts:draft Junk:junk Sent:sent Trash:trash
-folder_blacklist = INBOX
+folder_transforms = Drafts:draft Spam:spam Sent:sent Trash:trash
+folder_explicit_list = Drafts Spam Sent Trash
 
-# Now we archive Junk and Drafts (no tag will be applied to them)
-[Junk]
-[ArchiveJunkDraft]
+# Now we archive Spam and Drafts (no tag will be applied to them)
+[Spam]
+[ArchiveSpamDraft]
 
 # Automatic filters
 [KillThreadsFilter]
