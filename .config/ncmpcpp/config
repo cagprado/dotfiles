@@ -50,6 +50,7 @@ song_window_title_format = Player --- {%a - }{%t}|{%f}
 search_engine_default_search_mode = 1
 external_editor = vim
 use_console_editor = yes
+media_library_primary_tag = album_artist
 
 ##### various settings #####
 #playlist_show_mpd_host = no
