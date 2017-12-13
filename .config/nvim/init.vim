@@ -78,7 +78,7 @@ let g:html_font="terminalfont"
 
 " indenting
 set tabstop=4             " \t length
-set shiftwidth=2          " indenting steps (=0: tabstop)
+set shiftwidth=0          " indenting steps (=0: tabstop)
 set softtabstop=-1        " <TAB> inserts N spaces|\t if possible (=neg: shiftwidth)
 set expandtab             " <TAB> never inserts \t (C-V<TAB> will do)
 set shiftround            " round > and < to multiples of shiftwidth
