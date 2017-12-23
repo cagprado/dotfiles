@@ -1,22 +1,52 @@
 // vim: ft=xkb
-// Modified Portuguese BR-ABNT2 layout by adding useful symbols to most AltGr
-// modified keystrokes.
+// Hacked keyboard layout to add dead keys and special symbols to lvl 3/4
 
-default
-xkb_symbols "basic" {
+default xkb_symbols "us" {
+    include "caio(basic)"
+
+    key <TLDE> { [dead_grave,   dead_tilde,      questiondown,         exclamdown           ] };
+    key <AE06> { [6,            dead_circumflex, dead_caron,           threequarters        ] };
+
+    key <AD11> { [bracketleft,  braceleft,       leftsinglequotemark,  leftdoublequotemark  ] };
+    key <AD12> { [bracketright, braceright,      rightsinglequotemark, rightdoublequotemark ] };
+    key <BKSL> { [backslash,    bar,             emdash,               doublelowquotemark   ] };
+
+    key <AC10> { [semicolon,    colon,           ellipsis,             ssharp               ] };
+    key <AC11> { [dead_acute,   dead_diaeresis,  masculine,            degree               ] };
+
+    key <AB08> { [comma,        less,            ccedilla,             Ccedilla             ] };
+    key <AB09> { [period,       greater,         periodcentered,       guillemotleft        ] };
+    key <AB10> { [slash,        question,        ordfeminine,          guillemotright       ] };
+};
+
+xkb_symbols "br" {
+    include "caio(basic)"
     include "kpdl(comma)"
-    include "level3(ralt_switch)"
-
-    name[Group1]="Portuguese";
 
     key <TLDE> { [apostrophe,   quotedbl,        questiondown,         exclamdown           ] };
+    key <AE06> { [6,            dead_diaeresis,  dead_caron,           threequarters        ] };
+
+    key <AD11> { [dead_acute,   dead_grave,      leftsinglequotemark,  leftdoublequotemark  ] };
+    key <AD12> { [bracketleft,  braceleft,       ordfeminine,          notsign              ] };
+
+    key <AC10> { [ccedilla,     Ccedilla,        ssharp,               notsign              ] };
+    key <AC11> { [dead_tilde,   dead_circumflex, rightsinglequotemark, rightdoublequotemark ] };
+    key <BKSL> { [bracketright, braceright,      masculine,            notsign              ] };
+
+    key <LSGT> { [backslash,    bar,             emdash,               notsign              ] };
+    key <AB08> { [comma,        less,            doublelowquotemark,   lessthanequal        ] };
+    key <AB09> { [period,       greater,         periodcentered,       greaterthanequal     ] };
+    key <AB10> { [semicolon,    colon,           ellipsis,             guillemotleft        ] };
+    key <AB11> { [slash,        question,        degree,               guillemotright       ] };
+};
+
+partial xkb_symbols "basic" {
     key <AE01> { [1,            exclam,          EuroSign,             oneeighth            ] };
     key <AE02> { [2,            at,              yen,                  onequarter           ] };
     key <AE03> { [3,            numbersign,      sterling,             threeeighths         ] };
     key <AE04> { [4,            dollar,          U2113,                onehalf              ] };
     key <AE05> { [5,            percent,         division,             fiveeighths          ] };
-    key <AE06> { [6,            dead_diaeresis,  dead_macron,          threequarters        ] };
-    key <AE07> { [7,            ampersand,       dead_caron,           seveneighths         ] };
+    key <AE07> { [7,            ampersand,       dead_macron,          seveneighths         ] };
     key <AE08> { [8,            asterisk,        infinity,             multiply             ] };
     key <AE09> { [9,            parenleft,       partdifferential,     nabla                ] };
     key <AE10> { [0,            parenright,      emptyset,             zerosubscript        ] };
@@ -33,8 +63,6 @@ xkb_symbols "basic" {
     key <AD08> { [i,            I,               Greek_iota,           0x01002111           ] };
     key <AD09> { [o,            O,               Greek_theta,          Greek_THETA          ] };
     key <AD10> { [p,            P,               Greek_pi,             Greek_PI             ] };
-    key <AD11> { [dead_acute,   dead_grave,      leftsinglequotemark,  leftdoublequotemark  ] };
-    key <AD12> { [bracketleft,  braceleft,       ordfeminine,          notsign              ] };
 
     key <AC01> { [a,            A,               Greek_alpha,          0x0100212b           ] };
     key <AC02> { [s,            S,               Greek_sigma,          Greek_SIGMA          ] };
@@ -45,11 +73,7 @@ xkb_symbols "basic" {
     key <AC07> { [j,            J,               integral,             0x01002211           ] };
     key <AC08> { [k,            K,               Greek_kappa,          notsign              ] };
     key <AC09> { [l,            L,               Greek_lambda,         Greek_LAMBDA         ] };
-    key <AC10> { [ccedilla,     Ccedilla,        ssharp,               notsign              ] };
-    key <AC11> { [dead_tilde,   dead_circumflex, rightsinglequotemark, rightdoublequotemark ] };
-    key <BKSL> { [bracketright, braceright,      masculine,            notsign              ] };
 
-    key <LSGT> { [backslash,    bar,             emdash,               notsign              ] };
     key <AB01> { [z,            Z,               Greek_zeta,           notsign              ] };
     key <AB02> { [x,            X,               Greek_chi,            notsign              ] };
     key <AB03> { [c,            C,               Greek_xi,             Greek_XI             ] };
@@ -57,10 +81,7 @@ xkb_symbols "basic" {
     key <AB05> { [b,            B,               Greek_beta,           notsign              ] };
     key <AB06> { [n,            N,               Greek_eta,            notsign              ] };
     key <AB07> { [m,            M,               Greek_mu,             0x0100266b           ] };
-    key <AB08> { [comma,        less,            doublelowquotemark,   lessthanequal        ] };
-    key <AB09> { [period,       greater,         periodcentered,       greaterthanequal     ] };
-    key <AB10> { [semicolon,    colon,           ellipsis,             guillemotleft        ] };
-    key <AB11> { [slash,        question,        degree,               guillemotright       ] };
 
-    modifier_map Mod3 { Scroll_Lock };
+    //modifier_map Mod3 { Scroll_Lock };
+    include "level3(ralt_switch)"
 };
