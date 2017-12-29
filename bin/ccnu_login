@@ -2,7 +2,7 @@
 import requests
 import subprocess
 
-username = subprocess.run(['pass', 'ccnu/login'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+username = subprocess.run(['pass', 'ccnu/number'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 password = subprocess.run(['pass', 'ccnu/password'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
 
 # Login to CCNU Network
