@@ -14,7 +14,7 @@ usepackage("inputenc","utf8");
 usepackage("newtxtext","p,osf");
 usepackage("newtxmath");
 usepackage("grffile");
-usepackage("amsmath,amssymb,slashed,siunitx,bm");
+usepackage("amsmath,amssymb,mathtools,slashed,siunitx,bm");
 // }}}2
 // - LaTeX preamble {{{2
 private string texpreambletext = "";
@@ -435,7 +435,7 @@ restricted mstyle mstyle[] = {
   new marker(real s = markerfactor, pen p = currentpen, pen f = white) { return marker(scale(s)*unitcircle, FillDraw(f,p)); },
 };
 mstyle.cyclic = true;
-restricted marker merror(real s = markerfactor, pen p = currentpen, pen f = white) { frame F; draw(F, scale(2mm)*((-0.5,0)--(0.5,0)), p, Bars(s*2.3)); return marker(F); }
+restricted marker merror(real s = markerfactor, pen p = currentpen, pen f = white) { frame F; draw(F, scale(3mm)*((-0.5,0)--(0.5,0)), p, Bars(s*2.3)); return marker(F); }
 // }}}2
 dotfactor = 6;
 arrowfactor = 10;
@@ -625,8 +625,8 @@ void limits(picture pic = currentpicture, pair min = (-inf, -inf), pair max = (i
   min = (finite(min.x) ? min.x : picmin.x, finite(min.y) ? min.y : picmin.y);
   max = (finite(max.x) ? max.x : picmax.x, finite(max.y) ? max.y : picmax.y);
 
-  // crop if asked by user
-  if (crop)
+  // crop if forced by user
+  if (crop == true)
     graph_limits(pic, min, max, crop);
 
   // scale back to picture coordinates before adjusting limits
@@ -659,7 +659,7 @@ void limits(picture pic = currentpicture, pair min = (-inf, -inf), pair max = (i
   max = (xscale.Tinv(max.x), yscale.Tinv(max.y));
 
   // finally set limits
-  graph_limits(pic, min, max, (crop != false) ? true : false);
+  graph_limits(pic, min, max, (crop == default) ? true : false);
   currentpanel.haslimits = true;
 }
 

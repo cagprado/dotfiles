@@ -1,4 +1,5 @@
 // vim: tw=0
+// rootasy module: create interface between ROOT and Asymptote
 private import graph;
 private import graph3;
 private import stats;
