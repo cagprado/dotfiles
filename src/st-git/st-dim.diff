@@ -1,27 +1,15 @@
---- a/x.c	2017-04-22 12:55:27.037676396 -0300
-+++ a/x.c	2017-04-22 12:54:58.714450151 -0300
-@@ -1193,9 +1193,10 @@
+--- x.c	2018-01-02 09:31:24.971003021 +0800
++++ x.c	2018-01-02 10:02:03.844102008 +0800
+@@ -1199,9 +1199,9 @@
  	}
  
  	if ((base.mode & ATTR_BOLD_FAINT) == ATTR_FAINT) {
 -		colfg.red = fg->color.red / 2;
 -		colfg.green = fg->color.green / 2;
 -		colfg.blue = fg->color.blue / 2;
-+		colfg.alpha = fg->color.alpha;
 +		colfg.red = (bg->color.red + 2*fg->color.red) / 3;
 +		colfg.green = (bg->color.green + 2*fg->color.green) / 3;
 +		colfg.blue = (bg->color.blue + 2*fg->color.blue) / 3;
+ 		colfg.alpha = fg->color.alpha;
  		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
  		fg = &revfg;
- 	}
---- a/st.info	2017-04-22 12:55:27.037676396 -0300
-+++ a/st.info	2017-04-22 12:56:55.900661390 -0300
-@@ -173,7 +173,7 @@
- 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
- 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
- 	sgr0=\E[0m,
--	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
-+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m,
- 	sitm=\E[3m,
- 	smacs=\E(0,
- 	smcup=\E[?1049h,
