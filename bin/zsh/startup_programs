@@ -11,7 +11,7 @@ ONCE_PROGRAMS+=("nm-applet")                    # network
 ONCE_PROGRAMS+=("hp-systray")                   # printer
 # utils
 ONCE_PROGRAMS+=("udiskie")                                          # auto-mount
-ONCE_PROGRAMS+=("xss-lock -- sxlock -u'You shall not pass!' -p' '") # lock screen
+ONCE_PROGRAMS+=("xss-lock -- sxlock -f'fixed' -u'You shall not pass!' -p' '") # lock screen
 
 local -a PROGRAMS      # It’s okay to execute multiple times (overwrite)
 #############################################################################
