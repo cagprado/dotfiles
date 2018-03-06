@@ -23,37 +23,58 @@ export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
 
 # KEYRING ###################################################################
 if [[ -n "$DESKTOP_SESSION" ]]; then
-  eval $(gnome-keyring-daemon --start)
-  export SSH_AUTH_SOCK
+    eval $(gnome-keyring-daemon --start)
+    export SSH_AUTH_SOCK
 fi
 
 # HOSTNAME ##################################################################
 export HOSTNAME=$(hostname)
 
 if [[ "$HOSTNAME" = "mredson" ]]; then
-  export MAKEFLAGS='-j4'
+    export MAKEFLAGS='-j4'
 elif [[ "$HOSTNAME" =~ "sampa" ]]; then
-  export MAKEFLAGS='-j12'
+    export MAKEFLAGS='-j10'
 
-  # ALICE
-  export ALIVERSIONS="VO_ALICE@ROOT::v5-34-30,VO_ALICE@pythia::v8186"
-  source /cvmfs/alice.cern.ch/etc/login.sh
+    # ALICE
+    export ALIVERSIONS="VO_ALICE@ROOT::v5-34-30,VO_ALICE@pythia::v8186"
+    source /cvmfs/alice.cern.ch/etc/login.sh
 
-  # GCC
-  export CC="$HOME/usr/local/gcc/bin/gcc"
-  export CXX="$HOME/usr/local/gcc/bin/g++"
-  export CPP="$HOME/usr/local/gcc/bin/cpp"
-  export F77="$HOME/usr/local/gcc/bin/gfortran"
-  export FC="$HOME/usr/local/gcc/bin/gfortran"
-  export LDFLAGS="-fPIC -Wl,-rpath,$HOME/usr/local/gcc/lib64"
-  export MANPATH=$HOME/usr/local/gcc/share/man:$(manpath)
-  PATH="$HOME/usr/local/gcc/bin:$PATH"
+    # GCC
+    export CC="$HOME/usr/local/gcc/bin/gcc"
+    export CXX="$HOME/usr/local/gcc/bin/g++"
+    export CPP="$HOME/usr/local/gcc/bin/cpp"
+    export F77="$HOME/usr/local/gcc/bin/gfortran"
+    export FC="$HOME/usr/local/gcc/bin/gfortran"
+    export LDFLAGS="-fPIC -Wl,-rpath,$HOME/usr/local/gcc/lib64"
+    export MANPATH=$HOME/usr/local/gcc/share/man:$(manpath)
+    PATH="$HOME/usr/local/gcc/bin:$PATH"
 
-  # LOCAL BUILDS
-  PATH="$HOME/usr/local/cmake/bin:$PATH"  # CMAKE-3.4
-  PATH="$HOME/usr/local/Python/bin:$PATH" # PYTHON-2.7.11
-  PATH="$HOME/usr/local/pythia/bin:$PATH" # PYTHIA-8212
-  PATH="$HOME/usr/local/root/bin:$PATH"   # ROOT-6.05.02
+    # LOCAL BUILDS
+    PATH="$HOME/usr/local/cmake/bin:$PATH"  # CMAKE
+    PATH="$HOME/usr/local/Python/bin:$PATH" # PYTHON
+    PATH="$HOME/usr/local/pythia/bin:$PATH" # PYTHIA
+    PATH="$HOME/usr/local/root/bin:$PATH"   # ROOT
+elif [[ "$HOSTNAME" =~ "gpu" ]]; then
+    if [[ "$HOSTNAME" = "gpu0" ]]; then
+        MAKEFLAGS='-j30'
+    else
+        MAKEFLAGS='-j70'
+    fi
+
+    # GCC
+    export CC="$HOME/usr/local/gcc/bin/gcc"
+    export CXX="$HOME/usr/local/gcc/bin/g++"
+    export CPP="$HOME/usr/local/gcc/bin/cpp"
+    export F77="$HOME/usr/local/gcc/bin/gfortran"
+    export FC="$HOME/usr/local/gcc/bin/gfortran"
+    export LDFLAGS="-fPIC -Wl,-rpath,$HOME/usr/local/gcc/lib64"
+    export MANPATH=$HOME/usr/local/gcc/share/man:$(manpath)
+    PATH="$HOME/usr/local/gcc/bin:$PATH"
+
+    # LOCAL BUILDS
+    PATH="$HOME/usr/local/python/usr/bin:$PATH"   # PYTHON
+    PATH="$HOME/usr/local/pythia/usr/bin:$PATH"   # PYTHIA
+    PATH="$HOME/usr/local/root/usr/bin:$PATH"     # ROOT
 fi
 
 # SET PATH AND COMPILE ZSH FILES ############################################
