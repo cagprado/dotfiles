@@ -158,8 +158,8 @@ bindkey -a "^[q"                   push-line-or-edit  # Alt+q
 
 # History
 HISTFILE="$HOME/.zshhist"
-HISTSIZE=1000
-SAVEHIST=1000
+SAVEHIST=10000
+HISTSIZE=10000
 
 # Directories
 cdpath=(~)      # cd <TAB> will always suggest content from paths listed here
