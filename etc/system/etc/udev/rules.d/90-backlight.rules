@@ -1,4 +1,0 @@
-# vim: ft=udevrules
-# This rule sets permission to anyone in video group to change brightness of
-# the backlight using acpilight
-SUBSYSTEM=="backlight", ACTION=="add", RUN+="/bin/chgrp video %S%p/brightness", RUN+="/bin/chmod g+w %S%p/brightness"
