@@ -55,6 +55,9 @@ elif [[ "$HOSTNAME" =~ "sampa" ]]; then
     PATH="$HOME/usr/local/pythia/bin:$PATH" # PYTHIA
     PATH="$HOME/usr/local/root/bin:$PATH"   # ROOT
 elif [[ "$HOSTNAME" =~ "gpu" ]]; then
+    # first get rid of LD_LIBRARY_PATH poison =P
+    unset LD_LIBRARY_PATH
+
     if [[ "$HOSTNAME" = "gpu0" ]]; then
         MAKEFLAGS='-j30'
     else
@@ -68,10 +71,11 @@ elif [[ "$HOSTNAME" =~ "gpu" ]]; then
     export F77="$HOME/usr/local/gcc/bin/gfortran"
     export FC="$HOME/usr/local/gcc/bin/gfortran"
     export LDFLAGS="-fPIC -Wl,-rpath,$HOME/usr/local/gcc/lib64"
-    export MANPATH=$HOME/usr/local/gcc/share/man:$(manpath)
+    export MANPATH="$HOME/usr/local/gcc/share/man:"
     PATH="$HOME/usr/local/gcc/bin:$PATH"
 
     # LOCAL BUILDS
+    PATH="$HOME/usr/local/cmake/usr/bin:$PATH"    # CMAKE
     PATH="$HOME/usr/local/python/usr/bin:$PATH"   # PYTHON
     PATH="$HOME/usr/local/pythia/usr/bin:$PATH"   # PYTHIA
     PATH="$HOME/usr/local/root/usr/bin:$PATH"     # ROOT
