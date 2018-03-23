@@ -38,7 +38,7 @@ LDFLAGS="${LDFLAGS} -pthread -Wl,--no-undefined" \
 cmake -C "${srcdir}/settings.cmake" "${srcdir}/${pkgname}-${pkgver}"
 
 echo 'Compiling...'
-make -j
+make -j20
 
 # PACKAGE ###################################################################
 cd "${srcdir}/build"
