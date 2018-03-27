@@ -24,23 +24,28 @@ set runtimepath+=~/.vundle/Vundle.vim
 call vundle#begin('~/.vundle')
   Plugin 'VundleVim/Vundle.vim'
 
-  Plugin 'lsrdg/vibusen.vim'                  " Ibus management
+  " iBus plugin won't work remotely
+  if $SESSION ==# "local"
+    Plugin 'lsrdg/vibusen.vim'                " Ibus management
+  endif
 
-  Plugin 'lifepillar/vim-solarized8'          " Solarized theme
-  Plugin 'chriskempson/base16-vim'            " Base16 vim themes
-
-  Plugin 'vim-pandoc/vim-pandoc-syntax'       " Pandoc markdown syntax
-  Plugin 'chikamichi/mediawiki.vim'           " Mediawiki syntax
-
+  " interface
   Plugin 'vim-airline/vim-airline'            " Airline status line
-  Plugin 'vim-airline/vim-airline-themes'     " Themes for Airline
   Plugin 'luochen1990/rainbow'                " Rainbow parenthesis
   Plugin 'tpope/vim-surround'                 " Module for surrounding moves
   Plugin 'SirVer/ultisnips'                   " Snippets engine
+  Plugin 'tpope/vim-fugitive'                 " Git plugin
 
+  " theming
+  Plugin 'vim-airline/vim-airline-themes'     " Themes for Airline
+  Plugin 'lifepillar/vim-solarized8'          " Solarized theme
+  Plugin 'chriskempson/base16-vim'            " Base16 vim themes
+
+  " syntax
+  Plugin 'vim-pandoc/vim-pandoc-syntax'       " Pandoc markdown syntax
+  Plugin 'chikamichi/mediawiki.vim'           " Mediawiki syntax
   Plugin 'lervag/vimtex'                      " LaTeX plugin
 
-  Plugin 'tpope/vim-fugitive'                 " Git plugin
   "Plugin 'honza/vim-snippets'                 " Snippets collection
   "Plugin 'klen/python-mode'                   " Python syntax plugin
 call vundle#end()
