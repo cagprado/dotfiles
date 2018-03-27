@@ -45,7 +45,6 @@ alias pk12util='pk12util -d sql:$HOME/.pki/nssdb'
 alias ifusp='fusessh -p $HOME/ifusp -s ifusp'
 alias lp='lp -d $PRINTER -o collate=true'
 [[ "$AT_SAMPA_VALUE" = "true" ]] && alias qstat='qstat -u cagprado -t' || alias qstat='ssh cagprado@$SAMPA qstat -u cagprado -t'
-alias sampa='fusessh -p $HOME/sampa -s sampa'
 
 # utils
 alias dropbox='dropbox-cli'
