@@ -40,9 +40,9 @@ call vundle#begin('~/.vundle')
 
   Plugin 'lervag/vimtex'                      " LaTeX plugin
 
+  Plugin 'tpope/vim-fugitive'                 " Git plugin
   "Plugin 'honza/vim-snippets'                 " Snippets collection
   "Plugin 'klen/python-mode'                   " Python syntax plugin
-  "Plugin 'tpope/vim-fugitive'
 call vundle#end()
 filetype plugin indent on                     " Required (indent is optional)
 
