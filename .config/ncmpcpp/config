@@ -4,221 +4,100 @@ ncmpcpp_directory = ~/.ncmpcpp
 lyrics_directory = ~/.lyrics
 mpd_host = localhost
 mpd_port = 6600
-mpd_connection_timeout = 5
-#mpd_music_dir = ~/music
+mpd_connection_timeout = 1
 playlist_disable_highlight_delay = 5
 message_delay_time = 5
 
 # USER INTERFACE ############################################################
 user_interface = alternative
-playlist_display_mode = columns
-browser_display_mode = columns
-search_engine_display_mode = columns
-playlist_editor_display_mode = columns
-
+startup_screen = playlist
 colors_enabled = yes
+screen_switcher_mode = playlist, media_library, browser
+space_add_mode = add_remove
+#startup_slave_screen = media_library
+
+# main window
 header_window_color = default
 state_flags_color = default
 main_window_color = default
 current_item_prefix = "$(yellow)$r"
 current_item_suffix = "$/r$(end)"
-window_border_color = red
+window_border_color = yellow
 statusbar_color = yellow
-current_item_inactive_column_prefix = "$(green)$r"
-current_item_inactive_column_suffix = "$/r$(end)"
-song_columns_list_format = (1f)[yellow]{: } (20)[yellow]{a} (55)[green]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{lr} (1f)[magenta]{: }
-now_playing_prefix = $b
-now_playing_suffix = $/b
-browser_playlist_prefix = "$5 $9 "
+current_item_inactive_column_prefix = "$r"
+current_item_inactive_column_suffix = "$/r"
+enable_window_title = yes
+song_window_title_format = Player --- {%a - }{%t}|{%f}
+display_volume_level = no
+display_bitrate = yes
+display_remaining_time = no
+header_visibility = yes
+statusbar_visibility = yes
+titles_visibility = no
+cyclic_scrolling = yes
+song_status_format = {{%a{ "%b"} - }{%t}}|{%f}
+alternative_header_first_line_format = $b$1$aqqu$/a$9 $4{%t}|{%f}$9 $1$atqq$/a$9$/b
+alternative_header_second_line_format = {{$6$b%a$/b$9}{ - $7%b$9}}|{%D}
+alternative_ui_separator_color = white
 
+# progress bar
 progressbar_look =    
 progressbar_elapsed_color = black_cyan
 progressbar_color = black_black
 
-# MISC OPTIONS ##############################################################
-show_hidden_files_in_local_browser = no
-screen_switcher_mode = playlist, browser, media_library
-startup_screen = playlist
-display_volume_level = no
-display_bitrate = no
-display_remaining_time = no
+# playlist
+playlist_display_mode = columns
+song_list_format = {$6%a{ "$7%b$9"} - $9}{$4%t$9}|{$4%f$9}$R{$5(%l)$9}
+song_columns_list_format = (40)[yellow]{t|f:Title} (20)[magenta]{a} (30)[cyan]{b} (10)[blue]{lr}
+now_playing_prefix = $b
+now_playing_suffix = $/b
 ask_before_clearing_playlists = no
+playlist_show_mpd_host = no
+playlist_show_remaining_time = yes
+playlist_shorten_total_times = yes
+playlist_separate_albums = no
+autocenter_mode = yes
+centered_cursor = no
+
+# browser
+browser_display_mode = columns
+browser_playlist_prefix = "$5 $9 "
+show_hidden_files_in_local_browser = no
+browser_sort_mode = format
+browser_sort_format = {%d.%n| }|{%n| }{%t}|{%f}
+
+# search
+search_engine_display_mode = columns
+search_engine_default_search_mode = 2
 regular_expressions = perl
-clock_display_seconds = no
-enable_window_title = yes
-song_window_title_format = Player --- {%a - }{%t}|{%f}
-search_engine_default_search_mode = 1
+
+# library
+media_library_primary_tag = album_artist
+media_library_albums_split_by_date = yes
+song_library_format = {%d.%n│ }|{%n| }{%t}|{%f}
+
+# editor
 external_editor = vim
 use_console_editor = yes
-media_library_primary_tag = album_artist
-
-##### various settings #####
-#playlist_show_mpd_host = no
-#playlist_show_remaining_time = no
-#playlist_shorten_total_times = no
-#playlist_separate_albums = no
-#incremental_seeking = yes
-#seek_time = 1
-#volume_change_step = 2
-#autocenter_mode = no
-#centered_cursor = no
-#default_place_to_search_in = database|playlist
-#data_fetching_delay = yes
-#media_library_primary_tag = artist|album_artist|date|genre|composer|performer
-#default_find_mode = wrapped|normal
-#default_tag_editor_pattern = %n - %t
-#header_visibility = yes
-#statusbar_visibility = yes
-#titles_visibility = yes
-#header_text_scrolling = yes
-#cyclic_scrolling = no
-#lines_scrolled = 2
-#follow_now_playing_lyrics = no
-#fetch_lyrics_for_current_song_in_background = no
-#store_lyrics_in_song_dir = no
-#generate_win32_compatible_filenames = yes
-#allow_for_physical_item_deletion = no
-#block_search_constraints_change_if_items_found = yes
-
-##### colors definitions #####
-#color1 = white
-#color2 = green
-
-##### song format #####
-##
-## For a song format you can use:
-##
-## %l - length
-## %f - filename
-## %D - directory
-## %a - artist
-## %A - album artist
-## %t - title
-## %b - album
-## %y - date
-## %n - track number (01/12 -> 01)
-## %N - full track info (01/12 -> 01/12)
-## %g - genre
-## %c - composer
-## %p - performer
-## %d - disc
-## %C - comment
-## %P - priority
-## $R - begin right alignment
-##
-## If you want to make sure that a part of the format is displayed
-## only when certain tags are present, you can archieve it by
-## grouping them with brackets, e.g. '{%a - %t}' will be evaluated
-## to 'ARTIST - TITLE' if both tags are present or '' otherwise.
-## It is also possible to define a list of alternatives by providing
-## several groups and separating them with '|', e.g. '{%t}|{%f}'
-## will be evaluated to 'TITLE' or 'FILENAME' if the former is not
-## present.
-##
-## Note: If you want to set limit on maximal length of a tag, just
-## put the appropriate number between % and character that defines
-## tag type, e.g. to make album take max. 20 terminal cells, use '%20b'.
-##
-## In addition, formats support markers used for text attributes.
-## They are followed by character '$'. After that you can put:
-##
-## - 0 - default window color (discards all other colors)
-## - 1 - black
-## - 2 - red
-## - 3 - green
-## - 4 - yellow
-## - 5 - blue
-## - 6 - magenta
-## - 7 - cyan
-## - 8 - white
-## - 9 - end of current color
-## - b - bold text
-## - u - underline text
-## - r - reverse colors
-## - a - use alternative character set
-##
-## If you don't want to use a non-color attribute anymore, just put it
-## again, but this time insert character '/' between '$' and attribute
-## character, e.g. {$b%t$/b}|{$r%f$/r} will display bolded title tag
-## or filename with reversed colors.
-##
-## If you want to use 256 colors and/or background colors in formats
-## (the naming scheme is described below in section about color
-## definitions), it can be done with the syntax $(COLOR), e.g. to set
-## the artist tag to one of the non-standard colors and make it have
-## yellow background, you need to write $(197_yellow)%a$(end). Note
-## that for standard colors this is interchangable with attributes
-## listed above.
-##
-## Note: colors can be nested.
-##
-#
-#song_list_format = {%a - }{%t}|{$8%f$9}$R{$3(%l)$9}
-#
-#song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
-#
-#song_library_format = {%n - }{%t}|{%f}
-#
-#
-#alternative_header_first_line_format = $b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
-#
-#alternative_header_second_line_format = {{$4$b%a$/b$9}{ - $7%b$9}{ ($4%y$9)}}|{%D}
-#
+playlist_editor_display_mode = columns
 #selected_item_prefix = $u
 #selected_item_suffix = $/u
 #modified_item_prefix = $3> $9
-#
-##
-## Note: attributes are not supported for the following variables.
-##
-##
-## Note: Below variables are used for sorting songs in browser.
-## The sort mode determines how songs are sorted, and can be used
-## in combination with a sort format to specify a custom sorting format.
-## Available values for browser_sort_mode are "name", "mtime", "format"
-## and "noop".
-##
-#
-#browser_sort_mode = name
-#
-#browser_sort_format = {%a - }{%t}|{%f} {(%l)}
-#
-##### columns settings #####
-##
-## syntax of song columns list format is "column column etc."
-##
-## - syntax for each column is:
-##
-## (width of the column)[color of the column]{displayed tag}
-##
-## Note: Width is by default in %, if you want a column to
-## have fixed size, add 'f' after the value, e.g. (10)[white]{a}
-## will be the column that take 10% of screen (so the real width
-## will depend on actual screen size), whereas (10f)[white]{a}
-## will take 10 terminal cells, no matter how wide the screen is.
-##
-## - color is optional (if you want the default one,
-##   leave the field empty).
-##
-## Note: You can give a column additional attributes by putting appropriate
-## character after displayed tag character. Available attributes are:
-##
-## - r - column will be right aligned
-## - E - if tag is empty, empty tag marker won't be displayed
-##
-## You can also:
-##
-## - give a column custom name by putting it after attributes,
-##   separated with character ':', e.g. {lr:Length} gives you
-##   right aligned column of lengths named "Length".
-##
-## - define sequence of tags, that have to be displayed in case
-##   predecessor is empty in a way similar to the one in classic
-##   song format, i.e. using '|' character, e.g. {a|c|p:Owner}
-##   creates column named "Owner" that tries to display artist
-##   tag and then composer and performer if previous ones are
-##   not available.
-##
-#
-#song_columns_list_format = (20)[]{a} (6f)[green]{NE} (50)[white]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{l}
-#
+
+# MISC OPTIONS ##############################################################
+allow_for_physical_item_deletion = no
+block_search_constraints_change_if_items_found = yes
+clock_display_seconds = no
+data_fetching_delay = no
+default_find_mode = wrapped
+default_place_to_search_in = database
+#default_tag_editor_pattern = %n - %t
+fetch_lyrics_for_current_song_in_background = yes
+follow_now_playing_lyrics = no
+generate_win32_compatible_filenames = no
+header_text_scrolling = yes
+incremental_seeking = yes
+mouse_support = no
+seek_time = 1
+store_lyrics_in_song_dir = no
+volume_change_step = 2
