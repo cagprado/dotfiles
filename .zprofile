@@ -27,8 +27,14 @@ if [[ -n "$DESKTOP_SESSION" ]]; then
     export SSH_AUTH_SOCK
 fi
 
-# HOSTNAME ##################################################################
+# SESSION CONFIGURATION #####################################################
 export HOSTNAME=$(hostname)
+
+if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || "$(ps -o comm= -p $PPID)" =~ "^.*/sshd$|^sshd$" ]]; then
+    export SESSION="remote"
+else
+    export SESSION="local"
+fi
 
 if [[ "$HOSTNAME" = "mredson" ]]; then
     export MAKEFLAGS='-j4'
