@@ -17,7 +17,7 @@ image/png=feh.desktop
 image/jpeg=feh.desktop
 
 # PDF & docs
-application/pdf=zathura.desktop
+application/pdf=org.pwmt.zathura.desktop
 application/wps-office.doc=wps-office-wps.desktop;
 application/wps-office.xls=wps-office-et.desktop;
 application/wps-office.ppt=wps-office-wpp.desktop;
