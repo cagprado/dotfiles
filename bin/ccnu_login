@@ -7,7 +7,7 @@ password = subprocess.run(['pass', 'ccnu/password'], stdout=subprocess.PIPE).std
 
 # Login to CCNU Network
 def login():
-    page = requests.get('http://www.ccnu.edu.cn')
+    page = requests.get('http://10.220.250.50/0.htm')
     payload = { 'DDDDD': username, 'upass': password, 'suffix': '0', '0MKKey': '123' }
     response = requests.post(page.url, data=payload)
 
