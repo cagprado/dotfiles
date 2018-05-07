@@ -1,3 +1,4 @@
+// compile with: -I/usr/include/tirpc -ltirpc
 #include<iostream>
 #include<vector>
 #include<string>
@@ -28,7 +29,6 @@ template <typename T> void write(T *obj, string filename)
 // Specializations
 template <> void write<TH1> (TH1 *obj, string filename)
 {
-  std::cout << "Write TH1\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -41,7 +41,7 @@ template <> void write<TH1> (TH1 *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double value = obj->GetBinLowEdge(i);
-    if (value != value) value = 0;
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   N--;
@@ -50,7 +50,7 @@ template <> void write<TH1> (TH1 *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double value = obj->GetBinContent(i);
-    if (value != value) value = 0;
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   
@@ -58,7 +58,7 @@ template <> void write<TH1> (TH1 *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double value = obj->GetBinError(i);
-    if (value != value) value = 0;
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   fclose(fd);
@@ -66,7 +66,6 @@ template <> void write<TH1> (TH1 *obj, string filename)
 
 template <> void write<TH2> (TH2 *obj, string filename)
 {
-  std::cout << "Write TH2\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -76,6 +75,7 @@ template <> void write<TH2> (TH2 *obj, string filename)
   xdr_int(&xdr_data, &Nx);
   for (int i = 0; i < Nx; ++i) {
     double value = obj->GetXaxis()->GetBinLowEdge(i);
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   --Nx;
@@ -85,6 +85,7 @@ template <> void write<TH2> (TH2 *obj, string filename)
   xdr_int(&xdr_data, &Ny);
   for (int i = 0; i < Ny; ++i) {
     double value = obj->GetYaxis()->GetBinLowEdge(i);
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   --Ny;
@@ -93,6 +94,7 @@ template <> void write<TH2> (TH2 *obj, string filename)
   for (int i = 0; i < Nx; ++i)
     for (int j = 0; j < Ny; ++j) {
       double value = obj->GetBinContent(i,j);
+      if (!isfinite(value)) value = 0;
       xdr_double(&xdr_data, &value);
     }
 
@@ -100,6 +102,7 @@ template <> void write<TH2> (TH2 *obj, string filename)
   for (int i = 0; i < Nx; ++i)
     for (int j = 0; j < Ny; ++j) {
       double value = obj->GetBinError(i,j);
+      if (!isfinite(value)) value = 0;
       xdr_double(&xdr_data, &value);
     }
 
@@ -108,7 +111,6 @@ template <> void write<TH2> (TH2 *obj, string filename)
 
 template <> void write<TH3> (TH3 *obj, string filename)
 {
-  std::cout << "Write TH3\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -118,6 +120,7 @@ template <> void write<TH3> (TH3 *obj, string filename)
   xdr_int(&xdr_data, &Nx);
   for (int i = 0; i < Nx; ++i) {
     double value = obj->GetXaxis()->GetBinLowEdge(i);
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   --Nx;
@@ -127,6 +130,7 @@ template <> void write<TH3> (TH3 *obj, string filename)
   xdr_int(&xdr_data, &Ny);
   for (int i = 0; i < Ny; ++i) {
     double value = obj->GetYaxis()->GetBinLowEdge(i);
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   --Ny;
@@ -136,6 +140,7 @@ template <> void write<TH3> (TH3 *obj, string filename)
   xdr_int(&xdr_data, &Nz);
   for (int i = 0; i < Nz; ++i) {
     double value = obj->GetZaxis()->GetBinLowEdge(i);
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   --Nz;
@@ -145,6 +150,7 @@ template <> void write<TH3> (TH3 *obj, string filename)
     for (int j = 0; j < Ny; ++j)
       for (int k = 0; k < Nz; ++k) {
         double value = obj->GetBinContent(i,j,k);
+        if (!isfinite(value)) value = 0;
         xdr_double(&xdr_data, &value);
       }
 
@@ -153,6 +159,7 @@ template <> void write<TH3> (TH3 *obj, string filename)
     for (int j = 0; j < Ny; ++j)
       for (int k = 0; k < Nz; ++k) {
         double value = obj->GetBinError(i,j,k);
+        if (!isfinite(value)) value = 0;
         xdr_double(&xdr_data, &value);
       }
 
@@ -161,7 +168,6 @@ template <> void write<TH3> (TH3 *obj, string filename)
 
 template <> void write<TF1> (TF1 *obj, string filename)
 {
-  std::cout << "Write TF1\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -186,6 +192,7 @@ template <> void write<TF1> (TF1 *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double y = obj->Eval(xmin+i*dx);
+    if (!isfinite(y)) y = 0;
     xdr_double(&xdr_data, &y);
   }
 
@@ -194,7 +201,6 @@ template <> void write<TF1> (TF1 *obj, string filename)
 
 template <> void write<TGraph> (TGraph *obj, string filename)
 {
-  std::cout << "Write TGraph\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -217,6 +223,7 @@ template <> void write<TGraph> (TGraph *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double yi = y[i];
+    if (!isfinite(yi)) yi = 0;
     xdr_double(&xdr_data, &(yi));
   }
 
@@ -225,7 +232,6 @@ template <> void write<TGraph> (TGraph *obj, string filename)
 
 template <> void write<TGraphErrors> (TGraphErrors *obj, string filename)
 {
-  std::cout << "Write TGraphErrors\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -250,6 +256,7 @@ template <> void write<TGraphErrors> (TGraphErrors *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double yi = y[i];
+    if (!isfinite(yi)) yi = 0;
     xdr_double(&xdr_data, &(yi));
   }
 
@@ -257,6 +264,7 @@ template <> void write<TGraphErrors> (TGraphErrors *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double exi = ex[i];
+    if (!isfinite(exi)) exi = 0;
     xdr_double(&xdr_data, &(exi));
   }
 
@@ -264,6 +272,7 @@ template <> void write<TGraphErrors> (TGraphErrors *obj, string filename)
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double eyi = ey[i];
+    if (!isfinite(eyi)) eyi = 0;
     xdr_double(&xdr_data, &(eyi));
   }
 
@@ -272,7 +281,6 @@ template <> void write<TGraphErrors> (TGraphErrors *obj, string filename)
 
 template <> void write<TGraphAsymmErrors> (TGraphAsymmErrors *obj, string filename)
 {
-  std::cout << "Write TGraphAsymmErrors\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -299,6 +307,7 @@ template <> void write<TGraphAsymmErrors> (TGraphAsymmErrors *obj, string filena
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double yi = y[i];
+    if (!isfinite(yi)) yi = 0;
     xdr_double(&xdr_data, &(yi));
   }
 
@@ -306,11 +315,13 @@ template <> void write<TGraphAsymmErrors> (TGraphAsymmErrors *obj, string filena
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double exi = ex[i];
+    if (!isfinite(exi)) exi = 0;
     xdr_double(&xdr_data, &(exi));
   }
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double Exi = Ex[i];
+    if (!isfinite(Exi)) Exi = 0;
     xdr_double(&xdr_data, &(Exi));
   }
 
@@ -318,11 +329,13 @@ template <> void write<TGraphAsymmErrors> (TGraphAsymmErrors *obj, string filena
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double eyi = ey[i];
+    if (!isfinite(eyi)) eyi = 0;
     xdr_double(&xdr_data, &(eyi));
   }
   xdr_int(&xdr_data, &N);
   for (int i = 0; i < N; ++i) {
     double Eyi = Ey[i];
+    if (!isfinite(Eyi)) Eyi = 0;
     xdr_double(&xdr_data, &(Eyi));
   }
 
@@ -330,8 +343,7 @@ template <> void write<TGraphAsymmErrors> (TGraphAsymmErrors *obj, string filena
 }
 
 template <> void write<TArray> (TArray *obj, string filename)
-{ 
-  std::cout << "Write TArray\n";
+{
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -339,6 +351,7 @@ template <> void write<TArray> (TArray *obj, string filename)
   int N = obj->GetSize();
   for (int i = 0; i < N; ++i) {
     double value = obj->GetAt(i);
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   fclose(fd);
@@ -346,7 +359,6 @@ template <> void write<TArray> (TArray *obj, string filename)
 
 template <typename T> void write(TVectorT<T> *obj, string filename)
 {
-  std::cout << "Write TVector\n";
   FILE *fd = fopen(filename.c_str(),"wb");
   XDR xdr_data;
   xdrstdio_create(&xdr_data, fd, XDR_ENCODE);
@@ -354,6 +366,7 @@ template <typename T> void write(TVectorT<T> *obj, string filename)
   int N = obj->GetNrows();
   for (int i = 0; i < N; ++i) {
     double value = (*obj)[i];
+    if (!isfinite(value)) value = 0;
     xdr_double(&xdr_data, &value);
   }
   fclose(fd);
