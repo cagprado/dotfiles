@@ -1473,8 +1473,10 @@ struct TH2 {
                pen[] palette, bool antialias = false)
   {
     bool logz = pic.scale.z.scale.logarithmic;
+    real min = 1e-7 * this.min(logz);
+    if (min == inf) min = 1;
     pair[] limits = findLimits(pic,initial,final);
-    return image_safelog(pic,this.eval,range,limits[0],limits[1],nx,ny,palette,antialias,1e-7*this.min(logz));
+    return image_safelog(pic,this.eval,range,limits[0],limits[1],nx,ny,palette,antialias,min);
   }
   //}}}4
   //{{{4 guide[][] contour(picture pic=currentpicture, real[] c, int nx=ngraph, int ny=nx, pair initial = (-inf,-inf), pair final = (inf,inf), interpolate join=operator --)
