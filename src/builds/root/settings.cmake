@@ -1,8 +1,5 @@
 set (CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
 set (BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)  # this option is currently incompatible
-set (CMAKE_INSTALL_PREFIX /home/cagprado/usr/local/root-6.12.06/usr CACHE PATH "" FORCE)
-set (CMAKE_INSTALL_SYSCONFDIR /home/cagprado/usr/local/root-6.12.06/etc/root CACHE PATH "" FORCE)
-set (CMAKE_INSTALL_DATAROOTDIR /home/cagprado/usr/local/root-6.12.06/usr/share CACHE PATH "" FORCE)
 set (LLVM_ENABLE_THREADS ON CACHE BOOL "" FORCE)  # try to workaround pthread issue
 set (asimage ON CACHE BOOL "" FORCE)
 set (builtin_afterimage OFF CACHE BOOL "" FORCE)

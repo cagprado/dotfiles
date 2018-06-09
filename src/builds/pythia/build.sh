@@ -1,14 +1,19 @@
 #!/bin/zsh
 
+if [[ -z "$HEP_FRAMEWORK" ]]; then
+    echo "Please, first setup HEP_FRAMEWORK variable"
+    exit
+fi
+
 # PREPARE ###################################################################
 pkgname=pythia
-pkgver=8.2.30
+pkgver=8.2.35
 _pkgid="${pkgname}${pkgver//./}"
 pkgrel=1
 basedir="$(pwd)"
 srcdir="$basedir/src"
 pkgdir="$basedir/pkg"
-destdir="$HOME/usr/local/$pkgname-$pkgver"
+destdir="$HEP_FRAMEWORK/$pkgname-$pkgver"
 source="http://home.thep.lu.se/~torbjorn/pythia8/${_pkgid}.tgz"
 sourcefile="$(basename $source)"
 _srcpath="${srcdir}/${_pkgid}"
@@ -31,7 +36,11 @@ patch -p1 -i "${srcdir}/respect_lib_suffix.patch"
 
 # BUILD #####################################################################
 cd "${srcdir}/${_pkgid}"
-prefix=$destdir/usr
+
+# fix config to add rpath
+sed -i 's/-lpythia8/-lpythia8 -Wl,-rpath,$PREFIX_LIB/' bin/pythia8-config
+
+prefix=$destdir
 _inc=$prefix/include/
 _lib=$prefix/lib/
 
@@ -40,52 +49,25 @@ _lib=$prefix/lib/
             --prefix-lib=${_lib} \
             --cxx-common="${CXXFLAGS} ${LDFLAGS} -fPIC -pthread" \
             --enable-shared \
-            #--with-evtgen \
-            #--with-evtgen-include=${_inc} \
-            #--with-evtgen-lib=${_lib} \
-            #--with-fastjet3 \
-            #--with-fastjet3-include=${_inc} \
-            #--with-fastjet3-lib=${_lib} \
-            #--with-gzip \
-            #--with-gzip-include=${_inc} \
-            #--with-gzip-lib=${_lib} \
-            #--with-hepmc2 \
-            #--with-hepmc2-include=${_inc} \
-            #--with-hepmc2-lib=${_lib} \
-            #--with-hepmc3 \
-            #--with-hepmc3-include=${_inc} \
-            #--with-hepmc3-lib=${_lib} \
-            #--with-lhapdf5 \
-            #--with-lhapdf5-include=${_inc} \
-            #--with-lhapdf5-lib=${_lib} \
-            #--with-powheg \
-            #--with-powheg-include=${_inc} \
-            #--with-powheg-lib=${_lib} \
-            #--with-promc \
-            #--with-promc-include=${_inc} \
-            #--with-promc-lib=${_lib} \
-            #--with-python \
-            #--with-python-include=${HOME}/usr/local/python/usr/include/python3.6m \
-            #--with-python-lib=${HOME}/usr/local/python/usr/lib \
-            #--with-root \
-            #--with-root-include=/usr/include/root/ \
-            #--with-root-lib=/usr/lib/root/
+            --with-hepmc3 \
+            --with-python \
+            --with-python-include=$(python-config --includes | cut -d' ' -f1 | cut -d'I' -f2) \
 
 make ${MAKEFLAGS} -j
 
 
 # PACKAGE ###################################################################
-mkdir -p "${pkgdir}/usr"
-install -Dm755 "${srcdir}/${_pkgid}/bin/pythia8-config" "${pkgdir}/usr/bin/pythia8-config"
+install -Dm755 "${srcdir}/${_pkgid}/bin/pythia8-config" "${pkgdir}/bin/pythia8-config"
 install -D "${srcdir}/pythia.sh" "${pkgdir}/etc/profile.d/pythia.sh"
 
-cp -r "${srcdir}/${_pkgid}/include" "${pkgdir}/usr/"
-cp -r "${srcdir}/${_pkgid}/share" "${pkgdir}/usr/"
-cp -r "${srcdir}/${_pkgid}/examples" "${pkgdir}/usr/share/Pythia8/"
+cp -r "${srcdir}/${_pkgid}/include" "${pkgdir}/"
+cp -r "${srcdir}/${_pkgid}/share" "${pkgdir}/"
+cp -r "${srcdir}/${_pkgid}/examples" "${pkgdir}/share/Pythia8/"
 
-install -Dm755 "${srcdir}/${_pkgid}/lib/libpythia8.so" "${pkgdir}/usr/lib/libpythia8.so"
-install -Dm755 "${srcdir}/${_pkgid}/lib/_pythia8.so" "${pkgdir}/usr/lib/python3.6/site-packages/_pythia8.so"
-install -Dm755 "${srcdir}/${_pkgid}/lib/pythia8.py" "${pkgdir}/usr/lib/python3.6/site-packages/pythia8.py"
+install -Dm755 "${srcdir}/${_pkgid}/lib/libpythia8.so" "${pkgdir}/lib/libpythia8.so"
+install -Dm755 "${srcdir}/${_pkgid}/lib/_pythia8.so" "${pkgdir}/lib/python3.6/site-packages/_pythia8.so"
+install -Dm755 "${srcdir}/${_pkgid}/lib/pythia8.py" "${pkgdir}/lib/python3.6/site-packages/pythia8.py"
 
 # INSTALL ###################################################################
-mv "$pkgdir" "${destdir}"
+sudo mv "$pkgdir" "${destdir}"
+sudo chown -R root.root "${destdir}"

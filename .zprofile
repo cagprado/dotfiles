@@ -20,6 +20,7 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
 export FT2_SUBPIXEL_HINTING=2
 export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
+export MAKEFLAGS='-j'
 
 # KEYRING ###################################################################
 if [[ -n "$DESKTOP_SESSION" ]]; then
@@ -36,55 +37,33 @@ else
     export SESSION="local"
 fi
 
-if [[ "$HOSTNAME" = "mredson" ]]; then
-    export MAKEFLAGS='-j4'
-elif [[ "$HOSTNAME" =~ "sampa" ]]; then
-    export MAKEFLAGS='-j10'
-
-    # ALICE
-    export ALIVERSIONS="VO_ALICE@ROOT::v5-34-30,VO_ALICE@pythia::v8186"
-    source /cvmfs/alice.cern.ch/etc/login.sh
-
-    # GCC
-    export CC="$HOME/usr/local/gcc/bin/gcc"
-    export CXX="$HOME/usr/local/gcc/bin/g++"
-    export CPP="$HOME/usr/local/gcc/bin/cpp"
-    export F77="$HOME/usr/local/gcc/bin/gfortran"
-    export FC="$HOME/usr/local/gcc/bin/gfortran"
-    export LDFLAGS="-fPIC -Wl,-rpath,$HOME/usr/local/gcc/lib64"
-    export MANPATH=$HOME/usr/local/gcc/share/man:$(manpath)
-    PATH="$HOME/usr/local/gcc/bin:$PATH"
-
-    # LOCAL BUILDS
-    PATH="$HOME/usr/local/cmake/bin:$PATH"  # CMAKE
-    PATH="$HOME/usr/local/Python/bin:$PATH" # PYTHON
-    PATH="$HOME/usr/local/pythia/bin:$PATH" # PYTHIA
-    PATH="$HOME/usr/local/root/bin:$PATH"   # ROOT
-elif [[ "$HOSTNAME" =~ "gpu" ]]; then
+if [[ "$HOSTNAME" != "mredson" ]]; then
     # first get rid of LD_LIBRARY_PATH poison =P
     unset LD_LIBRARY_PATH
 
-    if [[ "$HOSTNAME" = "gpu0" ]]; then
-        MAKEFLAGS='-j30'
-    else
-        MAKEFLAGS='-j70'
+    if [[ "$HOSTNAME" =~ "sampa" ]]; then
+        export ALIVERSIONS="VO_ALICE@ROOT::v5-34-30,VO_ALICE@pythia::v8186"
+        source /cvmfs/alice.cern.ch/etc/login.sh
     fi
 
     # GCC
-    export CC="$HOME/usr/local/gcc/bin/gcc"
-    export CXX="$HOME/usr/local/gcc/bin/g++"
-    export CPP="$HOME/usr/local/gcc/bin/cpp"
-    export F77="$HOME/usr/local/gcc/bin/gfortran"
-    export FC="$HOME/usr/local/gcc/bin/gfortran"
-    export LDFLAGS="-fPIC -Wl,-rpath,$HOME/usr/local/gcc/lib64"
-    export MANPATH="$HOME/usr/local/gcc/share/man:"
-    PATH="$HOME/usr/local/gcc/bin:$PATH"
+    if [[ -d "$HOME/usr/local/gcc" ]]; then
+        export CC="$(realpath "$HOME/usr/local/gcc/bin/gcc")"
+        export CXX="$(realpath "$HOME/usr/local/gcc/bin/g++")"
+        export CPP="$(realpath "$HOME/usr/local/gcc/bin/cpp")"
+        export F77="$(realpath "$HOME/usr/local/gcc/bin/gfortran")"
+        export FC="$(realpath "$HOME/usr/local/gcc/bin/gfortran")"
+        export LDFLAGS="-fPIC -Wl,-rpath,$(realpath "$HOME/usr/local/gcc/lib64")"
+        export MANPATH="$(realpath "$HOME/usr/local/gcc/share/man"):$(manpath)"
+        PATH="$(realpath "$HOME/usr/local/gcc/bin"):$PATH"
+    fi
 
     # LOCAL BUILDS
-    PATH="$HOME/usr/local/cmake/usr/bin:$PATH"    # CMAKE
-    PATH="$HOME/usr/local/python/usr/bin:$PATH"   # PYTHON
-    PATH="$HOME/usr/local/pythia/usr/bin:$PATH"   # PYTHIA
-    PATH="$HOME/usr/local/root/usr/bin:$PATH"     # ROOT
+    [[ -d "$HOME/usr/local/root" ]] && PATH="$(realpath "$HOME/usr/local/root/bin"):$PATH"
+    [[ -d "$HOME/usr/local/cmake" ]] && PATH="$(realpath "$HOME/usr/local/cmake/bin"):$PATH"
+    [[ -d "$HOME/usr/local/hepmc" ]] && PATH="$(realpath "$HOME/usr/local/hepmc/bin"):$PATH"
+    [[ -d "$HOME/usr/local/python" ]] && PATH="$(realpath "$HOME/usr/local/python/bin"):$PATH"
+    [[ -d "$HOME/usr/local/pythia" ]] && PATH="$(realpath "$HOME/usr/local/pythia/bin"):$PATH"
 fi
 
 # SET PATH AND COMPILE ZSH FILES ############################################

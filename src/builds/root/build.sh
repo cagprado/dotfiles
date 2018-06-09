@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+if [[ -z "$HEP_FRAMEWORK" ]]; then
+    echo "Please, first setup HEP_FRAMEWORK variable"
+    exit
+fi
+
 # PREPARE ###################################################################
 pkgname=root
 pkgver=6.12.06
@@ -7,7 +12,7 @@ pkgrel=1
 basedir="$(pwd)"
 srcdir="$basedir/src"
 pkgdir="$basedir/pkg"
-prefix="$HOME/usr/local/$pkgname-$pkgver"
+prefix="$HEP_FRAMEWORK/$pkgname-$pkgver"
 source="https://root.cern.ch/download/root_v${pkgver}.source.tar.gz"
 sourcefile="$(basename $source)"
 
@@ -27,6 +32,8 @@ cd "${pkgname}-${pkgver}"
 echo 'Adjusting to Python3...'
 2to3 -w etc/dictpch/makepch.py  >/dev/null 2>&1
 
+patch -p1 -i "${srcdir}/fix_const_correctness.patch"
+
 # BUILD #####################################################################
 mkdir -p "${srcdir}/build"
 cd "${srcdir}/build"
@@ -35,7 +42,11 @@ echo 'Configuring...'
 CFLAGS="${CFLAGS} -pthread" \
 CXXFLAGS="${CXXFLAGS} -pthread" \
 LDFLAGS="${LDFLAGS} -pthread -Wl,--no-undefined" \
-cmake -C "${srcdir}/settings.cmake" "${srcdir}/${pkgname}-${pkgver}"
+cmake -C "${srcdir}/settings.cmake" \
+    -DCMAKE_INSTALL_PREFIX=$HEP_FRAMEWORK/$pkgname-$pkgver \
+    -DCMAKE_INSTALL_SYSCONFDIR=$HEP_FRAMEWORK/$pkgname-$pkgver/etc \
+    -DCMAKE_INSTALL_DATAROOTDIR=$HEP_FRAMEWORK/$pkgname-$pkgver/share \
+    "${srcdir}/${pkgname}-${pkgver}"
 
 echo 'Compiling...'
 make -j20
@@ -44,31 +55,23 @@ make -j20
 cd "${srcdir}/build"
 
 echo 'Installing...'
-make DESTDIR="${pkgdir}" install
+sudo make install
 
-install -D "${srcdir}/root.sh" \
-    "${pkgdir}/etc/profile.d/root.sh"
-install -D "${srcdir}/rootd" \
-    "${pkgdir}/etc/rc.d/rootd"
-install -D -m644 "${srcdir}/root.xml" \
-    "${pkgdir}/usr/share/mime/packages/root.xml"
+sudo install -D "${srcdir}/root.sh" "${prefix}/etc/profile.d/root.sh"
+sudo install -D "${srcdir}/rootd" "${prefix}/etc/rc.d/rootd"
+sudo install -D -m644 "${srcdir}/root.xml" "${prefix}/share/mime/packages/root.xml"
 
-install -D -m644 "${srcdir}/${pkgname}-${pkgver}/build/package/debian/root-system-bin.desktop.in" \
-    "${pkgdir}/usr/share/applications/root-system-bin.desktop"
-
-# replace @prefix@ with /usr for the desktop
-sed -e 's_@prefix@_/usr_' -i "${pkgdir}/usr/share/applications/root-system-bin.desktop"
+sudo install -D -m644 "${srcdir}/${pkgname}-${pkgver}/build/package/debian/root-system-bin.desktop.in" "${prefix}/share/applications/root-system-bin.desktop"
 
 # fix python env call
-sed -e 's/@python@/python/' -i "${pkgdir}/usr/lib/root/cmdLineUtils.py"
+sudo sed -e 's/@python@/python/' -i "${prefix}/lib/root/cmdLineUtils.py"
 
-install -D -m644 "${srcdir}/${pkgname}-${pkgver}/build/package/debian/root-system-bin.png" \
-    "${pkgdir}/usr/share/icons/hicolor/48x48/apps/root-system-bin.png"
+sudo install -D -m644 "${srcdir}/${pkgname}-${pkgver}/build/package/debian/root-system-bin.png" "${prefix}/share/icons/hicolor/48x48/apps/root-system-bin.png"
 
 echo 'Updating system config...'
 # use a file that pacman can track instead of adding directly to ld.so.conf
-install -d "${pkgdir}/etc/ld.so.conf.d"
-echo '/usr/lib/root' > "${pkgdir}/etc/ld.so.conf.d/root.conf"
+sudo install -d "${prefix}/etc/ld.so.conf.d"
+sudo echo '/usr/lib/root' | sudo tee "${prefix}/etc/ld.so.conf.d/root.conf" >/dev/null
 
 echo 'Cleaning up...'
-rm -rf "${pkgdir}/etc/root/daemons"
+sudo rm -rf "${prefix}/etc/root/daemons"
