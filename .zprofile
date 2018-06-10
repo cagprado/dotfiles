@@ -48,22 +48,22 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
 
     # GCC
     if [[ -d "$HOME/usr/local/gcc" ]]; then
-        export CC="$(realpath "$HOME/usr/local/gcc/bin/gcc")"
-        export CXX="$(realpath "$HOME/usr/local/gcc/bin/g++")"
-        export CPP="$(realpath "$HOME/usr/local/gcc/bin/cpp")"
-        export F77="$(realpath "$HOME/usr/local/gcc/bin/gfortran")"
-        export FC="$(realpath "$HOME/usr/local/gcc/bin/gfortran")"
-        export LDFLAGS="-fPIC -Wl,-rpath,$(realpath "$HOME/usr/local/gcc/lib64")"
-        export MANPATH="$(realpath "$HOME/usr/local/gcc/share/man"):$(manpath)"
-        PATH="$(realpath "$HOME/usr/local/gcc/bin"):$PATH"
+        export CC="$(readlink -f "$HOME/usr/local/gcc/bin/gcc")"
+        export CXX="$(readlink -f "$HOME/usr/local/gcc/bin/g++")"
+        export CPP="$(readlink -f "$HOME/usr/local/gcc/bin/cpp")"
+        export F77="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
+        export FC="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
+        export LDFLAGS="-fPIC -Wl,-rpath,$(readlink -f "$HOME/usr/local/gcc/lib64")"
+        export MANPATH="$(readlink -f "$HOME/usr/local/gcc/share/man"):$(manpath)"
+        PATH="$(readlink -f "$HOME/usr/local/gcc/bin"):$PATH"
     fi
 
     # LOCAL BUILDS
-    [[ -d "$HOME/usr/local/root" ]] && PATH="$(realpath "$HOME/usr/local/root/bin"):$PATH"
-    [[ -d "$HOME/usr/local/cmake" ]] && PATH="$(realpath "$HOME/usr/local/cmake/bin"):$PATH"
-    [[ -d "$HOME/usr/local/hepmc" ]] && PATH="$(realpath "$HOME/usr/local/hepmc/bin"):$PATH"
-    [[ -d "$HOME/usr/local/python" ]] && PATH="$(realpath "$HOME/usr/local/python/bin"):$PATH"
-    [[ -d "$HOME/usr/local/pythia" ]] && PATH="$(realpath "$HOME/usr/local/pythia/bin"):$PATH"
+    [[ -d "$HOME/usr/local/root" ]] && PATH="$(readlink -f "$HOME/usr/local/root/bin"):$PATH"
+    [[ -d "$HOME/usr/local/cmake" ]] && PATH="$(readlink -f "$HOME/usr/local/cmake/bin"):$PATH"
+    [[ -d "$HOME/usr/local/hepmc" ]] && PATH="$(readlink -f "$HOME/usr/local/hepmc/bin"):$PATH"
+    [[ -d "$HOME/usr/local/python" ]] && PATH="$(readlink -f "$HOME/usr/local/python/bin"):$PATH"
+    [[ -d "$HOME/usr/local/pythia" ]] && PATH="$(readlink -f "$HOME/usr/local/pythia/bin"):$PATH"
 fi
 
 # SET PATH AND COMPILE ZSH FILES ############################################
