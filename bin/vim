@@ -1,7 +1,19 @@
 #!/bin/zsh
 
-if [[ -x /usr/bin/nvim ]]; then
-  exec /usr/bin/nvim $@
+# search for neovim
+NEOVIM=$(which nvim)
+
+if [[ "$NEOVIM" =~ "not found" ]]; then
+    # fallback to VIM
+    THISVIM="$0:A"
+    for VIM in $(which -a vim); do
+        if [[ "$VIM" != "$THISVIM" ]]; then
+            exec $VIM $@
+            break
+        fi
+    done
+
 else
-  exec /usr/bin/vim $@
+    # found NeoVIM, execute it
+    exec $NEOVIM $@
 fi
