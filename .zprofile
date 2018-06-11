@@ -59,6 +59,7 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
     fi
 
     # LOCAL BUILDS
+    [[ -d "$HOME/usr/local/neovim" ]] && PATH="$(readlink -f "$HOME/usr/local/neovim/bin"):$PATH"
     [[ -d "$HOME/usr/local/root" ]] && PATH="$(readlink -f "$HOME/usr/local/root/bin"):$PATH"
     [[ -d "$HOME/usr/local/cmake" ]] && PATH="$(readlink -f "$HOME/usr/local/cmake/bin"):$PATH"
     [[ -d "$HOME/usr/local/hepmc" ]] && PATH="$(readlink -f "$HOME/usr/local/hepmc/bin"):$PATH"
