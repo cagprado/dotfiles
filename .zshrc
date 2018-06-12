@@ -1,5 +1,12 @@
 # Interactive shell (not run by scripts)
 
+# first initialize tmux
+if which tmux >/dev/null 2>&1 && [[ -z "$TMUX" ]]; then
+    # get id of a detached session
+    ID="$(tmux ls -F '#{session_id}:#{?session_attached,attached,detached}' |& grep -m1 detached | cut -d: -f1)"
+    [[ -n "$ID" ]] && exec tmux attach-session -t "$ID" || exec tmux new-session
+fi
+
 # Options ###################################################################
 unsetopt bgnice
 setopt notify longlistjobs extendedglob globdots autocd correct autonamedirs
