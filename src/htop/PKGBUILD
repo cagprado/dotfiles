@@ -5,7 +5,7 @@
 # Contributor: sekret <sekret at posteo.se>
 
 pkgname=htop
-pkgver=2.0.2
+pkgver=2.2.0
 pkgrel=2
 pkgdesc="Interactive process viewer with solarized patch"
 arch=('i686' 'x86_64' 'armv7h')
@@ -18,7 +18,7 @@ optdepends=('lsof: show files opened by a process'
 options=('!emptydirs')
 source=("http://hisham.hm/$pkgname/releases/$pkgver/$pkgname-$pkgver.tar.gz"
         'htop.patch')
-sha512sums=('1c9bf71a36c56b301667aa6d03756fc757fbcb63e848d9581d10db3df6193cdeb00e55ceb6e2392794ac03ea034b04459a8fe550b3ac2318cd86263a74c78cda'
+sha512sums=('ec1335bf0e3e0387e5e50acbc508d0effad19c4bc1ac312419dc97b82901f4819600d6f87a91668f39d429536d17304d4b14634426a06bec2ecd09df24adc62e'
 SKIP)
 
 prepare() {
@@ -39,8 +39,7 @@ build() {
       --enable-unicode \
       --enable-openvz \
       --enable-vserver \
-      --enable-cgroup \
-      --enable-oom
+      --enable-cgroup
 
   make
 }

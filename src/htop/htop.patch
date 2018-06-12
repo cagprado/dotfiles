@@ -1,29 +1,38 @@
 --- a/CRT.c	2017-04-15 14:27:29.424044138 -0300
 +++ a/CRT.c	2017-04-15 15:16:10.771768827 -0300
-@@ -183,7 +183,7 @@
+@@ -193,7 +193,7 @@
        [LED_COLOR] = ColorPair(Green,Black),
        [TASKS_RUNNING] = A_BOLD | ColorPair(Green,Black),
        [PROCESS] = A_NORMAL,
--      [PROCESS_SHADOW] = A_BOLD | ColorPair(Black,Black),
-+      [PROCESS_SHADOW] = A_DIM,
+-      [PROCESS_SHADOW] = A_BOLD | ColorPairGrayBlack,
++      [PROCESS_SHADOW] = ColorPairGrayBlack,
        [PROCESS_TAG] = A_BOLD | ColorPair(Yellow,Black),
        [PROCESS_MEGABYTES] = ColorPair(Cyan,Black),
        [PROCESS_BASENAME] = A_BOLD | ColorPair(Cyan,Black),
-@@ -195,7 +195,7 @@
+@@ -205,7 +205,7 @@
        [PROCESS_THREAD] = ColorPair(Green,Black),
        [PROCESS_THREAD_BASENAME] = A_BOLD | ColorPair(Green,Black),
        [BAR_BORDER] = A_BOLD,
--      [BAR_SHADOW] = A_BOLD | ColorPair(Black,Black),
-+      [BAR_SHADOW] = A_DIM,
+-      [BAR_SHADOW] = A_BOLD | ColorPairGrayBlack,
++      [BAR_SHADOW] = ColorPairGrayBlack,
        [SWAP] = ColorPair(Red,Black),
        [GRAPH_1] = A_BOLD | ColorPair(Cyan,Black),
        [GRAPH_2] = ColorPair(Cyan,Black),
-@@ -217,7 +217,7 @@
+@@ -227,7 +227,7 @@
        [CPU_NICE_TEXT] = A_BOLD | ColorPair(Blue,Black),
        [CPU_NORMAL] = ColorPair(Green,Black),
        [CPU_KERNEL] = ColorPair(Red,Black),
 -      [CPU_IOWAIT] = A_BOLD | ColorPair(Black, Black),
-+      [CPU_IOWAIT] = A_DIM,
++      [CPU_IOWAIT] = ColorPairGrayBlack,
        [CPU_IRQ] = ColorPair(Yellow,Black),
        [CPU_SOFTIRQ] = ColorPair(Magenta,Black),
        [CPU_STEAL] = ColorPair(Cyan,Black),
+@@ -726,7 +726,7 @@
+       }
+    }
+
+-   int grayBlackFg = COLORS > 8 ? 8 : 0;
++   int grayBlackFg = COLORS > 8 ? 15 : 0;
+    int grayBlackBg = (colorScheme != COLORSCHEME_BLACKNIGHT)
+                      ? -1
+                      : 0;
