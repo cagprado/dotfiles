@@ -10,8 +10,20 @@ install -dm0 $HOME/.dropbox-dist
 mkdir -p $HOME/.cache/zsh
 mkdir -p $HOME/var/backup
 mkdir -p $HOME/.msmtp.queue
+
+# VIM
+print -P "%BInstalling Vundle...%b"
 mkdir -p $HOME/.vundle
 git clone http://github.com/VundleVim/Vundle.vim $HOME/.vundle/Vundle.vim
+
+# tmux
+print -P "%BInstalling tmux plugins...%b"
+mkdir -p $HOME/.tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+tmux new -d -s __noop >/dev/null 2>&1 || true 
+tmux set-environment -g TMUX_PLUGIN_MANAGER_PATH "~/.tmux/plugins"
+"$HOME"/.tmux/plugins/tpm/bin/install_plugins || true
+tmux kill-session -t __noop >/dev/null 2>&1 || true
 
 # Setting up permissions
 print -P "%BSetting up correct permissions for sensitive configurations...%b"
