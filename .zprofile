@@ -65,6 +65,7 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
     [[ -d "$HOME/usr/local/hepmc" ]] && PATH="$(readlink -f "$HOME/usr/local/hepmc/bin"):$PATH"
     [[ -d "$HOME/usr/local/python" ]] && PATH="$(readlink -f "$HOME/usr/local/python/bin"):$PATH"
     [[ -d "$HOME/usr/local/pythia" ]] && PATH="$(readlink -f "$HOME/usr/local/pythia/bin"):$PATH"
+    [[ -d "$HOME/usr/local/tmux" ]] && PATH="$(readlink -f "$HOME/usr/local/tmux/bin"):$PATH"
 fi
 
 # SET PATH AND COMPILE ZSH FILES ############################################
