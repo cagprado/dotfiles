@@ -8,7 +8,7 @@
 _gitname=alot
 pkgname=alot-git
 pkgrel=1
-pkgver=r3140.9e2cd32a
+pkgver=r3144.bdd2a514
 pkgdesc="terminal-based MUA for the notmuch mail system"
 arch=(any)
 url="https://github.com/pazz/alot"
