@@ -1,0 +1,35 @@
+% vim: spelllang=en:
+\documentclass[11pt]{letter}
+\usepackage[a4paper,vmargin={1.3in,1.3in},foot=0.71in]{geometry}
+
+% input common settings
+\input{common}
+
+\setlength{\parskip}{2em} % paragraph spacing
+\pagenumbering{gobble}    % page numbering (gobble removes it)
+
+% background image
+\usepackage[scale=1,angle=0,opacity=1]{background}
+\backgroundsetup{contents={\includegraphics[width=\paperwidth]{letterhead}}}
+% default text color: HEPIC=6D6E70
+\usepackage{xcolor}\makeatletter\AtBeginDocument{\color[HTML]{6D6E70}\global\let\default@color\current@color}\makeatother
+
+% sender data
+\signature{\centering Caio Alves Garcia Prado\\ cagprado@if.usp.br}
+\address{
+  Universidade de São Paulo\\
+  Depto. de Física Nuclear\\
+  Rua do Matão, 1371\\
+  Ed. \textsc{Hepic}, 209\\
+  \textsc{Cep} 05508-090
+}
+
+\begin{document}
+\begin{letter}{Receiver address}
+\opening{Dear XXX,}
+
+  \input{fontsize}
+
+\closing{Sincerely,}
+\end{letter}
+\end{document}

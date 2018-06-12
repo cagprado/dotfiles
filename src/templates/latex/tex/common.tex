@@ -1,0 +1,121 @@
+% vim: nospell
+% LOAD PACKAGES #############################################################
+% to select features depending on engine
+\usepackage{ifpdf,ifluatex}
+
+% allow use of . in filenames
+\usepackage{grffile}
+
+% spacing
+\usepackage{indentfirst,xspace}
+
+% basic graphics packages
+\usepackage{graphicx,xcolor}
+
+% tables
+\usepackage{booktabs}
+\renewcommand{\arraystretch}{1.2}  % more space between rows
+
+% remove extra space at borders of table (lines are then justified with text)
+\let\oldtabular\tabular
+\let\endoldtabular\endtabular
+\renewenvironment{tabular}[1]{\begin{oldtabular}{@{}#1@{}}}{\end{oldtabular}}
+
+% basic mathematics packages
+\usepackage{amsmath,amssymb}
+
+% fonts
+\ifluatex
+  \usepackage{fontspec}
+  \defaultfontfeatures{Ligatures=TeX}
+  % Font shapes:
+  % UprightFont, BoldFont,
+  % ItalicFont, BoldItalicFont,
+  % SlantedFont, BoldSlantedFont,
+  % SmallCapsFont
+  \setmainfont{LinLibertine_}[
+    Extension = .otf,
+    UprightFont = *R,
+    BoldFont = *RB,
+    ItalicFont = *RI,
+    BoldItalicFont = *RBI,
+    Numbers = {Proportional,OldStyle},
+    SmallCapsFeatures = { LetterSpace=5, Kerning=On },
+  ]
+  \setsansfont{LinBiolinum_}[
+    Extension = .otf,
+    UprightFont = *R,
+    BoldFont = *RB,
+    ItalicFont = *RI,
+    BoldItalicFont = *RBO,
+    Numbers = {Proportional,OldStyle},
+    SmallCapsFeatures = { LetterSpace=7, Kerning=On },
+  ]
+  \setmonofont{iosevkatermslab}[
+    UprightFont = *nerdfontcomplete,
+    BoldFont = *boldnerdfontcomplete,
+    ItalicFont = *italicnerdfontcomplete,
+    BoldItalicFont = *bolditalicnerdfontcomplete,
+    SlantedFont = *obliquenerdfontcomplete,
+    BoldSlantedFont = *boldobliquenerdfontcomplete,
+    Scale=MatchLowercase,
+  ]
+  \usepackage{unicode-math}
+  \setmathfont{Asana-Math.otf}
+
+  % lining figures
+  \newcommand\lfstyle{\addfontfeature{Numbers=Lining}}
+  \newcommand\textlf[1]{{\lfstyle #1}}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[p,osf]{newtxtext}  % old-style figures in text mode
+  \usepackage{newtxmath}
+\fi
+\newcommand\Arabic[1]{\textlf{\arabic{#1}}}  % Arabic uses lining figures
+
+% more mathematics packages
+\usepackage{siunitx,commath,xfrac}
+
+% ASYMPTOTE PREAMBLE ########################################################
+\ifluatex
+  \ifx\pdfpagewidth\undefined\let\pdfpagewidth\paperwidth\fi
+  \ifx\pdfpageheight\undefined\let\pdfpageheight\paperheight\fi
+\else
+  \let\paperwidthsave\paperwidth\let\paperwidth\undefined
+  \let\paperwidth\paperwidthsave
+\fi
+\newbox\ASYbox
+\newdimen\ASYdimen
+\def\ASYprefix{}
+\long\def\ASYbase#1#2{\leavevmode\setbox\ASYbox=\hbox{#1}%\ASYdimen=\ht\ASYbox%
+\setbox\ASYbox=\hbox{#2}\lower\ASYdimen\box\ASYbox}
+\long\def\ASYaligned(#1,#2)(#3,#4)#5#6#7{\leavevmode%
+\setbox\ASYbox=\hbox{#7}%
+\setbox\ASYbox\hbox{\ASYdimen=\ht\ASYbox%
+\advance\ASYdimen by\dp\ASYbox\kern#3\wd\ASYbox\raise#4\ASYdimen\box\ASYbox}%
+\setbox\ASYbox=\hbox{#5\wd\ASYbox 0pt\dp\ASYbox 0pt\ht\ASYbox 0pt\box\ASYbox#6}%
+\hbox to 0pt{\kern#1pt\raise#2pt\box\ASYbox\hss}}%
+\ifpdf
+  \long\def\ASYalignT(#1,#2)(#3,#4)#5#6{%
+  \ASYaligned(#1,#2)(#3,#4){%
+  \special{pdf:q #5 0 0 cm}%
+  }{%
+  \special{pdf:Q}%
+  }{#6}}
+  \long\def\ASYalign(#1,#2)(#3,#4)#5{\ASYaligned(#1,#2)(#3,#4){}{}{#5}}
+  \def\ASYraw#1{#1}
+\else
+  \long\def\ASYalignT(#1,#2)(#3,#4)#5#6{%
+  \ASYaligned(#1,#2)(#3,#4){%
+  \special{ps:gsave currentpoint currentpoint translate [#5 0 0] concat neg exch neg exch translate}%
+  }{%
+  \special{ps:currentpoint grestore moveto}%
+  }{#6}}
+  \long\def\ASYalign(#1,#2)(#3,#4)#5{\ASYaligned(#1,#2)(#3,#4){}{}{#5}}
+  \def\ASYraw#1{
+  currentpoint currentpoint translate matrix currentmatrix
+  100 12 div -100 12 div scale
+  #1
+  setmatrix neg exch neg exch translate}
+\fi

@@ -1,0 +1,34 @@
+\makeatletter
+\newcommand\thefontsize[1]{
+  {\ttfamily\string#1}
+  & #1\let\currentsize\f@size\normalsize\currentsize
+  & #1\let\currentskip\f@baselineskip\normalsize\currentskip
+  \\
+}
+\makeatother
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+  \textbf{Property} & \textbf{Roman} & \textbf{Sans} & \textbf{Mono} \\
+  Encoding & \rmfamily\makeatletter\detokenize\expandafter{\f@encoding}\makeatother & \sffamily\makeatletter\detokenize\expandafter{\f@encoding}\makeatother & \ttfamily\makeatletter\detokenize\expandafter{\f@encoding}\makeatother \\
+  Family &   \rmfamily\makeatletter\detokenize\expandafter{\f@family}\makeatother   & \sffamily\makeatletter\detokenize\expandafter{\f@family}\makeatother   & \ttfamily\makeatletter\detokenize\expandafter{\f@family}\makeatother   \\
+  Series &   \rmfamily\makeatletter\detokenize\expandafter{\f@series}\makeatother   & \sffamily\makeatletter\detokenize\expandafter{\f@series}\makeatother   & \ttfamily\makeatletter\detokenize\expandafter{\f@series}\makeatother   \\
+  Shape &    \rmfamily\makeatletter\detokenize\expandafter{\f@shape}\makeatother    & \sffamily\makeatletter\detokenize\expandafter{\f@shape}\makeatother    & \ttfamily\makeatletter\detokenize\expandafter{\f@shape}\makeatother    \\
+\end{tabular}
+
+\vspace*{1cm}
+
+\begin{tabular}{@{}lrr@{}}
+  \textbf{Size} & \textbf{Value} & \textbf{Skip} \\
+  \thefontsize\tiny
+  \thefontsize\scriptsize
+  \thefontsize\footnotesize
+  \thefontsize\small
+  \thefontsize\normalsize
+  \thefontsize\large
+  \thefontsize\Large
+  \thefontsize\LARGE
+  \thefontsize\huge
+  \thefontsize\Huge
+\end{tabular}
+\end{center}

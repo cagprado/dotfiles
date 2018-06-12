@@ -1,0 +1,40 @@
+% vim: spelllang=en:
+\documentclass[12pt]{letter}
+\usepackage[a4paper,vmargin={1.3in,1.3in},foot=0.71in]{geometry}
+
+% input common settings
+\input{common}
+
+\setlength{\parskip}{3em} % paragraph spacing
+\pagenumbering{gobble}    % page numbering (gobble removes it)
+
+% background image
+\usepackage[scale=1,angle=0,opacity=1]{background}
+\backgroundsetup{contents={\includegraphics[width=\paperwidth]{letterhead}}}
+% default text color: HEPIC=6D6E70
+\usepackage{xcolor}\makeatletter\AtBeginDocument{\color[HTML]{6D6E70}\global\let\default@color\current@color}\makeatother
+
+% common data
+\title{Declaration}
+\date{\today}
+\name{Caio Alves Garcia Prado}
+\address{São Paulo}
+
+\begin{document}
+\begin{letter}{}
+\makeatletter\begin{center}\Large\textbf{\@title}\end{center}\makeatother\vspace\parskip
+
+  \input{fontsize}
+
+\makeatletter
+  \par\nobreak\vspace{\parskip}\stopbreaks\noindent\raggedleft
+  \fromaddress, \@date\\
+  \vspace{2\parskip}
+  \newlength\underlinelength
+  \settowidth\underlinelength\fromname
+  \addtolength\underlinelength{2ex}
+  \rule\underlinelength\linethickness\\
+  \fromname\hspace*{1ex}
+\makeatother
+\end{letter}
+\end{document}
