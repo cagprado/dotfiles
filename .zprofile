@@ -39,6 +39,7 @@ fi
 
 if [[ "$HOSTNAME" != "mredson" ]]; then
     # first get rid of LD_LIBRARY_PATH poison =P
+    unsetopt GLOBAL_RCS
     unset LD_LIBRARY_PATH
 
     if [[ "$HOSTNAME" =~ "sampa" ]]; then
@@ -54,7 +55,7 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
         export F77="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
         export FC="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
         export LDFLAGS="-fPIC -Wl,-rpath,$(readlink -f "$HOME/usr/local/gcc/lib64")"
-        export MANPATH="$(readlink -f "$HOME/usr/local/gcc/share/man"):$(manpath)"
+        export MANPATH="$(readlink -f "$HOME/usr/local/gcc/share/man"):$(manpath -q)"
         PATH="$(readlink -f "$HOME/usr/local/gcc/bin"):$PATH"
     fi
 

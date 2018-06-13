@@ -7,3 +7,8 @@
 # Let's define fpath as scripts will need those in order to use functions
 export ZSH_FUNCTIONS="$HOME/bin/zsh"
 fpath=($ZSH_FUNCTIONS.zwc $fpath)
+
+# Login shell reads global /etc/zprofile, otherwise we avoid global configs
+if [[ ! -o login ]]; then
+    unsetopt GLOBAL_RCS
+fi
