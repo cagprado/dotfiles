@@ -1,0 +1,71 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help msg err
+
+# PARSE COMMAND LINE ########################################################
+local NAME="$0"
+local DESC="Build local package using Arch's PKGBUILD as baseline"
+local USAGE="%Busage:%b <PKGBUILD> [-p install_prefix]"
+local LONGHELP
+LONGHELP=$(<<END
+Builds a local package to be extracted manually by using PKGBUILD from
+ArchLinux as guideline.
+
+  %B<PKGBUILD>%b
+      Location of PKGBUILD file.
+  %B-p install_prefix%b
+      Path where the package is intented to be extracted. [$HOME/usr/local]
+END
+)
+local HELP=false
+local SUMMARY=false
+local PKGBUILD=""
+local INSTALL_PREFIX="$HOME/usr/local"
+if !  parse_cmdline '=PKGBUILD h|help>HELP H|summary>SUMMARY :p>INSTALL_PREFIX' $@; then
+    print -P "Error parsing command line...\n$USAGE"
+    return 1
+fi
+help $HELP $SUMMARY $NAME $USAGE $DESC $LONGHELP && return
+
+if [[ ! -r "$PKGBUILD" ]]; then
+    err "Missing PKGBUILD file '$PKGBUILD'..."
+    print -P "$USAGE"
+    return 1
+fi
+
+PKGBUILD="$(sed -e 's/--prefix=[^ ]*/--prefix=\//' $PKGBUILD)"
+
+zsh -s <<END
+autoload +X parse_cmdline help msg err
+unset options
+$PKGBUILD
+msg "Building package '\$pkgname' to '$INSTALL_PREFIX'."
+
+# prepare directory for building
+rm -rf build_\$pkgname
+mkdir -p build_\$pkgname/src
+mkdir -p build_\$pkgname/pkg
+srcdir=\$(realpath build_\$pkgname/src)
+pkgdir=\$(realpath build_\$pkgname/pkg)
+
+# extract files
+for FILE in \$source; do
+    if [[ ! -e "\$(basename \$FILE)" ]]; then
+        wget \$FILE
+    fi
+    tar xf \$(basename \$FILE) -C \$srcdir 2>/dev/null || cp \$(basename \$FILE) \$srcdir
+done
+
+cd \$srcdir
+prepare || return 1
+
+cd \$srcdir
+build || return 1
+
+cd \$srcdir
+package || return 1
+
+cd \$pkgdir
+tar cf ../../\$pkgname-\$pkgver.pkg.tar .
+xz -9 ../../\$pkgname-\$pkgver.pkg.tar
+END
