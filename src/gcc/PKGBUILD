@@ -1,0 +1,31 @@
+pkgname=gcc
+pkgver=8.1.0
+pkgrel=0
+pkgdesc='The GNU Compiler Collection'
+arch=('x86_64')
+url='http://gcc.gnu.org'
+license=(GPL LGPL FDL custom)
+makedepends=(binutils libmpc gcc-ada doxygen lib32-glibc lib32-gcc-libs python)
+checkdepends=(dejagnu inetutils)
+options=(!emptydirs)
+source=(https://ftp.gnu.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.xz)
+sha256sums=('SKIP')
+
+prepare() {
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  ./configure \
+      --prefix=/ \
+      --disable-multilib
+
+  make -j
+}
+
+package() {
+  make -C "$pkgname-$pkgver" DESTDIR="$pkgdir" install
+}
+
+# vim:set ts=2 sw=2 et:
