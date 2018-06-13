@@ -68,7 +68,7 @@ if [[ $#@ -lt 2 ]]; then
   return
 fi
 
-## CHECK IF FIRST SPEC ALLOWS ARGUMENTS (NON-OPTIONS)
+# CHECK IF FIRST SPEC ALLOWS ARGUMENTS (NON-OPTIONS)
 v[stop]=false
 if [[ "${1[1]}" = "=" || "${1[1]}" = "." ]]; then
   # if used dot, will stop parsing at the first positional argument
@@ -82,7 +82,7 @@ if [[ "${1[1]}" = "=" || "${1[1]}" = "." ]]; then
   [[ "${1#* }" = "$1" ]] && argv[1]='' || argv[1]=${1#* }
 fi
 
-## PARSE SPECIFICATIONS
+# PARSE SPECIFICATIONS
 v[counter]=1
 for i in $=1; do
   # get name of variable to hold option
@@ -121,6 +121,8 @@ shift
 v[error]=false
 v[havearguments]=false
 while [[ $#@ -gt 0 ]]; do
+  # first fix quotes
+  1=${1//\'/\\x27}
   # -- stop parsing
   if [[ "$1" = "--" ]]; then
     shift
