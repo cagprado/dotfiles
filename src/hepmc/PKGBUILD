@@ -1,0 +1,33 @@
+pkgname=hepmc
+pkgver=3.0.0
+pkgrel=0
+pkgdesc='HepMC event record'
+url='http://hepmc.web.cern.ch/hepmc'
+arch=('x86_64')
+options=(!emptydirs)
+source=(http://hepmc.web.cern.ch/hepmc/releases/$pkgname$pkgver.tgz)
+
+prepare() {
+  cd "$pkgname$pkgver"
+  sed -i '/libHepMC/!s/-lHepMC/-lHepMC -Wl,-rpath,$prefix\/${CMAKE_INSTALL_LIBDIR}/' HepMC-config.in
+}
+
+build() {
+  cd "$pkgname$pkgver/cmake"
+
+  export CXXFLAGS="$LDFLAGS"
+  cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DHEPMC_ENABLE_ROOTIO=OFF \
+    ..
+  make all
+}
+
+package() {
+  cd "$pkgname$pkgver/cmake"
+  make DESTDIR="${pkgdir}" install
+  chmod a+x $pkgdir/usr/bin/*
+}
+
+# vim:set ts=2 sw=2 et:

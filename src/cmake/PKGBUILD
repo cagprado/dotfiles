@@ -25,8 +25,7 @@ build() {
 
   ./bootstrap --prefix=/usr \
     --mandir=/share/man \
-    --docdir=/share/doc/cmake \
-    --system-libs
+    --docdir=/share/doc/cmake
   make
 }
 

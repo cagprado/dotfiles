@@ -18,10 +18,10 @@ build() {
   cd "$pkgname-$pkgver"
 
   ./configure \
-      --prefix=/ \
+      --prefix=/usr \
       --disable-multilib
 
-  make -j
+  make
 }
 
 package() {

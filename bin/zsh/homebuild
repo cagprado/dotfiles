@@ -33,12 +33,19 @@ if [[ ! -r "$PKGBUILD" ]]; then
     return 1
 fi
 
-PKGBUILD="$(sed -e 's/--prefix=[^ ]*/--prefix=\//' $PKGBUILD)"
+# Change some things in the PKGBUILD file:
+PKGBUILD="$(sed \
+    -e 's,/usr/,${INSTALL_PREFIX}/,g' \
+    -e 's,/usr,${INSTALL_PREFIX},g' \
+    -e 's,/etc,${INSTALL_PREFIX}/etc,g' \
+    $PKGBUILD)"
 
 zsh -s <<END
 autoload +X parse_cmdline help msg err
 unset options
+
 $PKGBUILD
+INSTALL_PREFIX=$INSTALL_PREFIX/\$pkgname-\$pkgver
 msg "Building package '\$pkgname' to '$INSTALL_PREFIX'."
 
 # prepare directory for building
@@ -57,7 +64,7 @@ for FILE in \$source; do
 done
 
 cd \$srcdir
-prepare || return 1
+prepare || :
 
 cd \$srcdir
 build || return 1
@@ -66,6 +73,6 @@ cd \$srcdir
 package || return 1
 
 cd \$pkgdir
-tar cf ../../\$pkgname-\$pkgver.pkg.tar .
+tar cf ../../\$pkgname-\$pkgver.pkg.tar ./\$INSTALL_PREFIX
 xz -9 ../../\$pkgname-\$pkgver.pkg.tar
 END
