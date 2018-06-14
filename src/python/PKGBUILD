@@ -52,11 +52,12 @@ build() {
               --enable-shared \
               --with-threads \
               --with-computed-gotos \
-              --enable-optimizations \
               --with-lto \
               --enable-ipv6 \
               --with-dbmliborder=gdbm:ndbm \
               --enable-loadable-sqlite-extensions
+
+  make DESTDIR="${pkgdir}" EXTRA_CFLAGS="$CFLAGS"
 }
 
 check() {
@@ -85,6 +86,7 @@ package() {
   # Why are these not done by default...
   ln -s python3               "${pkgdir}"/usr/bin/python
   ln -s python3-config        "${pkgdir}"/usr/bin/python-config
+  ln -s pip3                  "${pkgdir}"/usr/bin/pip
   ln -s idle3                 "${pkgdir}"/usr/bin/idle
   ln -s pydoc3                "${pkgdir}"/usr/bin/pydoc
   ln -s python${_pybasever}.1 "${pkgdir}"/usr/share/man/man1/python.1
