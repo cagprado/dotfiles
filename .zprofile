@@ -55,7 +55,7 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
         export F77="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
         export FC="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
         export LDFLAGS="-fPIC -Wl,-rpath,$(readlink -f "$HOME/usr/local/gcc/lib64")"
-        export MANPATH="$(readlink -f "$HOME/usr/local/gcc/share/man"):$(manpath -q)"
+        export MANPATH="$(readlink -f "$HOME/usr/local/gcc/share/man"):$(manpath 2>/dev/null)"
         PATH="$(readlink -f "$HOME/usr/local/gcc/bin"):$PATH"
     fi
 
