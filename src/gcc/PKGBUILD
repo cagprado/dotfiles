@@ -17,6 +17,7 @@ prepare() {
 build() {
   cd "$pkgname-$pkgver"
 
+  ./contrib/download_prerequisites
   ./configure \
       --prefix=/usr \
       --disable-multilib
