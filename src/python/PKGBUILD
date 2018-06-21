@@ -40,14 +40,14 @@ prepare() {
   sed -i -e "s|^#.* /usr/local/bin/python|#!/usr/bin/python|" Lib/cgi.py
 
   # add rpath to python-config
-  sed -i -e 's/\(-L\$libdir\)/\1 -Wl,-rpath=\$libdir/' Misc/python-config.sh.in
-  sed -i -e 's/\(getvar(\x27LIBPL\x27)\)/\1 + \x27 -Wl,-rpath=\x27 + \1/' Misc/python-config.in
+  sed -i -e 's/\(-L\$libdir\)/\1 -Wl,-rpath,\$libdir/' Misc/python-config.sh.in
+  sed -i -e 's/\(getvar(\x27LIBPL\x27)\)/\1 + \x27 -Wl,-rpath,\x27 + \1/' Misc/python-config.in
 }
 
 build() {
   cd Python-${pkgver}
 
-  export LDFLAGS="${LDFLAGS} -Wl,-rpath=/usr/lib"
+  export LDFLAGS="${LDFLAGS} -Wl,-rpath,/usr/lib"
   ./configure --prefix=/usr \
               --enable-shared \
               --with-threads \
