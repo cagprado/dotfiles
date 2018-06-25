@@ -2,35 +2,23 @@
 
 autoload +X parse_cmdline help msg war err checkgit
 
-local USAGE="%Busage:%b $0 [-x] [--host GITREPO] [-d CLONEDIR] [-t TEMPLATEPATH] TEMPLATE"
+local USAGE="%Busage:%b $0 [-d CLONEDIR] TEMPLATE"
 local DESC="Clones and configures a working dir based on template."
 local LONGHELP
 LONGHELP=$(<<END
-The TEMPLATE name is always needed, but different options can change default
-behaviour of the function:
-  %B--host GITREPO%b
-      Selects the git repository to clone from and update local repository.
-  %B-t TEMPLATEPATH%b
-      Selects where to clone the git repository. If this path is already a
-      local copy of the repository it will check for updates.
   %B-d CLONEDIR%b
       Chooses where to put the template files. It defaults to current dir if
       no path is given.
-  %B-x%b
-      Skip git check, useful if offline.
 END
 )
 
-local CURRENTDIR="$(pwd)"
-local CLONEDIR="$CURRENTDIR"
 local TEMPLATEDIR="$HOME/src/templates"
-local TEMPLATEGIT="git@gitlab.com:cagprado/templates.git"
-local NOCHECKGIT="false"
+local CLONEDIR="$(pwd)"
 local TEMPLATE=''
 
 local HELP=false
 local SUMMARY=false
-if ! parse_cmdline '=TEMPLATE h|help|long-help>HELP H|short-help|summary>SUMMARY :host>TEMPLATEGIT :d>CLONEDIR :t>TEMPLATEDIR x>NOCHECKGIT' $@; then
+if ! parse_cmdline '=TEMPLATE h|help|long-help>HELP H|short-help|summary>SUMMARY :d>CLONEDIR' $@; then
   print -P "$USAGE"
   return 1
 fi
@@ -49,26 +37,7 @@ if [[ ! -d "$CLONEDIR" ]]; then
   mkdir -p $CLONEDIR
 fi
 
-# check templates dir
-if [[ -d "$TEMPLATEDIR" ]]; then
-  if [[ "$NOCHECKGIT" = "false" ]]; then
-    # check git for updates
-    msg "Checking if git is updated..."
-    local GITSTATUS=$(checkgit $TEMPLATEDIR)
-    if [[ "$GITSTATUS" = "push" ]]; then
-      git -C "$TEMPLATEDIR" push
-    elif [[ "$GITSTATUS" = "pull" ]]; then
-      git -C "$TEMPLATEDIR" pull --ff-only
-    elif [[ "$GITSTATUS" = "diverged" ]]; then
-      war "Git repository have diverged, sticking with the current working dir."
-    fi
-  fi
-else
-  msg "Missing templates dir, cloning from repository..."
-  git clone "$TEMPLATEGIT" "$TEMPLATEDIR"
-fi
-
-# test if template exists in repository
+# test if template exists
 if [[ -d "$TEMPLATEDIR/$TEMPLATE" ]]; then
   # copy files to working dir
   msg "Copying files..."
