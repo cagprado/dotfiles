@@ -1,0 +1,7 @@
+% BASIC PACKAGES --------------------------------------------------------------
+\usepackage{graphicx}                                 % Graphics
+\usepackage{xcolor}                                   % Color
+\usepackage{array,dcolumn,longtable}                  % Tables
+\usepackage{amsmath,amssymb,mathtools,slashed}        % Math
+\usepackage{textcomp}                                 % Extra symbols
+\usepackage{grffile}                                  % Allow . in filenames

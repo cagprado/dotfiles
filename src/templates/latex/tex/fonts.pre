@@ -1,0 +1,76 @@
+% FONT CONFIGURATION ----------------------------------------------------------
+\usepackage{microtype,indentfirst}                    % Spacing and finetuning fonts
+\usepackage{booktabs}                                 % Tables
+\usepackage[outputdir={\jobname.out}]{minted}         % Code highlighting
+\setminted{ %<<<
+  autogobble=true,
+  linenos=true,
+  style=tomorrow,
+}
+
+% CONFIGURE FONTS ###########################################################
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+% Font shapes:
+% UprightFont, BoldFont,
+% ItalicFont, BoldItalicFont,
+% SlantedFont, BoldSlantedFont,
+% SmallCapsFont
+\setmainfont{LinLibertine_}[
+  Extension = .otf,
+  UprightFont = *R,
+  BoldFont = *RB,
+  ItalicFont = *RI,
+  BoldItalicFont = *RBI,
+  Numbers = {Proportional,OldStyle},
+  SmallCapsFeatures = { LetterSpace=5, Kerning=On },
+]
+\setsansfont{LinBiolinum_}[
+  Extension = .otf,
+  UprightFont = *R,
+  BoldFont = *RB,
+  ItalicFont = *RI,
+  BoldItalicFont = *RBO,
+  Numbers = {Proportional,OldStyle},
+  SmallCapsFeatures = { LetterSpace=5, Kerning=On },
+]
+\setmonofont{iosevkatermslab}[
+  UprightFont = *nerdfontcomplete,
+  BoldFont = *boldnerdfontcomplete,
+  ItalicFont = *italicnerdfontcomplete,
+  BoldItalicFont = *bolditalicnerdfontcomplete,
+  SlantedFont = *obliquenerdfontcomplete,
+  BoldSlantedFont = *boldobliquenerdfontcomplete,
+  Scale=MatchLowercase,
+  Ligatures=ResetAll,
+]
+\usepackage[
+  math-style=ISO,
+  bold-style=ISO,
+  sans-style=italic,
+  nabla=upright,
+  partial=upright,
+  ]{unicode-math}
+\setmathfont[Scale=MatchLowercase]{XITS Math}
+\setmathfont[range={cal,bfcal},StylisticSet=1]{XITS Math}
+
+% lining vs oldstyle figures
+\newcommand\lfstyle{\addfontfeature{Numbers=Lining}}
+\newcommand\osfstyle{\addfontfeature{Numbers=OldStyle}}
+\newcommand\textlf[1]{{\lfstyle #1}}
+\newcommand\textosf[1]{{\osfstyle #1}}
+
+% math font selection
+\newcommand\bm[1]{\symbf{#1}}
+\newcommand\romanup[1]{\symup{#1}}
+\newcommand\greekup[1]{\symup{#1}}
+
+% XITS FIXES
+%\newcommand\Int[2]{\int_{\mkern-9mu #1}^{\mkern-2mu #2}} TODO
+\makeatletter
+\def\big#1{{\hbox{$\left#1\vbox to2.0ex{}\right.\n@space$}}}
+\def\Big#1{{\hbox{$\left#1\vbox to2.5ex{}\right.\n@space$}}}
+\def\bigg#1{{\hbox{$\left#1\vbox to3.0ex{}\right.\n@space$}}}
+\def\Bigg#1{{\hbox{$\left#1\vbox to4.0ex{}\right.\n@space$}}}
+\makeatother
+

@@ -1,35 +1,58 @@
-% vim: spelllang=en:
 \documentclass[11pt]{letter}
 \usepackage[a4paper,vmargin={1.3in,1.3in},foot=0.71in]{geometry}
 
-% input common settings
-\input{common}
+\input{preamble}
+\input{definitions}                                   % shortcut macros for consistency
 
 \setlength{\parskip}{2em} % paragraph spacing
-\pagenumbering{gobble}    % page numbering (gobble removes it)
+\pagenumbering{gobble}    % remove page numbering
 
-% background image
-\usepackage[scale=1,angle=0,opacity=1]{background}
-\backgroundsetup{contents={\includegraphics[width=\paperwidth]{letterhead}}}
-% default text color: HEPIC=6D6E70
-\usepackage{xcolor}\makeatletter\AtBeginDocument{\color[HTML]{6D6E70}\global\let\default@color\current@color}\makeatother
+\input{theme}
 
-% sender data
-\signature{\centering Caio Alves Garcia Prado\\ cagprado@if.usp.br}
-\address{
-  Universidade de São Paulo\\
-  Depto. de Física Nuclear\\
-  Rua do Matão, 1371\\
-  Ed. \textsc{Hepic}, 209\\
-  \textsc{Cep} 05508-090
+\makeatletter
+\renewcommand\title[1]{
+    \setlength{\parskip}{1.5\parskip}
+    \renewcommand\opening[1]{\begin{center}\Large\textbf{#1}\end{center}\vspace\parskip}
+    \signature{
+        \newlength\underlinelength
+        \settowidth\underlinelength\fromname
+        \addtolength\underlinelength{2ex}
+        \rule\underlinelength\linethickness\\
+        \hspace*{1ex}\fromname
+    }
+    \let\oldclosing\closing
+    \renewcommand\closing[1]{\oldclosing{\fromlocation, \@date}}
 }
+\makeatother
 
 \begin{document}
-\begin{letter}{Receiver address}
-\opening{Dear XXX,}
+%\title{Declaration}
 
-  \input{fontsize}
+\begin{letter}
+{
+    Mr. Big Boss\\
+    University of Big Boss\\
+    Big Country
+}
+\name{Caio Alves Garcia Prado}
+\location{Wuhan}
+\address{
+    Central China Normal University\\
+    Institute of Particle Physics\\
+    152 Luoyu Rd., \textsc{ccnu}, Bldg. 9, 423\\
+    430079 Hongshan District\\
+    \fromlocation, Hubei Province\\
+    P. R. of China
+}
+\date{\today}
 
+
+\opening{Dear \toname,}
+
+% content ===========================================================
+\input{fontsize}
+
+% signature =========================================================
 \closing{Sincerely,}
 \end{letter}
 \end{document}

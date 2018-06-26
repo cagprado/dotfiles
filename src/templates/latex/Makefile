@@ -1,127 +1,126 @@
-# Configure texengine: latex|pdflatex|lualatex
-TEXENGINE  := TEMPLATE_OPTION_TEXENGINE
-
 # DEFINE VARIABLES ####################################################
+VERBOSE    := false
+LATEXARGS  := --shell-escape
+
+# paths
+BUILDDIR   := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+ASYDIR     := $(BUILDDIR)/plots
+TEXDIR     := $(BUILDDIR)/tex
+DEPDIR     := $(BUILDDIR)/.d
+SHAREDIR   := $(BUILDDIR)/share
+FINALDIR   := $(BUILDDIR)/final
+
+# files
+DOCUMENTS  := $(patsubst $(TEXDIR)/main_%.tex,%,$(wildcard $(TEXDIR)/main_*.tex))
+PLOTS      := $(patsubst $(ASYDIR)/%.asy,%,$(wildcard $(ASYDIR)/*.asy))
+
 # programs
 SHELL      := /bin/sh
 MV         := mv -f
+CP         := cp
 RM         := rm -f
-ifeq ($(TEXENGINE),latex)
-LATEXMK    := latexmk -cd -pdfdvi -latex='texfot --quiet $(TEXENGINE)'
+MKDIR      := mkdir -p
+ASY        := asy -nosafe -tex lualatex -cd $(ASYDIR)
+ifeq ($(VERBOSE),true)
+	LATEXMK = cd $(TEXDIR) && latexmk -pdf -pdflatex='lualatex' --latexoption='$(LATEXARGS)' --output-directory=main_$*.out main_$*
 else
-LATEXMK    := latexmk -cd -pdf -pdflatex='texfot --quiet $(TEXENGINE)'
+	LATEXMK = cd $(TEXDIR) && latexrun -Wall --verbose-cmds --latex-cmd='lualatex' --latex-args='$(LATEXARGS)' -O main_$*.out -o main_$*.out/main_$*.pdf main_$*
 endif
 
-# paths
-BUILDDIR   := $(dir $(lastword $(MAKEFILE_LIST)))
-DISTDIR    := $(BUILDDIR)dist
-ASYDIR     := $(BUILDDIR)plots
-SRCDIR     := $(BUILDDIR)tex
-DEPDIR     := $(BUILDDIR).d
+# FUNCTIONS
+texfiles    = $(addprefix $(TEXDIR)/main_,$(addsuffix .tex,$1))
+texbbl      = $(addprefix $(TEXDIR)/main_,$(addsuffix .bbl,$1))
+texout      = $(addprefix $(TEXDIR)/main_,$(addsuffix .out,$1))
+texpdf      = $(addprefix $(BUILDDIR)/,$(addsuffix .pdf,$1))
+asytex      = $(addprefix $(TEXDIR)/,$(addsuffix _asy.tex,$1)) $(addprefix $(TEXDIR)/,$(addsuffix _asy_0.pdf,$1))
+asypdf      = $(addprefix $(TEXDIR)/,$(addsuffix _asy.pdf,$1))
+asyeps      = $(addprefix $(TEXDIR)/,$(addsuffix _asy.eps,$1))
+sharetex    = $(patsubst %,$(SHAREDIR)/%,$1)
+finaltex    = $(patsubst %,$(FINALDIR)/%,$1)
 
-# targets
-SOURCES    := $(wildcard $(SRCDIR)/main_*.tex)
-TARGETS    := $(patsubst $(SRCDIR)/main_%.tex,$(BUILDDIR)%.pdf, $(SOURCES))
-STALONE    := $(patsubst $(SRCDIR)/main_%,$(DISTDIR)/%, $(SOURCES))
-ASYSRCS    := $(wildcard $(ASYDIR)/*.asy)
-ASYPDF     := $(patsubst $(ASYDIR)/%,$(SRCDIR)/%.pdf, $(ASYSRCS))
-ASYEPS     := $(patsubst $(ASYDIR)/%,$(SRCDIR)/%.eps, $(ASYSRCS))
-ASYTEX     := $(patsubst $(ASYDIR)/%,$(SRCDIR)/%.inline, $(ASYSRCS))
+# GENERAL RULES ###############################################################
+default: $(call texpdf,$(DOCUMENTS))
+.PHONY: default
 
-# RULES ###############################################################
+$(DEPDIR)/makedepend: $(BUILDDIR)/makedepend.py $(BUILDDIR)/Makefile $(call texfiles,$(DOCUMENTS))
+	@echo -e "\e[1mCreating dependency file '$(basename $@)'...\e[0m"
+	@$(BUILDDIR)/makedepend.py $(call texfiles,$(DOCUMENTS))
 
-# build final documents in .pdf
-all: $(TARGETS)
-.PHONY: all
+# LATEX RULES #################################################################
+# latex compilation => .pdf, .bbl
+$(BUILDDIR)/%.pdf $(TEXDIR)/main_%.bbl: $(TEXDIR)/main_%.latex;
+$(TEXDIR)/main_%.latex: $(TEXDIR)/main_%.tex
+	@echo -e "\e[1mLatexing document '$*'...\e[0m"
+	@$(LATEXMK)
+	@$(CP) $(TEXDIR)/main_$*.out/main_$*.pdf $(BUILDDIR)/$*.pdf
+	@$(CP) $(TEXDIR)/main_$*.out/main_$*.bbl $(TEXDIR)/main_$*.bbl >/dev/null 2>&1; true
 
-# build distribution .tex files in order to upload to editors
-distribution: $(STALONE)
-.PHONY: distribution
+# -- latex flattenization for sharing (with .bib) --
+$(call sharetex,$(DOCUMENTS)):
+	@$(eval DIR   := $(basename $@))
+	@$(eval NAME  := $(notdir $(basename $@)))
+	@$(eval FILES := $(filter-out %.tex %.pre,$^))
+	@echo -e "\e[1mExporting document '$(NAME)' for sharing...\e[0m"
+	@$(MKDIR) $(DIR)
+	@$(if $(FILES),$(CP) $(FILES) $(DIR))
+	@cd $(TEXDIR) && latexpand --fatal --keep-comments -o $(NAME)-share.tex main_$(NAME).tex >/dev/null 2>&1
+	@$(MV) $(TEXDIR)/$(NAME)-share.tex $(DIR)/main_$(NAME).tex
+.SECONDARY: $(call sharetex,$(DOCUMENTS))
 
-# compile latex as a dummy target, required for both: .pdf and .bbl
-$(addsuffix .compile, $(TARGETS)): $(BUILDDIR)%.pdf.compile: $(SRCDIR)/main_%.tex
-	@echo -e "\e[1mMaking document '$(basename $@)'...\e[0m"
-	@$(LATEXMK) $<
-	@$(MV) $(<:.tex=.pdf) $(basename $@)
-.SECONDARY: $(addsuffix .compile, $(TARGETS))
-$(addsuffix .compile, $(TARGETS)): $(BUILDDIR)Makefile
+# -- latex flattenization for submission (flatten .bbl) --
+$(call finaltex,$(DOCUMENTS)):
+	@$(eval DIR     := $(basename $@))
+	@$(eval NAME    := $(notdir $(basename $@)))
+	@$(eval FILES   := $(filter-out %.tex %.pre %.bbl,$^))
+	@$(eval BBLFILE := $(addprefix --expand-bbl ,$(filter %.bbl,$(notdir $^))))
+	@echo -e "\e[1mExporting document '$(NAME)' for submission...\e[0m"
+	@$(MKDIR) $(DIR)
+	@$(if $(FILES),$(CP) $(FILES) $(DIR))
+	@cd $(TEXDIR) && latexpand --fatal $(BBLFILE) -o $(NAME)-final.tex main_$(NAME).tex >/dev/null 2>&1
+	@$(MV) $(TEXDIR)/$(NAME)-final.tex $(DIR)/main_$(NAME).tex
+.SECONDARY: $(call finaltex,$(DOCUMENTS))
 
-# actual targets .pdf and .bbl that uses dummy target .compile
-$(TARGETS): %: %.compile
-$(SOURCES:.tex=.bbl): $(SRCDIR)/main_%.bbl: $(BUILDDIR)%.pdf.compile
+# ASYMPTOTE RULES #############################################################
+# standalone pdf file
+$(TEXDIR)/%_asy.pdf: $(ASYDIR)/%.asy
+	@echo -e "\e[1mMaking asymptote figure '$*'...\e[0m"
+	@$(ASY) -outformat pdf $* -o $*_asy.pdf
+	@$(MV) $(ASYDIR)/$*_asy.pdf $@
+.SECONDARY: $(call asypdf,$(PLOTS))
 
-# distribution .tex files depend on the main .tex (and maybe .bbl too)
-$(STALONE): $(DISTDIR)/%: $(SRCDIR)/main_% $(BUILDDIR)Makefile
-	@echo -e "\e[1mGenerating stand alone laTeX file '$(basename $@)'...\e[0m"
-	@mkdir -p $(DISTDIR)
-	@$(eval FIGURES := $(shell cd $(SRCDIR) && test -e "$(notdir $(filter %.bbl,$^))" && \
-		latexpand --show-graphics --expand-bbl $(notdir $(filter %.bbl,$^)) -o $(notdir $@) $(notdir $<) 2>&1 || \
-		latexpand --show-graphics -o $(notdir $@) $(notdir $<) 2>&1 ))
-	@mv $(SRCDIR)/$(notdir $@) $@
-	@cp $(FIGURES) $(DISTDIR)
+# standalone eps file
+$(TEXDIR)/%_asy.eps: $(ASYDIR)/%.asy
+	@echo -e "\e[1mMaking asymptote figure '$*'...\e[0m"
+	@$(ASY) -outformat eps $* -o $*_asy.eps
+	@$(MV) $(ASYDIR)/$*_asy.eps $@
+.SECONDARY: $(call asyeps,$(PLOTS))
 
-# generate .asy.pdf image (full .pdf asymptote figure)
-# secondary because the actual dependency is the .asy file
-$(ASYPDF): $(SRCDIR)/%.pdf: $(ASYDIR)/%
-	@echo -e "\e[1mMaking figure '$@'...\e[0m"
-	@asy -cd $(ASYDIR) -nosafe -tex pdflatex -outformat pdf $(notdir $<) -o $(notdir $<).pdf
-	@mv $<.pdf $(SRCDIR)
-.SECONDARY: $(ASYPDF)
+# tex/pdf files
+$(TEXDIR)/%_asy.tex $(TEXDIR)/%_asy_0.pdf: $(ASYDIR)/%.inline;
+$(ASYDIR)/%.inline: $(ASYDIR)/%.asy
+	@echo -e "\e[1mMaking inline asymptote figure '$*'...\e[0m"
+	@$(ASY) -inlinetex $* -o $*_asy.tex
+	@$(MV) $(ASYDIR)/$*_asy.tex $(ASYDIR)/$*_asy_0.pdf $(TEXDIR)
+	@$(RM) $(ASYDIR)/$*_asy.tex.pre
+.SECONDARY: $(call asytex,$(PLOTS))
 
-# generate .asy.eps image (full .eps asymptote figure)
-# secondary because the actual dependency is the .asy file
-$(ASYEPS): $(SRCDIR)/%.eps: $(ASYDIR)/%
-	@echo -e "\e[1mMaking figure '$@'...\e[0m"
-	@asy -cd $(ASYDIR) -nosafe -tex latex -outformat eps $(notdir $<) -o $(notdir $<).eps
-	@mv $<.eps $(SRCDIR)
-.SECONDARY: $(ASYEPS)
-
-# generate dummy .asy.inline image, required for .asy.tex and .asy_0.(pdf|eps)
-$(ASYTEX): $(SRCDIR)/%.inline: $(ASYDIR)/%
-	@echo -e "\e[1mMaking figure '$@'...\e[0m"
-	@asy -inlinetex -cd $(ASYDIR) -nosafe -tex $(TEXENGINE) $(notdir $<) -o $(notdir $<).tex
-	@mv $<.tex $<_0.* $(SRCDIR)
-	@rm $<.tex.pre
-.SECONDARY: $(addsuffix .inline, $(basename $(ASYTEX)))
-
-# actual inline asymptote figures (.asy.tex and .asy_0.(pdf|eps))
-# secondary because the actual dependency is the .asy file
-$(addsuffix .tex, $(basename $(ASYTEX))): $(SRCDIR)/%.tex: $(SRCDIR)/%.inline
-$(addsuffix _0.pdf, $(basename $(ASYTEX))): $(SRCDIR)/%_0.pdf: $(SRCDIR)/%.inline
-$(addsuffix _0.eps, $(basename $(ASYTEX))): $(SRCDIR)/%_0.eps: $(SRCDIR)/%.inline
-.SECONDARY: $(addsuffix .tex, $(basename $(ASYTEX))) $(addsuffix _0.pdf, $(basename $(ASYTEX))) $(addsuffix _0.eps, $(basename $(ASYTEX)))
-
-# MAKEDEPEND: generates proper dependencies of documents that must be
-# built previous to their own rules
-$(DEPDIR)/makedepend: $(BUILDDIR)makedepend.py $(BUILDDIR)Makefile $(SOURCES) $(SRCDIR)/*.bib
-	@echo -e "\e[1mCreating '$(basename $@) file...\e[0m"
-	@$(BUILDDIR)makedepend.py $(SOURCES) -t $(TEXENGINE)
-
-# CLEANUP #############################################################
-
-# clean asymptote files
+# CLEANUP RULES ###############################################################
+# cleanup plots
 cleanasy:
-	@echo -e "\e[1mCleaning up asymptote build files...\e[0m"
-	@$(RM) $(FILES) $(ASYPDF) $(ASYEPS) $(ASYTEX:.inline=.tex) $(ASYTEX:.inline=_0.pdf) $(ASYTEX:.inline=_0.eps)
+	@echo -e "\e[1mCleaning up asymptote figure files...\e[0m"
+	@$(RM) $(call asypdf,$(PLOTS)) $(call asyeps,$(PLOTS)) $(call asytex,$(PLOTS))
 .PHONY: cleanasy
 
 # clean intermediate files generated by latexmk, leaving final targets and asymptote
 cleanbuild:
 	@echo -e "\e[1mCleaning up intermediate files...\e[0m"
-	@$(LATEXMK) -silent -C $(SOURCES)
-	@$(RM) $(SRCDIR)/*eps-converted-to.pdf $(foreach NAME,$(basename $(SOURCES)),$(addprefix $(NAME), .dvi .bbl -blx.bib .pre .run.xml .synctex.gz .nav .snm .vrb .spl Notes.bib))
+	@$(RM) -r $(call texout,$(DOCUMENTS))
 .PHONY: cleanbuild
 
-# clean distribution .tex files
-cleandist:
-	@echo -e "\e[1mCleaning up distribution .tex files...\e[0m"
-	@$(RM) -r $(DISTDIR)
-.PHONY: cleandist
-
 # clean intermediate files and final targets, leaving asymptote figures
-clean: cleanbuild cleandist
+clean: cleanbuild
 	@echo -e "\e[1mCleaning up target files...\e[0m"
-	@$(RM) $(TARGETS)
+	@$(RM) -r $(call texpdf,$(DOCUMENTS)) $(call texbbl,$(DOCUMENTS)) $(SHAREDIR) $(FINALDIR)
 .PHONY: clean
 
 # clean everything, including asymptote and makedepend files

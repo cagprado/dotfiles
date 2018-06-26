@@ -1,0 +1,164 @@
+% Acronyms and Shortcuts ----------------------------------------------------
+
+% misc
+\providecommand\Arabic[1]{\textlf{\arabic{#1}}}       % \Arabic uses lining figures
+\newcommand\etal{\emph{et al}}
+\newcommand\eos{\textsc{e}o\textsc{s}}
+
+% conferences
+\newcommand\qm{\textsc{qm}}
+\newcommand\sqm{\textsc{sqm}}
+
+% labs & experiments
+\newcommand\bnl{\textsc{bnl}}
+\newcommand\rhic{\textsc{rhic}}
+\newcommand\cern{\textsc{cern}}
+\newcommand\lhc{\textsc{lhc}}
+\newcommand\ALEPH{\textsc{aleph}}
+\newcommand\STAR{\textsc{star}}
+\newcommand\phenix{\textsc{phenix}}
+\newcommand\alice{\textsc{alice}}
+\newcommand\atlas{\textsc{atlas}}
+\newcommand\cms{\textsc{cms}}
+\newcommand\sps{\textsc{sps}}
+
+% programs & algorithms
+\newcommand\dabmod{\textsc{dabm}od}
+\newcommand\vusphydro{\text{v-\textsc{usp}hydro}}
+\newcommand\ROOT{\textsc{root}}
+\newcommand\pythia{\textsc{pythia}}
+\newcommand\mckln{\textsc{mckln}}
+\newcommand\sph{\textsc{sph}}
+
+% qcd theory
+\newcommand\qft{\textsc{qft}}
+\newcommand\qcd{\textsc{qcd}}
+\newcommand\qgp{\textsc{qgp}}
+\newcommand\cgc{\textsc{cgc}}
+\newcommand\adscft{\textsc{a}d\textsc{s}/\textsc{cft}}
+
+% perturbative theory
+\newcommand\NLO{\textsc{nlo}}
+\newcommand\NNLO{\textsc{nnlo}}
+\newcommand\LL{\textsc{ll}}
+\newcommand\NLL{\textsc{nll}}
+
+% Math symbols --------------------------------------------------------------
+% misc
+\declareslashed{}{\divslash}{0.08}{0}{\mathcal{D}}
+\renewcommand\vec[1]{\ensuremath{\bm{#1}}}
+\newcommand\dimensions[1]{#1\romanup{D}}
+\newcommand\order{\mathcal{O}}
+
+% delimiters
+\DeclarePairedDelimiter\inparen{\lparen}{\rparen}
+\DeclarePairedDelimiter\inbrack{\lbrack}{\rbrack}
+\DeclarePairedDelimiter\inbrace{\lbrace}{\rbrace}
+\DeclarePairedDelimiter\norm{\lvert}{\rvert}
+\DeclarePairedDelimiter\avg{\langle}{\rangle}
+\DeclarePairedDelimiter\davg{\lAngle}{\rAngle}
+
+% operators
+\DeclareMathOperator\Var{Var}  % variance
+\DeclareMathOperator\Tr{Tr}    % trace
+\DeclareMathOperator\SU{SU}    % special unitary group
+
+% mathematical constants
+\newcommand\piconst{\greekup{\pi}}
+\newcommand\econst{\romanup{e}}
+\newcommand\imaginary{\romanup{i}}
+
+% differential operators
+\providecommand\increment{\greekup{\Delta}}
+\newcommand\dd{\mathop{}\!\romanup{d}}
+\newcommand\dD{\mathop{}\!\romanup{D}}
+\newcommand\dnabla{\mathop{}\!\nabla}
+\newcommand\dpartial{\mathop{}\!\partial}
+\newcommand\ddelta{\mathop{}\!\greekup{\delta}}
+\newcommand\dDelta{\mathop{}\!\increment}
+\newcommand\dtheta{\mathop{}\!\greekup{\theta}}
+
+% High Energy Physics -------------------------------------------------------
+
+% units
+\DeclareSIUnit{\fm}{\femto\metre}                     % fm: femtometre
+
+% standard model particles
+\newcommand\qup{{\romanup{u}}}
+\newcommand\qdown{{\romanup{d}}}
+\newcommand\qcharm{{\romanup{c}}}
+\newcommand\qstrange{{\romanup{s}}}
+\newcommand\qtop{{\romanup{t}}}
+\newcommand\qbottom{{\romanup{b}}}
+\newcommand\lelectron{{\romanup{e}}}
+\newcommand\lmuon{{\greekup{\mu}}}
+\newcommand\ltau{{\greekup{\tau}}}
+\newcommand\neutrino{{\greekup{\nu}}}
+\newcommand\gluon{{\romanup{g}}}
+\newcommand\photon{{\greekup{\gamma}}}
+\newcommand\Zboson{{\romanup{Z}}}
+\newcommand\Wboson{{\romanup{W}}}
+\newcommand\Hboson{{\romanup{H}}}
+
+% anti-matter
+\newcommand\anti[1]{\bar{#1}}
+
+% common extension particles
+\newcommand\proton{{\romanup{p}}}
+\newcommand\neutron{{\romanup{n}}}
+\newcommand\electron{{\lelectron^-}}
+\newcommand\positron{{\lelectron^+}}
+\newcommand\electronpositron{{\lelectron^\pm}}
+\newcommand\pion{{\greekup{\pi}}}
+\newcommand\Bmeson{{\romanup{B}}}
+\newcommand\Dmeson{{\romanup{D}}}
+\newcommand\JPsi{{\romanup{J}/\greekup{\psi}}}
+\newcommand\Bzero{{\Bmeson^0}}
+\newcommand\Dzero{{\Dmeson^0}}
+\newcommand\Bplus{{\Bmeson^+}}
+\newcommand\Dplus{{\Dmeson^+}}
+\newcommand\Dstarplus{{\Dmeson^{*+}}}
+
+% collision parameters
+\newcommand\pp{{\proton\proton}}
+\newcommand\pA{{\proton\romanup{A}}}
+\newcommand\nucleusnucleus{{\romanup{AA}}}
+\newcommand\PbPb{{\romanup{PbPb}}}
+\newcommand\AuAu{{\romanup{AuAu}}}
+\newcommand\snn[1][]{\sqrt{s_\text{NN}}\ifx\\#1\\\else=\SI{#1}{\TeV}\fi}
+
+% QCD theory
+\newcommand\scoup{\alpha_\text{s}}
+\newcommand\red{\romanup{r}}
+\newcommand\green{\romanup{g}}
+\newcommand\blue{\romanup{b}}
+
+% measurements
+\newcommand\pt{p_\text{T}}
+\newcommand\kt{k_\text{T}}
+\newcommand\mt{m_\text{T}}
+\newcommand\Et{E_\text{T}}
+\newcommand\raa{R_\text{AA}}
+\newcommand\vn[1]{v_{#1}}
+\newcommand\vnn{\vn{n}}
+\newcommand\npart{\avg{N_\text{part}}}
+\newcommand\Tfo{T_\text{FO}}
+
+% Thesis specific
+\newcommand\Td{T_\text{d}}
+\newcommand\fo{\textsc{fo}}
+\newcommand\fom{\textsc{fom}\textlf{0}}
+\newcommand\egymom{T^{μν}}
+\newcommand\projector{\Delta^{μν}}
+\newcommand\metric{g^{μν}}
+\newcommand\tauR{\tau_\text{R}}
+\newcommand\mf{\textsc{mf}}
+\newcommand\sigmann{\sigma_\text{NN}}
+\newcommand\Qs{Q_\text{s}}
+\newcommand\pst{\text{\textsc{pst}}}
+\newcommand\ms{\overline{MS}}
+\newcommand\fonll{\textsc{fonll}}
+\newcommand\Tfp{\mathcal{T}^{FP}}
+\newcommand\cum[1]{\{#1\}}
+\newcommand\cn[1]{c_n\cum{#1}}
+\newcommand\dn[1]{d_n\cum{#1}}

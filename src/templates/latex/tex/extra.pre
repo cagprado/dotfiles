@@ -1,0 +1,32 @@
+\usepackage{siunitx}                                  % Parsing numbers and units
+\sisetup{
+  detect-all,         % detect font features
+  detect-mode=false,  % do not detect mode
+  mode=text,          % use text mode for everything
+  text-rm=\lfstyle,   % force lining figures
+  text-sf=\lfstyle,   % force lining figures
+  text-tt=\lfstyle,   % force lining figures
+}
+\usepackage{hyperref}                                  % PDF cross-refs
+\hypersetup{
+  hidelinks,  % won't show links in pdf (ugly squares)
+  breaklinks, % allow breaking links (link itself, not the text)
+  unicode,    % allow unicode in strings
+}
+\usepackage[noabbrev]{cleveref}                       % Cross-refs formatting
+\newcommand\crefrangeconjunction{ to~}
+\creflabelformat{equation}{#2#1#3}
+
+% make tables more beautiful
+\renewcommand{\arraystretch}{1.2}  % more space between rows
+% remove extra space at borders of table (lines are then justified with text)
+\let\oldtabular\tabular \let\endoldtabular\endtabular
+\renewenvironment{tabular}[2][c]{\begin{oldtabular}[#1]{@{}#2@{}}}{\end{oldtabular}}
+
+% prevents that citations in list of floats affect the order of the bibliography
+\makeatletter
+\newcommand\ignoreciteorder[1]{{\let\oldcite\cite\renewcommand\cite[1]{\begingroup\@fileswfalse\oldcite{##1}\endgroup}#1}}
+\makeatother
+\providecommand\tableofcontents{}\let\oldtableofcontents\tableofcontents\renewcommand\tableofcontents{\ignoreciteorder{\oldtableofcontents}}
+\providecommand\listoffigures{}\let\oldlistoffigures\listoffigures\renewcommand\listoffigures{\ignoreciteorder{\oldlistoffigures}}
+\providecommand\listoftables{}\let\oldlistoftables\listoftables\renewcommand\listoftables{\ignoreciteorder{\oldlistoftables}}

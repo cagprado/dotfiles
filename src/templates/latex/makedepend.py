@@ -33,12 +33,12 @@ def main():
         help='Location of dependency dir relative to this script. [.d]',
         metavar='depdir')
     parser.add_argument(
-        '-t',
+        '-f',
         type=str,
-        default='pdflatex',
+        default='pdf',
         nargs=1,
-        help='TeX engine that generates the file. [pdflatex]',
-        metavar='texengine')
+        help='Format of inline asymptote plots (eps|pdf). [pdf]',
+        metavar='format')
     parser.add_argument(
         'filelist',
         type=str,
@@ -48,12 +48,12 @@ def main():
     args = parser.parse_args()
 
     # Setup paths
+    asyext = '_0.' + args.f
     curdir = os.path.join(os.path.dirname(sys.argv[0]), '')
     asydir = os.path.join(curdir, args.a, '')
     srcdir = os.path.join(curdir, args.s, '')
     depdir = os.path.join(curdir, args.d, '')
     sources = { Source(x) for x in args.filelist }
-    texengine = args.t[0]
 
     # Define list of commands
     comm.AddCommand('documentclass', '%.cls')
@@ -68,48 +68,62 @@ def main():
 
     # Get dependency list for each source file
     dependencies = {}
-    bibliographies = set()
     for item in sources:
         if not item.startswith('main_') or not item.endswith('.tex'):
             raise Exception('files must be of form main_document.tex')
         partiallist = set()
         FillDepList(partiallist, asydir, srcdir, srcdir+item)
-        dependencies[Source(item[5:-4]+'.pdf.compile')] = partiallist
-        if HasBibliography(srcdir+item):
-            bibliographies.add(Source(item[5:-4]+'.pdf.compile'))
-    WriteDepFile(depdir, dependencies, bibliographies, texengine)
+        dependencies[Source(item[5:-4])] = partiallist
+    WriteDepFile(depdir, dependencies, asyext)
 
 
-def HasBibliography(filename):
-    contents = ReadFile(filename)
-    return contents.find(r'\bibliography{') != -1
-
-
-def WriteDepFile(depdir, dependencies, bibliographies, texengine):
-    makedepend = set()
+def WriteDepFile(depdir, dependencies, asyext):
     output = ''
+    makedepend = set()
     for document, deplist in dependencies.items():
-        output += '$(DISTDIR)/' + document[:-12] + '.tex '
-        output += '$(BUILDDIR)' + document + ':'
+        # makedepend depends on tex files and asy files
+        makedepend.add('$(TEXDIR)/main_' + document + '.tex')
         for item in deplist:
-            output += ' $(SRCDIR)/' + item
-            if item.type() == 'asy':
-                makedepend.add('$(ASYDIR)/' + item.basename())
-                if item.endswith('.tex'):
-                    if texengine == 'latex':
-                        output += ' $(SRCDIR)/' + item.basename() + '_0.eps'
-                    else:
-                        output += ' $(SRCDIR)/' + item.basename() + '_0.pdf'
-            else:
-                makedepend.add('$(SRCDIR)/' + item)
-        output += '\n\n'
-        if document in bibliographies:
-            output += '$(DISTDIR)/' + document[:-12] + '.tex: $(SRCDIR)/main_' + document[:-12] + '.bbl\n\n'
+            if item.type() == 'tex':
+                makedepend.add('$(TEXDIR)/' + item)
+            elif item.type() == 'asy':
+                makedepend.add('$(ASYDIR)/' + item.basename().replace('_asy', '.asy'))
 
+        # compile latex with all files plus the auxiliary picture for inline asy
+        dlist = [ '$(TEXDIR)/'+x for x in deplist ]
+        dlist += [ '$(TEXDIR)/'+x.basename()+asyext for x in deplist if x.type() == 'asy' and x.endswith('.tex') ]
+        output += '$(TEXDIR)/main_' + document + '.latex: ' + ' '.join(dlist) + '\n'
+        output += '.SECONDARY: $(TEXDIR)/main_' + document + '.latex\n\n'
+
+        # create a share: same files
+        output += '$(SHAREDIR)/' + document + '.make: ' + '$(TEXDIR)/main_' + document + '.tex ' + ' '.join(dlist) + '\n\n'
+        # create final share: same files, but .bib, plus .bbl
+        output += '$(FINALDIR)/' + document + '.make: '
+        if any(item.endswith('.bib') for item in dlist):
+            output += '$(TEXDIR)/main_' + document + '.bbl '
+        dlist = [ x for x in dlist if not x.endswith('.bib') ]
+        output += '$(TEXDIR)/main_' + document + '.tex ' + ' '.join(dlist) + '\n\n'
+
+        # all share files depend on a generator rule
+        dlist = [ '$(SHAREDIR)/' + document + '/' + x for x in deplist if not x.endswith(('.tex', '.pre')) ]
+        dlist += [ '$(SHAREDIR)/' + document + '/main_' + document + '.tex' ]
+        output += ' '.join(dlist) + ': $(SHAREDIR)/' + document + '.make\n\n'
+        # latex share depends on all but .tex files plus .tex from latexpand
+        output += document + '.share: ' + ' '.join(dlist) + '\n\n'
+
+        # all final share files depend on a generator rule
+        dlist = [ '$(FINALDIR)/' + document + '/' + x for x in deplist if not x.endswith(('.tex', '.pre', '.bib')) ]
+        dlist += [ '$(FINALDIR)/' + document + '/main_' + document + '.tex' ]
+        output += ' '.join(dlist) + ': $(FINALDIR)/' + document + '.make\n\n'
+        # latex final depends on all but .tex files plus .tex from latexpand
+        output += document + '.final: ' + ' '.join(dlist) + '\n\n'
+
+    # add makedepend dependencies
     output += '$(DEPDIR)/makedepend: ' + ' '.join(makedepend) + '\n\n'
     for item in makedepend:
         output += item + ':\n\n'
 
+    # write makedepend file
     try:
         os.makedirs(depdir)
     except OSError:
@@ -161,7 +175,7 @@ class Source(str):
 
     def __init__(self, filename):
         self.filename = os.path.basename(filename)
-        if filename.endswith(('.asy.tex', '.asy.pdf', '.asy.eps')):
+        if filename.endswith(('_asy.tex', '_asy.pdf', '_asy.eps')):
             self.srctype = 'asy'
         elif filename.endswith(('.tex', '.pre', '.cls', '.sty')):
             self.srctype = 'tex'
