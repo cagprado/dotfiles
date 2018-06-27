@@ -21,6 +21,7 @@ export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
 export FT2_SUBPIXEL_HINTING=2
 export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
 export MAKEFLAGS='-j'
+export LOCALBUILDS="$HOME/usr/local"
 
 # KEYRING ###################################################################
 if [[ -n "$DESKTOP_SESSION" ]]; then
@@ -48,24 +49,24 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
     fi
 
     # GCC
-    if [[ -d "$HOME/usr/local/gcc" ]]; then
-        export CC="$(readlink -f "$HOME/usr/local/gcc/bin/gcc")"
-        export CXX="$(readlink -f "$HOME/usr/local/gcc/bin/g++")"
-        export CPP="$(readlink -f "$HOME/usr/local/gcc/bin/cpp")"
-        export F77="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
-        export FC="$(readlink -f "$HOME/usr/local/gcc/bin/gfortran")"
-        export LDFLAGS="-fPIC -Wl,-rpath,$(readlink -f "$HOME/usr/local/gcc/lib64")"
-        export MANPATH="$(readlink -f "$HOME/usr/local/gcc/share/man"):$(manpath 2>/dev/null)"
-        PATH="$(readlink -f "$HOME/usr/local/gcc/bin"):$PATH"
+    if [[ -d "$LOCALBUILDS/gcc" ]]; then
+        export CC="$LOCALBUILDS/gcc/bin/gcc"
+        export CXX="$LOCALBUILDS/gcc/bin/g++"
+        export CPP="$LOCALBUILDS/gcc/bin/cpp"
+        export F77="$LOCALBUILDS/gcc/bin/gfortran"
+        export FC="$LOCALBUILDS/gcc/bin/gfortran"
+        export LDFLAGS="-fPIC -Wl,-rpath,$LOCALBUILDS/gcc/lib64"
+        export MANPATH="$LOCALBUILDS/gcc/share/man:$(manpath 2>/dev/null)"
+        PATH="$LOCALBUILDS/gcc/bin:$PATH"
     fi
 
     # LOCAL BUILDS
-    [[ -d "$HOME/usr/local/neovim" ]] && PATH="$(readlink -f "$HOME/usr/local/neovim/bin"):$PATH"
-    [[ -d "$HOME/usr/local/root" ]] && PATH="$(readlink -f "$HOME/usr/local/root/bin"):$PATH"
-    [[ -d "$HOME/usr/local/cmake" ]] && PATH="$(readlink -f "$HOME/usr/local/cmake/bin"):$PATH"
-    [[ -d "$HOME/usr/local/hepmc" ]] && PATH="$(readlink -f "$HOME/usr/local/hepmc/bin"):$PATH"
-    [[ -d "$HOME/usr/local/python" ]] && PATH="$(readlink -f "$HOME/usr/local/python/bin"):$PATH"
-    [[ -d "$HOME/usr/local/pythia" ]] && PATH="$(readlink -f "$HOME/usr/local/pythia/bin"):$PATH"
+    [[ -d "$LOCALBUILDS/neovim" ]] && PATH="$LOCALBUILDS/neovim/bin:$PATH"
+    [[ -d "$LOCALBUILDS/root" ]] && PATH="$LOCALBUILDS/root/bin:$PATH"
+    [[ -d "$LOCALBUILDS/cmake" ]] && PATH="$LOCALBUILDS/cmake/bin:$PATH"
+    [[ -d "$LOCALBUILDS/hepmc" ]] && PATH="$LOCALBUILDS/hepmc/bin:$PATH"
+    [[ -d "$LOCALBUILDS/python" ]] && PATH="$LOCALBUILDS/python/bin:$PATH"
+    [[ -d "$LOCALBUILDS/pythia" ]] && PATH="$LOCALBUILDS/pythia/bin:$PATH"
 fi
 
 # SET PATH AND COMPILE ZSH FILES ############################################
