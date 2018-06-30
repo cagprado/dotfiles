@@ -1,0 +1,133 @@
+diff -aur root-old/cint/cint/Module.mk root-new/cint/cint/Module.mk
+--- root-old/cint/cint/Module.mk	2017-06-01 16:13:51.675539292 +0200
++++ root-new/cint/cint/Module.mk	2017-06-01 17:50:36.210716745 +0200
+@@ -165,6 +165,18 @@
+ CINTS2       := $(filter-out $(MODDIRSD)/libstrm.%,$(CINTS2))
+ CINTS2       += $(MODDIRSD)/gcc4strm.cxx
+ endif
++ifeq ($(GCC_MAJOR),6)
++CINTS2       := $(filter-out $(MODDIRSD)/libstrm.%,$(CINTS2))
++CINTS2       += $(MODDIRSD)/gcc4strm.cxx
++endif
++ifeq ($(GCC_MAJOR),7)
++CINTS2       := $(filter-out $(MODDIRSD)/libstrm.%,$(CINTS2))
++CINTS2       += $(MODDIRSD)/gcc4strm.cxx
++endif
++ifeq ($(GCC_MAJOR),8)
++CINTS2       := $(filter-out $(MODDIRSD)/libstrm.%,$(CINTS2))
++CINTS2       += $(MODDIRSD)/gcc4strm.cxx
++endif
+ ifneq ($(CLANG_MAJOR),)
+ CINTS2       := $(filter-out $(MODDIRSD)/libstrm.%,$(CINTS2))
+ CINTS2       += $(MODDIRSD)/gcc4strm.cxx
+@@ -207,6 +215,15 @@
+ ifneq ($(CLANG_MAJOR),)
+ IOSENUMA     := $(CINTDIRIOSEN)/iosenum.$(ARCH)3
+ else
++ifeq ($(GCC_MAJOR),8)
++IOSENUMA     := $(CINTDIRIOSEN)/iosenum.$(ARCH)3
++else
++ifeq ($(GCC_MAJOR),7)
++IOSENUMA     := $(CINTDIRIOSEN)/iosenum.$(ARCH)3
++else
++ifeq ($(GCC_MAJOR),6)
++IOSENUMA     := $(CINTDIRIOSEN)/iosenum.$(ARCH)3
++else
+ ifeq ($(GCC_MAJOR),5)
+ IOSENUMA     := $(CINTDIRIOSEN)/iosenum.$(ARCH)3
+ else
+@@ -221,6 +235,9 @@
+ endif
+ endif
+ endif
++endif
++endif
++endif
+ 
+ # used in the main Makefile
+ ALLHDRS     += $(CINTHT) $(CINTINCLUDES)
+@@ -305,7 +321,7 @@
+ $(MAKECINT):    $(MAKECINTO)
+ 		$(LD) $(LDFLAGS) -o $@ $(MAKECINTO)
+ 
+-$(IOSENUM): 
++$(IOSENUM):
+ 		$(MAKEDIR)
+ 		@(if [ ! -r $(IOSENUMA) ]; then \
+ 			echo "Missing $(IOSENUMA), run: make $(IOSENUMA)"; \
+@@ -355,7 +371,15 @@
+ ifeq ($(GCC_MAJOR),5)
+ $(call stripsrc,$(CINTDIRSD)/gcc4strm.o): CINTCXXFLAGS += -Wno-strict-aliasing
+ endif
+-
++ifeq ($(GCC_MAJOR),6)
++$(call stripsrc,$(CINTDIRSD)/gcc4strm.o): CINTCXXFLAGS += -Wno-strict-aliasing
++endif
++ifeq ($(GCC_MAJOR),7)
++$(call stripsrc,$(CINTDIRSD)/gcc4strm.o): CINTCXXFLAGS += -Wno-strict-aliasing
++endif
++ifeq ($(GCC_MAJOR),8)
++$(call stripsrc,$(CINTDIRSD)/gcc4strm.o): CINTCXXFLAGS += -Wno-strict-aliasing
++endif
+ 
+ $(MAKECINTO) $(CINTO): $(CINTCONF) $(ORDER_) $(CINTINCLUDES)
+ 
+@@ -389,8 +410,20 @@
+ ##### configcint.h
+ ifeq ($(CPPPREP),)
+ # cannot use "CPPPREP?=", as someone might set "CPPPREP="
++ifeq ($(GCC_MAJOR),8)
++  CPPPREP = $(CXX) -std=c++98 -E -C
++else
++ifeq ($(GCC_MAJOR),7)
++  CPPPREP = $(CXX) -std=c++98 -E -C
++else
++ifeq ($(GCC_MAJOR),6)
++  CPPPREP = $(CXX) -std=c++98 -E -C
++else
+   CPPPREP = $(CXX) -E -C
+ endif
++endif
++endif
++endif
+ 
+ include $(CINTCONFMK)
+ ##### configcint.h - END
+diff -aur root-old/cmake/modules/SetUpLinux.cmake root-new/cmake/modules/SetUpLinux.cmake
+--- root-old/cmake/modules/SetUpLinux.cmake	2017-06-01 16:13:46.998827283 +0200
++++ root-new/cmake/modules/SetUpLinux.cmake	2017-06-01 17:46:27.478632487 +0200
+@@ -69,7 +69,11 @@
+   set(CMAKE_C_FLAGS_PROFILE          "-g3 -fno-inline -ftest-coverage -fprofile-arcs")
+ 
+   #Settings for cint
+-  set(CPPPREP "${CXX} -E -C")
++  if (GCC_MAJOR GREATER 5)
++    set(CPPPREP "${CXX} -std=c++98 -E -C")
++  else()
++    set(CPPPREP "${CXX} -E -C")
++  endif()
+   set(CXXOUT "-o ")
+   set(EXPLICITLINK "no") #TODO
+ 
+diff -aur root-old/config/Makefile.linux root-new/config/Makefile.linux
+--- root-old/config/Makefile.linux	2017-06-01 16:14:00.295622865 +0200
++++ root-new/config/Makefile.linux	2017-06-01 16:33:37.129379961 +0200
+@@ -62,7 +62,6 @@
+ else
+ F77LIBS      := $(shell $(F77) -m32 -print-file-name=libgfortran.a)
+ endif
+-F77LIBS      += $(shell $(F77) -m32 -print-file-name=libgfortranbegin.a)
+ endif
+ 
+ ifneq ($(findstring g77, $(F77)),)
+diff -aur root-old/config/Makefile.linuxx8664gcc root-new/config/Makefile.linuxx8664gcc
+--- root-old/config/Makefile.linuxx8664gcc	2017-06-01 16:14:00.322289790 +0200
++++ root-new/config/Makefile.linuxx8664gcc	2017-06-01 16:33:37.129379961 +0200
+@@ -71,7 +71,6 @@
+ else
+ F77LIBS      := $(shell $(F77) -m64 -print-file-name=libgfortran.a)
+ endif
+-F77LIBS      += $(shell $(F77) -m64 -print-file-name=libgfortranbegin.a)
+ endif
+ 
+ ifneq ($(findstring g77, $(F77)),)
