@@ -20,6 +20,6 @@ PATH="/opt/hep_framework/cmake/bin:$PATH"
 PATH="/opt/hep_framework/python/bin:$PATH"
 PATH="/opt/hep_framework/hepmc/bin:$PATH"
 PATH="/opt/hep_framework/pythia/bin:$PATH"
-PATH="/opt/hep_framework/root/bin:$PATH"
 PATH="/opt/hep_framework/root5/bin:$PATH"
+PATH="/opt/hep_framework/root/bin:$PATH"
 export PATH

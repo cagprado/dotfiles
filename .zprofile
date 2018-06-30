@@ -21,7 +21,7 @@ export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
 export FT2_SUBPIXEL_HINTING=2
 export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
 export MAKEFLAGS='-j'
-export LOCALBUILDS="$HOME/usr/local"
+export LOCALBUILDS="/opt/hep_framework"
 
 # KEYRING ###################################################################
 if [[ -n "$DESKTOP_SESSION" ]]; then
@@ -65,8 +65,8 @@ if [[ "$HOSTNAME" != "mredson" ]]; then
     [[ -d "$LOCALBUILDS/python" ]] && PATH="$LOCALBUILDS/python/bin:$PATH"
     [[ -d "$LOCALBUILDS/hepmc" ]] && PATH="$LOCALBUILDS/hepmc/bin:$PATH"
     [[ -d "$LOCALBUILDS/pythia" ]] && PATH="$LOCALBUILDS/pythia/bin:$PATH"
-    [[ -d "$LOCALBUILDS/root" ]] && PATH="$LOCALBUILDS/root/bin:$PATH"
     [[ -d "$LOCALBUILDS/root5" ]] && PATH="$LOCALBUILDS/root5/bin:$PATH"
+    [[ -d "$LOCALBUILDS/root" ]] && PATH="$LOCALBUILDS/root/bin:$PATH"
     [[ -d "$LOCALBUILDS/neovim" ]] && PATH="$LOCALBUILDS/neovim/bin:$PATH"
 fi
 
