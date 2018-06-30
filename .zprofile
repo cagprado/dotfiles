@@ -21,7 +21,7 @@ export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
 export FT2_SUBPIXEL_HINTING=2
 export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
 export MAKEFLAGS='-j'
-export LOCALBUILDS="/opt/hep_framework"
+export LOCALBUILDS="$HOME/usr/local"
 
 # KEYRING ###################################################################
 if [[ -n "$DESKTOP_SESSION" ]]; then
