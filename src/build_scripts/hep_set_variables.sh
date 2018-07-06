@@ -1,13 +1,15 @@
 #!/bin/sh
 
-# first export the basedir of some programs
+# cleanup
+unset LD_LIBRARY_PATH
+
+# export the basedir of some programs
 export HEPMC_DIR=/opt/hep_framework/hepmc
 export PYTHIA8=/opt/hep_framework/pythia
 export PYTHIA8DATA=$PYTHIA8/share/Pythia8/xmldoc
 export ROOTSYS=/opt/hep_framework/root
 
 # now add the installed programs to the current path
-
 export CC="/opt/hep_framework/gcc/bin/gcc"
 export CXX="/opt/hep_framework/gcc/bin/g++"
 export CPP="/opt/hep_framework/gcc/bin/cpp"
