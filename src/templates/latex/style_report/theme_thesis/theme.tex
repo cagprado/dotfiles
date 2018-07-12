@@ -1,0 +1,231 @@
+% define front page and metadata
+\makeatletter
+\def\emptyarg{} % Define the empty string as macro \emptyarg
+
+% DEFINE TERMS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% frontpage
+\newcommand\Title[2][]{\title{#2}\def\@engtitle{#1}}
+\newcommand\University[1]{\def\@university{#1}}
+\newcommand\Institute[1]{\def\@institute{#1}}
+\newcommand\Author[3][]{\author{#2 #3}\def\@forename{#2}\def\@surname{#3}\def\@shortauthor{#1}\ifx\emptyarg\@shortauthor\def\@shortauthor{#2 #3}\fi}
+\newcommand\Advisor[2]{\def\@examinerZ{#1}\def\@institutionZ{#2}}
+\newcommand\Nature[2][]{\def\@nature{#2}\def\@engnature{#1}}
+\newcommand\NatureNote[2][]{\def\@naturenote{#2}\def\@engnaturenote{#1}}
+\newcommand\ExaminerA[2]{\def\@examinerA{#1}\def\@institutionA{#2}}
+\newcommand\ExaminerB[2]{\def\@examinerB{#1}\def\@institutionB{#2}}
+\newcommand\ExaminerC[2]{\def\@examinerC{#1}\def\@institutionC{#2}}
+\newcommand\ExaminerD[2]{\def\@examinerD{#1}\def\@institutionD{#2}}
+\newcommand\Place[2]{\def\@city{#1}\def\@state{#2}}
+\newcommand\Date[3][]{\def\@year{#3}\def\@month{#2}\def\@engmonth{#1}}
+
+% catalographic information
+\newcommand\CatalogNote[2][]{\def\@catalognote{#2}\def\@engcatalognote{#1}}
+\newcommand\Department[2][]{\def\@department{#2}\def\@engdepartment{#1}}
+\newcommand\Subject[2][]{\def\@subject{#2}\def\@engsubject{#1}}
+\newcommand\Keywords[3]{\def\@keyworda{#1}\def\@keywordb{#2}\def\@keywordc{#3}}
+\newcommand\EngKeywords[3]{\def\@engkeyworda{#1}\def\@engkeywordb{#2}\def\@engkeywordc{#3}}
+\newcommand\Catalog[1]{\def\@catalog{#1}}
+
+\newcommand\frontpage{%
+\begin{titlingpage}
+  \setlength{\parindent}{0pt}
+
+  % Front Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \thispagestyle{empty}
+  \begin{center}
+    \Large\textsc{\@university}
+    \vskip 1ex
+    \large\textsc{\@institute}
+
+    \vskip 17ex
+
+    \HUGE\@title
+    \vskip 1ex
+    \LARGE\textit{\@shortauthor}
+    \vskip 2ex
+    \hfill\large Orientador: \@examinerZ
+  \end{center}
+
+  \vfill
+
+  \hfill\begin{minipage}{0.55\textwidth}
+    \@naturenote
+  \end{minipage}
+
+  \vskip 6ex
+
+  Banca Examinadora:\\
+  \@examinerZ\ (\textsc{\@institutionZ})\\
+  Prof. Dr. \@examinerA\ (\textsc{\@institutionA})\\
+  Prof.\textordfeminine\ Dr.\textordfeminine\ \@examinerB\ (\textsc{\@institutionB})\\
+  Prof. Dr. \@examinerC\ (\textsc{\@institutionC})\\
+  Prof. Dr. \@examinerD\ (\textsc{\@institutionD})
+
+  \vskip 6ex
+
+  \begin{center}\large
+    \@city
+    \vskip 1ex
+    \@year
+  \end{center}
+  \cleartoverso
+
+  % Catalog Information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \thispagestyle{empty}
+
+  \textcopyright\ \@year\ \@author
+  \vskip \baselineskip
+  \@university, \@institute, \@city, \@state.
+
+  \vfill
+
+  \begin{minipage}{\textwidth}
+    \hrulefill
+
+    \begin{center}
+      \textsc{Ficha Catalográfica}\\
+      \@catalognote
+    \end{center}
+    \vspace*{\baselineskip}
+
+    \@surname, \@forename
+    \vspace*{\baselineskip}
+
+    \@title\ / \@engtitle\ --- \@city, \@year
+    \vspace*{\baselineskip}
+
+    \@nature\ --- \@university. \@institute. \@department.
+    \vspace*{\baselineskip}
+
+    Orientador: \@examinerZ\\
+    Área de Concentração: \@subject
+    \vspace*{\baselineskip}
+
+    Unitermos: 1. \@keyworda; 2. \@keywordb; 3. \@keywordc.
+    \vspace*{2\baselineskip}
+
+    \textsc{\@catalog}
+
+    \hrulefill
+  \end{minipage}
+
+  \vfill
+
+  \begin{center}
+    \begin{minipage}[t]{0.49\textwidth}
+      \hfill17 18 19 20 21\hspace*{1em}
+    \end{minipage}
+    \begin{minipage}[t]{0.49\textwidth}
+      \hspace*{1em}5 4 3 2 1
+    \end{minipage}
+    \vskip 1ex
+    \@month\ de \@year
+  \end{center}
+  \cleartorecto
+
+  % ENGLISH VERSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % Front Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \thispagestyle{empty}
+  \begin{center}
+    \Large\textsc{\@university}
+    \vskip 1ex
+    \large\textsc{\@institute}
+
+    \vskip 17ex
+
+    \HUGE\@engtitle
+    \vskip 1ex
+    \LARGE\textit{\@shortauthor}
+    \vskip 2ex
+    \hfill\large Advisor: \@examinerZ
+  \end{center}
+
+  \vfill
+
+  \hfill\begin{minipage}{0.55\textwidth}
+    \@engnaturenote
+  \end{minipage}
+
+  \vskip 6ex
+
+  Examiner’s Committee:\\
+  \@examinerZ\ (\textsc{\@institutionZ})\\
+  Prof. Dr. \@examinerA\ (\textsc{\@institutionA})\\
+  Prof. Dr. \@examinerB\ (\textsc{\@institutionB})\\
+  Prof. Dr. \@examinerC\ (\textsc{\@institutionC})\\
+  Prof. Dr. \@examinerD\ (\textsc{\@institutionD})
+
+  \vskip 6ex
+
+  \begin{center}\large
+    \@city
+    \vskip 1ex
+    \@year
+  \end{center}
+  \cleartoverso
+
+  % Catalog Information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \thispagestyle{empty}
+
+  \textcopyright\ \@year\ \@author
+  \vskip \baselineskip
+  \@university, \@institute, \@city, \@state.
+
+  \vfill
+
+  \begin{minipage}{\textwidth}
+    \hrulefill
+
+    \begin{center}
+      \textsc{Catalog Information}\\
+      \@engcatalognote
+    \end{center}
+    \vspace*{\baselineskip}
+
+    \@surname, \@forename
+    \vspace*{\baselineskip}
+
+    \@title\ / \@engtitle\ --- \@city, \@year
+    \vspace*{\baselineskip}
+
+    \@engnature\ --- \@university. \@institute. \@engdepartment.
+    \vspace*{\baselineskip}
+
+    Advisor: \@examinerZ\\
+    Subject: \@engsubject
+    \vspace*{\baselineskip}
+
+    Keywords: 1. \@engkeyworda; 2. \@engkeywordb; 3. \@engkeywordc.
+    \vspace*{2\baselineskip}
+
+    \textsc{\@catalog}
+
+    \hrulefill
+  \end{minipage}
+
+  \vfill
+
+  \begin{center}
+    \begin{minipage}[t]{0.49\textwidth}
+      \hfill17 18 19 20 21\hspace*{1em}
+    \end{minipage}
+    \begin{minipage}[t]{0.49\textwidth}
+      \hspace*{1em}5 4 3 2 1
+    \end{minipage}
+    \vskip 1ex
+    \@engmonth, \@year
+  \end{center}
+  \cleartorecto
+
+  % Title Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \thispagestyle{empty}
+  \vspace*{\fill}
+  \begin{center}
+    \LARGE\scshape\@engtitle
+  \end{center}
+  \vspace*{\fill}
+\end{titlingpage}
+\cleartorecto
+}
+
+\makeatother

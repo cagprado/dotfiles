@@ -54,9 +54,11 @@
 \DeclarePairedDelimiter\inparen{\lparen}{\rparen}
 \DeclarePairedDelimiter\inbrack{\lbrack}{\rbrack}
 \DeclarePairedDelimiter\inbrace{\lbrace}{\rbrace}
-\DeclarePairedDelimiter\norm{\lvert}{\rvert}
 \DeclarePairedDelimiter\avg{\langle}{\rangle}
 \DeclarePairedDelimiter\davg{\lAngle}{\rAngle}
+% commath (that asymptote loads automatically) already define these
+\let\abs\undefined\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\let\norm\undefined\DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
 % operators
 \DeclareMathOperator\Var{Var}  % variance
@@ -81,7 +83,7 @@
 % High Energy Physics -------------------------------------------------------
 
 % units
-\DeclareSIUnit{\fm}{\femto\metre}                     % fm: femtometre
+\DeclareSIUnit{\fm}{\femto\metre}
 
 % standard model particles
 \newcommand\qup{{\romanup{u}}}

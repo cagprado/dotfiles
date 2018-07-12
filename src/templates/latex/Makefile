@@ -22,21 +22,21 @@ RM         := rm -f
 MKDIR      := mkdir -p
 ASY        := asy -nosafe -tex lualatex -cd $(ASYDIR)
 ifeq ($(VERBOSE),true)
-	LATEXMK = cd $(TEXDIR) && latexmk -pdf -pdflatex='lualatex' --latexoption='$(LATEXARGS)' --output-directory=main_$*.out main_$*
+	LATEXMK = cd $(TEXDIR) && latexmk -pdf -pdflatex='lualatex' --latexoption='$(LATEXARGS)' --output-directory=main_$*.compile main_$*
 else
-	LATEXMK = cd $(TEXDIR) && latexrun -Wall --verbose-cmds --latex-cmd='lualatex' --latex-args='$(LATEXARGS)' -O main_$*.out -o main_$*.out/main_$*.pdf main_$*
+	LATEXMK = cd $(TEXDIR) && latexrun -Wall --verbose-cmds --latex-cmd='lualatex' --latex-args='$(LATEXARGS)' -O main_$*.compile -o main_$*.compile/main_$*.pdf main_$*
 endif
 
 # FUNCTIONS
 texfiles    = $(addprefix $(TEXDIR)/main_,$(addsuffix .tex,$1))
 texbbl      = $(addprefix $(TEXDIR)/main_,$(addsuffix .bbl,$1))
-texout      = $(addprefix $(TEXDIR)/main_,$(addsuffix .out,$1))
+texout      = $(addprefix $(TEXDIR)/main_,$(addsuffix .compile,$1))
 texpdf      = $(addprefix $(BUILDDIR)/,$(addsuffix .pdf,$1))
 asytex      = $(addprefix $(TEXDIR)/,$(addsuffix _asy.tex,$1)) $(addprefix $(TEXDIR)/,$(addsuffix _asy_0.pdf,$1))
 asypdf      = $(addprefix $(TEXDIR)/,$(addsuffix _asy.pdf,$1))
 asyeps      = $(addprefix $(TEXDIR)/,$(addsuffix _asy.eps,$1))
-sharetex    = $(patsubst %,$(SHAREDIR)/%,$1)
-finaltex    = $(patsubst %,$(FINALDIR)/%,$1)
+sharetex    = $(patsubst %,$(SHAREDIR)/%.make,$1)
+finaltex    = $(patsubst %,$(FINALDIR)/%.make,$1)
 
 # GENERAL RULES ###############################################################
 default: $(call texpdf,$(DOCUMENTS))
@@ -52,8 +52,8 @@ $(BUILDDIR)/%.pdf $(TEXDIR)/main_%.bbl: $(TEXDIR)/main_%.latex;
 $(TEXDIR)/main_%.latex: $(TEXDIR)/main_%.tex
 	@echo -e "\e[1mLatexing document '$*'...\e[0m"
 	@$(LATEXMK)
-	@$(CP) $(TEXDIR)/main_$*.out/main_$*.pdf $(BUILDDIR)/$*.pdf
-	@$(CP) $(TEXDIR)/main_$*.out/main_$*.bbl $(TEXDIR)/main_$*.bbl >/dev/null 2>&1; true
+	@$(CP) $(TEXDIR)/main_$*.compile/main_$*.pdf $(BUILDDIR)/$*.pdf
+	@$(CP) $(TEXDIR)/main_$*.compile/main_$*.bbl $(TEXDIR)/main_$*.bbl >/dev/null 2>&1; true
 
 # -- latex flattenization for sharing (with .bib) --
 $(call sharetex,$(DOCUMENTS)):
@@ -76,7 +76,7 @@ $(call finaltex,$(DOCUMENTS)):
 	@echo -e "\e[1mExporting document '$(NAME)' for submission...\e[0m"
 	@$(MKDIR) $(DIR)
 	@$(if $(FILES),$(CP) $(FILES) $(DIR))
-	@cd $(TEXDIR) && latexpand --fatal $(BBLFILE) -o $(NAME)-final.tex main_$(NAME).tex >/dev/null 2>&1
+	@cd $(TEXDIR) && latexpand --fatal --empty-comments $(BBLFILE) -o $(NAME)-final.tex main_$(NAME).tex >/dev/null 2>&1
 	@$(MV) $(TEXDIR)/$(NAME)-final.tex $(DIR)/main_$(NAME).tex
 .SECONDARY: $(call finaltex,$(DOCUMENTS))
 

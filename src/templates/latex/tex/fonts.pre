@@ -1,7 +1,11 @@
 % FONT CONFIGURATION ----------------------------------------------------------
 \usepackage{microtype,indentfirst}                    % Spacing and finetuning fonts
 \usepackage{booktabs}                                 % Tables
-\usepackage[outputdir={\jobname.out}]{minted}         % Code highlighting
+\usepackage[
+  outputdir={\jobname.compile},
+  finalizecache=false,
+  frozencache=false,
+  ]{minted}         % Code highlighting
 \setminted{ %<<<
   autogobble=true,
   linenos=true,
