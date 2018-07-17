@@ -95,10 +95,10 @@ user_agent = alot/{version}
       regexp = '^(?P<email>[^@]+@[^\t]+)\t+(?P<name>[^\t]+)'
       ignorecase = True
 
-  [[ccnu-yandex]]
+  [[ccnu]]
     address = cagprado@mail.ccnu.edu.cn
     realname = Caio Prado
-    sendmail_command = msmtpq -t --account=yandex
+    sendmail_command = msmtpq -t --account=ccnu
     draft_box = maildir:///home/cagprado/var/spool/mail/yandex/Drafts
     sent_box = maildir:///home/cagprado/var/spool/mail/yandex/Sent
     sent_tags = ccnu,sent
