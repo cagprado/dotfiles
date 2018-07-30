@@ -18,6 +18,11 @@
     line_even = '',
     line_odd = '',
 
+[namedqueries]
+    line_focus = 'standout',
+    line_even = '',
+    line_odd = '',
+
 [taglist]
     line_focus = 'standout',
     line_even = '',
@@ -67,7 +72,7 @@
         [[[subject]]]
             normal = '','', 'white','', 'h15'
             focus =  '','', 'standout'
-            width = 'weight', 1
+            width = 'weight', 5
         [[[tags]]]
             normal = '','', 'dark blue'
             focus =  '','', 'standout', 'brown'
