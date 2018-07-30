@@ -712,7 +712,8 @@ exitfunction = new void()
   newpage();
   // shipout final picture
   currentpicture = finalpicture;
-  if (needshipout()) shipout();
+  if (!currentpicture.empty())
+      updatefunction();
 };
 atexit(exitfunction);
 // }}}2
