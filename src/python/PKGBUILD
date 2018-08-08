@@ -6,9 +6,9 @@
 # Contributor: Jason Chu <jason@archlinux.org>
 
 pkgname=python
-pkgver=3.6.5
+pkgver=3.7.0
 pkgrel=3
-_pybasever=3.6
+_pybasever=3.7
 pkgdesc="Next generation of the python high-level scripting language"
 arch=('x86_64')
 license=('custom')
