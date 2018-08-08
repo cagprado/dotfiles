@@ -1,10 +1,14 @@
 # Interactive shell (not run by scripts)
 
-# first initialize tmux
+# Check if we'll spawn tmux #################################################
 if which tmux >/dev/null 2>&1 && [[ -z "$TMUX" ]]; then
-    # get id of a detached session
-    ID="$(tmux ls -F '#{session_id}:#{?session_attached,attached,detached}' |& grep -m1 detached | cut -d: -f1)"
-    [[ -n "$ID" ]] && exec tmux attach-session -t "$ID" || exec tmux new-session
+    ID=$(tmux ls -F '#{session_id}:#{?session_attached,attached,detached}' |& grep -m1 detached | cut -d: -f1)
+    [[ -n "$ID" ]] && TMUXCOMM="tmux attach-session -t $ID" || TMUXCOMM="tmux new-session"
+    if [[ -o login ]]; then
+        $=TMUXCOMM && exit
+    else
+        exec $=TMUXCOMM
+    fi
 fi
 
 # Options ###################################################################
@@ -64,24 +68,20 @@ alias ncmpcpp='app ncmpcpp'
 # lists all aliases and scripts
 scripts()
 {
-  local -x LIST_WIDTH=25
-  local FILE
+    local -x LIST_WIDTH=25
+    local FILE
 
-  print -P "%BALIASES%b"
-  eval "$(alias | sed -e "s|^\([^=]*\)='\?\([^']*\)'\?.*$|print -P -f '%${LIST_WIDTH}s  %s\\\\n' '%B\1%b' '\2';|")"
+    print -P "%BALIASES%b"
+    eval "$(alias | sed -e "s|^\([^=]*\)='\?\([^']*\)'\?.*$|print -P -f '%${LIST_WIDTH}s  %s\\\\n' '%B\1%b' '\2';|")"
 
-  print -P "\n%BZSH FUNCTIONS%b"
-  for FILE in $ZSH_FUNCTIONS/*(.x:t); do $FILE -H; done
+    print -P "\n%BZSH FUNCTIONS%b"
+    for FILE in $ZSH_FUNCTIONS/*(.x:t); do $FILE -H; done
 
-  print -P "\n%BSCRIPTS%b"
-  #for FILE in $BIN/*(.x); do echo $FILE; done
+    print -P "\n%BSCRIPTS%b"
+    #for FILE in $BIN/*(.x); do echo $FILE; done
 }
 
 # Colors and fonts ##########################################################
-if [[ "$TERM" =~ linux && -z "$SSH_CONNECTION" ]]; then
-  colors
-  setfont $HOME/.local/share/fonts/bitmap/tamsyn-patched/Tamsyn8x16r.psf.gz
-fi
 [[ -r $HOME/etc/dircolors ]] && eval $(dircolors "$HOME/etc/dircolors")
 export LESS_TERMCAP_so=$(tput setaf 3; tput smso)     # begin standout
 export LESS_TERMCAP_se=$(tput sgr0; tput rmso)        # end standout
@@ -114,23 +114,23 @@ export KEYTIMEOUT=1                # set waiting time for escapes
 # define cursor styles (Ss must be defined to a macro, not flag)
 local cursor_normal="$(echoti Ss 2 2>/dev/null)"
 if [[ $? -ne 0 || "$cursor_normal" = "yes" ]]; then
-  local cursor_normal=""
-  local cursor_replace=""
-  local cursor_insert=""
+    local cursor_normal=""
+    local cursor_replace=""
+    local cursor_insert=""
 else
-  local cursor_replace="$(echoti Ss 4 2>/dev/null)"
-  local cursor_insert="$(echoti Ss 6 2>/dev/null)"
+    local cursor_replace="$(echoti Ss 4 2>/dev/null)"
+    local cursor_insert="$(echoti Ss 6 2>/dev/null)"
 fi
 
 function select-cursor() {
-  # select cursor when init and change keymap
-  if [[ "$KEYMAP" == "vicmd" ]]; then
-    echo -n $cursor_normal
-  elif [[ $ZLE_STATE == *overwrite* ]]; then
-    echo -n $cursor_replace
-  else
-    echo -n $cursor_insert
-  fi
+    # select cursor when init and change keymap
+    if [[ "$KEYMAP" == "vicmd" ]]; then
+        echo -n $cursor_normal
+    elif [[ $ZLE_STATE == *overwrite* ]]; then
+        echo -n $cursor_replace
+    else
+        echo -n $cursor_insert
+    fi
 }
 
 # set zle mode functions
@@ -181,10 +181,10 @@ DIRSTACKFILE="$HOME/.cache/zsh/dirs"
 DIRSTACKSIZE=20
 
 if [[ -f $DIRSTACKFILE && $#dirstack -eq 0 ]]; then
-  dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
+    dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
 fi
 chpwd() {
-  print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
+    print -l $PWD ${(u)dirstack} >$DIRSTACKFILE
 }
 cdUndoKey() {
   popd >/dev/null
@@ -211,85 +211,81 @@ zle_highlight=(bg_start_code:'\e[48;5;' bg_default_code:7 default:bg=254)
 function precmd() { echo -ne '\a' }
 function cfg_flag()
 {
-  if [[ "$TERM" =~ "linux" ]]; then
-    $=CFG_COMMAND update-index --refresh >/dev/null || echo "%F{red}*%F{default}"
-  else
     $=CFG_COMMAND update-index --refresh >/dev/null || echo "%F{red} %F{default}"
-  fi
 }
 function batterystatus()
 {
-  # Set location of battery status files
-  local CHARGE=/sys/class/power_supply/BAT0/charge_now
-  local FULL=/sys/class/power_supply/BAT0/charge_full
-  local STATUS=/sys/class/power_supply/BAT0/status
+    # Set location of battery status files
+    local CHARGE=/sys/class/power_supply/BAT0/energy_now
+    local FULL=/sys/class/power_supply/BAT0/energy_full
+    local STATUS=/sys/class/power_supply/BAT0/status
 
-  # If file exists then we have battery
-  if [[ -r $CHARGE ]]; then
-    # Check if it's charging
-    [[ "$(<$STATUS)" = "Charging" ]] && STATUS="%F{blue}" || STATUS=""
+    # If file exists then we have battery
+    if [[ -r $STATUS ]]; then
+        # Check if it's charging
+        [[ "$(<$STATUS)" = "Charging" ]] && STATUS="%F{blue}" || STATUS=""
 
-    # Eval current charge in battery
-    local FRACTION="$((100 * $(<$CHARGE) / $(<$FULL)))"
-    if [[ "$TERM" =~ "linux" ]]; then
-      if [[ $FRACTION -le 5 ]]; then
-        local ICON="%F{red}%F{blink}${STATUS}····"
-      elif [[ $FRACTION -le 15 ]]; then
-        local ICON="%F{yellow}${STATUS}█···"
-      elif [[ $FRACTION -le 25 ]]; then
-        local ICON="%F{green}${STATUS}█···"
-      elif [[ $FRACTION -le 50 ]]; then
-        local ICON="%F{green}${STATUS}██··"
-      elif [[ $FRACTION -le 75 ]]; then
-        local ICON="%F{green}${STATUS}███·"
-      else
-        local ICON="%F{green}${STATUS}████"
-      fi
-    else
-      if [[ $FRACTION -le 5 ]]; then
-        local ICON="%F{red}${STATUS}  "
-      elif [[ $FRACTION -le 15 ]]; then
-        local ICON="%F{yellow}${STATUS}  "
-      elif [[ $FRACTION -le 25 ]]; then
-        local ICON="%F{green}${STATUS}  "
-      elif [[ $FRACTION -le 50 ]]; then
-        local ICON="%F{green}${STATUS}  "
-      elif [[ $FRACTION -le 75 ]]; then
-        local ICON="%F{green}${STATUS}  "
-      else
-        local ICON="%F{green}${STATUS}  "
-      fi
+        # Eval current charge in battery
+        local FRACTION="$((100 * $(<$CHARGE) / $(<$FULL)))"
+        if [[ "$TERM" =~ "linux" ]]; then
+            if [[ $FRACTION -le 5 ]]; then
+                local ICON="%F{red}%F{blink}${STATUS}····"
+            elif [[ $FRACTION -le 15 ]]; then
+                local ICON="%F{yellow}${STATUS}█···"
+            elif [[ $FRACTION -le 25 ]]; then
+                local ICON="%F{green}${STATUS}█···"
+            elif [[ $FRACTION -le 50 ]]; then
+                local ICON="%F{green}${STATUS}██··"
+            elif [[ $FRACTION -le 75 ]]; then
+                local ICON="%F{green}${STATUS}███·"
+            else
+                local ICON="%F{green}${STATUS}████"
+            fi
+        else
+            if [[ $FRACTION -le 5 ]]; then
+                local ICON="%F{red}${STATUS}  "
+            elif [[ $FRACTION -le 15 ]]; then
+                local ICON="%F{yellow}${STATUS}  "
+            elif [[ $FRACTION -le 25 ]]; then
+                local ICON="%F{green}${STATUS}  "
+            elif [[ $FRACTION -le 50 ]]; then
+                local ICON="%F{green}${STATUS}  "
+            elif [[ $FRACTION -le 75 ]]; then
+                local ICON="%F{green}${STATUS}  "
+            else
+                local ICON="%F{green}${STATUS}  "
+            fi
+        fi
+
+        # Print value
+        echo $ICON
     fi
-
-    # Print value
-    echo $ICON
-  fi
 }
 
 function setprompt()
 {
-  setopt prompt_subst
-  local BLK="%{$(echoti setaf 0)%}"
-  local RED="%{$(echoti setaf 1)%}"
-  local GRE="%{$(echoti setaf 2)%}"
-  local YEL="%{$(echoti setaf 3)%}"
-  local BLU="%{$(echoti setaf 4)%}"
-  local MAG="%{$(echoti setaf 5)%}"
-  local CYA="%{$(echoti setaf 6)%}"
-  local WHI="%{$(echoti setaf 7)%}"
-  local BOL="%{$(echoti bold)%}"
-  local BGR="%{$(echoti Tc >/dev/null 2>&1 && echo '\e[48;5;254m')%}"  # e4e4e4
-  local DEF="%{$(echoti sgr0)%}"
-  local NOR="%{$DEF$BGR%}"
+    setopt prompt_subst
+    local BLK="%{$(echoti setaf 0)%}"
+    local RED="%{$(echoti setaf 1)%}"
+    local GRE="%{$(echoti setaf 2)%}"
+    local YEL="%{$(echoti setaf 3)%}"
+    local BLU="%{$(echoti setaf 4)%}"
+    local MAG="%{$(echoti setaf 5)%}"
+    local CYA="%{$(echoti setaf 6)%}"
+    local WHI="%{$(echoti setaf 7)%}"
+    local BOL="%{$(echoti bold)%}"
+    local BGR="%{$(echoti Tc >/dev/null 2>&1 && echo '\e[48;5;254m')%}"  # e4e4e4
+    local DEF="%{$(echoti sgr0)%}"
+    local NOR="%{$DEF$BGR%}"
 
-  PROMPT="${NOR}[\$(batterystatus)$GRE%T$NOR%(1j./$RED%j$NOR.)] %(0?.$BLU.$RED)%n$NOR@$MAG$BOL%m$NOR\$(cfg_flag)%#$NOR "
-  RPROMPT="$NOR @ $MAG%~$DEF"
+    PROMPT="${NOR}[\$(batterystatus)$GRE%T$NOR%(1j./$RED%j$NOR.)] %(0?.$BLU.$RED)%n$NOR@$MAG$BOL%m$NOR\$(cfg_flag)%#$NOR "
+    RPROMPT="$NOR @ $MAG%~$DEF"
 }
 setprompt
 
 # Source syntax highlighting plugin
 if [[ -f "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  source "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+    source "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
 # Show a nice cowsay message

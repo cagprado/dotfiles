@@ -77,3 +77,8 @@ zcompile $HOME/.zprofile
 zcompile $HOME/.zshrc
 zcompile $HOME/.zlogout
 export PATH="$HOME/bin:$PATH"
+
+# CONSOLE ###################################################################
+if [[ "$TERM" =~ linux && -z "$SSH_CONNECTION" ]]; then
+  /home/cagprado/bin/zsh/colors
+fi
