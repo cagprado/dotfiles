@@ -1,0 +1,161 @@
+diff -ruN a/add.ml b/add.ml
+--- a/add.ml	2014-04-12 09:43:31.000000000 +0800
++++ b/add.ml	2018-08-08 16:56:08.379937819 +0800
+@@ -20,7 +20,7 @@
+ 
+ open Rpc_stack
+ open Gsl_assist
+-open Big_int
++open Batteries.Big_int
+ 
+ let add (stack : rpc_stack) (evaln : int -> unit) =
+    evaln 2;
+diff -ruN a/interface_draw.ml b/interface_draw.ml
+--- a/interface_draw.ml	2014-04-12 09:43:31.000000000 +0800
++++ b/interface_draw.ml	2018-08-08 18:21:32.686867800 +0800
+@@ -28,11 +28,9 @@
+ open Rpc_calc;;
+ open Rpc_stack;;
+ open Complex;;
+-open Big_int;;
+ open Operations;;
+ open Interface;;
+ 
+-
+ type abbrev_help_display_t = {functions : string list; 
+                               modes : string list;
+                               misc : string list}
+@@ -785,13 +783,13 @@
+    erase ();
+    (* draw the box outline *)
+    let horiz_line = String.make iface.scr.cols '*' in
+-   let vert_line_piece = String.make iface.scr.cols ' ' in
++   let vert_line_piece = Bytes.make iface.scr.cols ' ' in
+    vert_line_piece.[0] <- '*';
+    vert_line_piece.[pred iface.scr.cols] <- '*';
+    assert (mvaddstr 0 0 horiz_line);
+    assert (mvaddstr (iface.scr.lines - 2) 0 horiz_line);
+    for i = 1 to iface.scr.lines - 3 do
+-      assert (mvaddstr i 0 vert_line_piece)
++      assert (mvaddstr i 0 (Bytes.to_string vert_line_piece))
+    done;
+    (* draw the text *)
+    let vert_center  = (iface.scr.lines - 2) / 2
+diff -ruN a/interface_main.ml b/interface_main.ml
+--- a/interface_main.ml	2014-04-12 09:43:31.000000000 +0800
++++ b/interface_main.ml	2018-08-08 18:24:44.110209961 +0800
+@@ -28,7 +28,6 @@
+ open Rpc_calc;;
+ open Rpc_stack;;
+ open Complex;;
+-open Big_int;;
+ open Operations;;
+ open Interface;;
+ open Interface_draw;;
+@@ -726,8 +725,8 @@
+       |IntEntry ->
+          (begin
+             match iface.int_entry_buffer.[0] with
+-            |'-' -> iface.int_entry_buffer.[0] <- '+'
+-            |'+' -> iface.int_entry_buffer.[0] <- '-'
++            |'-' -> (Bytes.of_string iface.int_entry_buffer).[0] <- '+'
++            |'+' -> (Bytes.of_string iface.int_entry_buffer).[0] <- '-'
+             |_ -> iface.int_entry_buffer <- "-" ^ iface.int_entry_buffer
+          end;
+          draw_update_entry iface)
+@@ -737,16 +736,16 @@
+             if iface.is_entering_exponent then
+                if String.length buffer.re_exponent > 0 then
+                   match buffer.re_exponent.[0] with
+-                  |'-' -> buffer.re_exponent.[0] <- '+'
+-                  |'+' -> buffer.re_exponent.[0] <- '-'
++                  |'-' -> (Bytes.of_string buffer.re_exponent).[0] <- '+'
++                  |'+' -> (Bytes.of_string buffer.re_exponent).[0] <- '-'
+                   |_ -> buffer.re_exponent <- "-" ^ buffer.re_exponent
+                else
+                   ()
+             else
+                if String.length buffer.re_mantissa > 0 then
+                   match buffer.re_mantissa.[0] with
+-                  |'-' -> buffer.re_mantissa.[0] <- '+'
+-                  |'+' -> buffer.re_mantissa.[0] <- '-'
++                  |'-' -> (Bytes.of_string buffer.re_mantissa).[0] <- '+'
++                  |'+' -> (Bytes.of_string buffer.re_mantissa).[0] <- '-'
+                   |_ -> buffer.re_mantissa <- "-" ^ buffer.re_mantissa
+                else
+                   ()
+@@ -769,8 +768,8 @@
+             if iface.is_entering_exponent then
+                if String.length exponent > 0 then
+                   match exponent.[0] with
+-                  |'-' -> exponent.[0] <- '+'
+-                  |'+' -> exponent.[0] <- '-'
++                  |'-' -> (Bytes.of_string exponent).[0] <- '+'
++                  |'+' -> (Bytes.of_string exponent).[0] <- '-'
+                   |_ -> 
+                      if iface.is_entering_imag then
+                         buffer.im_exponent <- "-" ^ buffer.im_exponent
+@@ -781,8 +780,8 @@
+             else
+                if String.length mantissa > 0 then
+                   match mantissa.[0] with
+-                  |'-' -> mantissa.[0] <- '+'
+-                  |'+' -> mantissa.[0] <- '-'
++                  |'-' -> (Bytes.of_string mantissa).[0] <- '+'
++                  |'+' -> (Bytes.of_string mantissa).[0] <- '-'
+                   |_ -> 
+                      if iface.is_entering_imag then
+                         buffer.im_mantissa <- "-" ^ buffer.im_mantissa
+diff -ruN a/Makefile.in b/Makefile.in
+--- a/Makefile.in	2014-04-12 09:43:31.000000000 +0800
++++ b/Makefile.in	2018-08-08 18:33:27.363567263 +0800
+@@ -44,7 +44,7 @@
+ CURSES_LIB = @CURSES_LIB@
+ GSL_LIB    = @GSL_LIB@
+ 
+-INCLUDES = -I ./curses -I ./gsl -I ./units
++INCLUDES = -I ./curses -I ./gsl -I ./units -I /usr/lib/ocaml/num -I /usr/lib/ocaml/batteries
+ BFLAGS   = -pp camlp4o -g $(INCLUDES) -thread
+ OFLAGS   = -pp camlp4o $(INCLUDES) -thread
+ BLFLAGS  = -custom -cclib '$(LDFLAGS) $(CURSES_LIB) $(GSL_LIB) -lm'
+@@ -69,7 +69,7 @@
+ 		pow.cmo solvelin.cmo rpc_calc.cmo txtin_parser.cmo txtin_lexer.cmo \
+ 		statefile.cmo interface.cmo interface_draw.cmo interface_main.cmo main.cmo
+ CMX = $(CMO:.cmo=.cmx)
+-CMA = nums.cma bigarray.cma str.cma unix.cma threads.cma
++CMA = nums.cma bigarray.cma str.cma unix.cma threads.cma batteries.cma
+ CMXA = $(CMA:.cma=.cmxa)
+ 
+ CURSES_CMO = curses/curses.cmo
+diff -ruN a/rpc_calc.ml b/rpc_calc.ml
+--- a/rpc_calc.ml	2014-04-12 09:43:31.000000000 +0800
++++ b/rpc_calc.ml	2018-08-08 17:59:06.800139380 +0800
+@@ -24,7 +24,15 @@
+ 
+ open Rpc_stack;;
+ open Gsl_assist;;
+-open Big_int;;
++
++(* Big_int shadows some operators *)
++let ( **! ) a b = a ** b;;
++let ( *! ) a b = a * b;;
++let predecendent a = pred a;;
++open Batteries.Big_int;;
++let ( ** ) a b = a **! b;;
++let ( * ) a b = a *! b;;
++let pred a = predecendent a;;
+ 
+ type interruptable_args_t =
+    | Gcd_args of big_int * big_int * orpie_data_t * orpie_data_t
+diff -ruN a/sub.ml b/sub.ml
+--- a/sub.ml	2014-04-12 09:43:31.000000000 +0800
++++ b/sub.ml	2018-08-08 16:56:27.906605391 +0800
+@@ -20,7 +20,7 @@
+ 
+ open Rpc_stack
+ open Gsl_assist
+-open Big_int
++open Batteries.Big_int
+ 
+ let sub (stack : rpc_stack) (evaln : int -> unit) =
+    evaln 2;
