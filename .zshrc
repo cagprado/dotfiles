@@ -206,14 +206,25 @@ bindkey '^[[1;3A'      cdParentKey  # alt-up
 bindkey '^[[1;3D'      cdUndoKey    # alt-left
 
 # Prompt ####################################################################
-zle_highlight=(bg_start_code:'\e[48;5;' bg_default_code:7 default:bg=254)
-
-function precmd() { echo -ne '\a' }
-function cfg_flag()
+function term_check()
 {
-    $=CFG_COMMAND update-index --refresh >/dev/null || echo "%F{red} %F{default}"
+    if [[ -n "${TMUX}" && -n "${commands[tmux]}" ]]; then
+        case "$(tmux showenv TERM 2>/dev/null)" in
+            *linux*)
+                echo "tmux" && return;;
+            *)
+                echo "tmux-256color" && return;;
+        esac
+    fi
+    echo "$TERM"
 }
-function batterystatus()
+
+function cfg_git_status()
+{
+    $=CFG_COMMAND update-index --refresh >/dev/null || echo '%F{red} %F{default}'
+}
+
+function battery_status()
 {
     # Set location of battery status files
     local CHARGE=/sys/class/power_supply/BAT0/energy_now
@@ -223,11 +234,11 @@ function batterystatus()
     # If file exists then we have battery
     if [[ -r $STATUS ]]; then
         # Check if it's charging
-        [[ "$(<$STATUS)" = "Charging" ]] && STATUS="%F{blue}" || STATUS=""
+        [[ "$(<$STATUS)" = "Charging" ]] && STATUS="%F{blue}" || STATUS=''
 
         # Eval current charge in battery
         local FRACTION="$((100 * $(<$CHARGE) / $(<$FULL)))"
-        if [[ "$TERM" =~ "linux" ]]; then
+        if [[ "$TERM" =~ "linux" || "$TERM" = "tmux" ]]; then
             if [[ $FRACTION -le 5 ]]; then
                 local ICON="%F{red}%F{blink}${STATUS}····"
             elif [[ $FRACTION -le 15 ]]; then
@@ -262,26 +273,37 @@ function batterystatus()
     fi
 }
 
+function precmd()
+{
+    TERM="$(term_check)"
+    PROMPT_CFGSTAT="$(cfg_git_status)"
+    PROMPT_BATSTAT="$(battery_status)"
+
+    # alert so terminal can blink on long commands
+    echo -ne '\a'
+}
+
 function setprompt()
 {
     setopt prompt_subst
-    local BLK="%{$(echoti setaf 0)%}"
-    local RED="%{$(echoti setaf 1)%}"
-    local GRE="%{$(echoti setaf 2)%}"
-    local YEL="%{$(echoti setaf 3)%}"
-    local BLU="%{$(echoti setaf 4)%}"
-    local MAG="%{$(echoti setaf 5)%}"
-    local CYA="%{$(echoti setaf 6)%}"
-    local WHI="%{$(echoti setaf 7)%}"
-    local BOL="%{$(echoti bold)%}"
-    local BGR="%{$(echoti Tc >/dev/null 2>&1 && echo '\e[48;5;254m')%}"  # e4e4e4
+    local BLK="%F{0}"
+    local RED="%F{1}"
+    local GRE="%F{2}"
+    local YEL="%F{3}"
+    local BLU="%F{4}"
+    local MAG="%F{5}"
+    local CYA="%F{6}"
+    local WHI="%F{7}"
+    local BOL="%B"
+    local BGR="%K{254}"
     local DEF="%{$(echoti sgr0)%}"
-    local NOR="%{$DEF$BGR%}"
+    local NOR="%b%u%s%f%K{254}"
 
-    PROMPT="${NOR}[\$(batterystatus)$GRE%T$NOR%(1j./$RED%j$NOR.)] %(0?.$BLU.$RED)%n$NOR@$MAG$BOL%m$NOR\$(cfg_flag)%#$NOR "
-    RPROMPT="$NOR @ $MAG%~$DEF"
+    PROMPT="${NOR}[\$PROMPT_BATSTAT$GRE%T$NOR%(1j./$RED%j$NOR.)] %(0?.$BLU.$RED)%n$NOR@$MAG$BOL%m$NOR\$PROMPT_CFGSTAT%#$NOR "
+    RPROMPT="$NOR @ $MAG%~$DEF "
 }
 setprompt
+zle_highlight=(default:bg=254 suffix:bg=254,fg=0,bold)
 
 # Source syntax highlighting plugin
 if [[ -f "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
