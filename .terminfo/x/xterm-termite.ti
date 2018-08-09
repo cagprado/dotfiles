@@ -210,7 +210,7 @@ xterm-termite|VTE-based terminal,
 #   BlinkingCursorEnabled = boolean
 #   CursorShape = 0 (block), 1 (vertical bar), 2 (underline)
 # Here we adapt konsole method to use the same defaults as DECSCUSR.
-	Se=\E[ q,
-	Csr=\E[ q,
-	Ss=\E[%d q,
-	Cs=\E[%d q,
+	Se=\E[2 q,
+	Csr=\E[2 q,
+	Ss=\E[%p1%d q,
+	Cs=\E[%p1%d q,
