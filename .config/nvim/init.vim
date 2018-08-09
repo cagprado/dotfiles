@@ -25,7 +25,7 @@ call vundle#begin('~/.vundle')
   Plugin 'VundleVim/Vundle.vim'
 
   " iBus plugin won't work remotely
-  if $SESSION ==# "local"
+  if $SESSION ==# "local" && $TERM !~ '\vlinux|cons'
     Plugin 'lsrdg/vibusen.vim'                " Ibus management
   endif
 
@@ -169,7 +169,8 @@ if has('syntax')
     endif
 
   elseif &t_Co >= 8
-    colorscheme morning
+    colorscheme peachpuff
+    hi CursorLine    term=NONE ctermfg=NONE ctermbg=NONE cterm=bold guifg=NONE guibg=NONE gui=NONE guisp=NONE
   endif
 
   " Set powerline fonts
