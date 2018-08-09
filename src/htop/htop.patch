@@ -1,5 +1,5 @@
---- a/CRT.c	2017-04-15 14:27:29.424044138 -0300
-+++ a/CRT.c	2017-04-15 15:16:10.771768827 -0300
+--- CRT.c.orig	2018-04-10 21:23:24.000000000 +0800
++++ CRT.c	2018-08-09 21:43:38.619653456 +0800
 @@ -193,7 +193,7 @@
        [LED_COLOR] = ColorPair(Green,Black),
        [TASKS_RUNNING] = A_BOLD | ColorPair(Green,Black),
@@ -27,12 +27,23 @@
        [CPU_IRQ] = ColorPair(Yellow,Black),
        [CPU_SOFTIRQ] = ColorPair(Magenta,Black),
        [CPU_STEAL] = ColorPair(Cyan,Black),
-@@ -726,7 +726,7 @@
+@@ -726,11 +726,18 @@
        }
     }
-
+ 
 -   int grayBlackFg = COLORS > 8 ? 8 : 0;
-+   int grayBlackFg = COLORS > 8 ? 15 : 0;
++   int grayBlackFg = COLORS > 8 ? 15 : 7;
     int grayBlackBg = (colorScheme != COLORSCHEME_BLACKNIGHT)
                       ? -1
                       : 0;
+    init_pair(ColorIndexGrayBlack, grayBlackFg, grayBlackBg);
+ 
+    CRT_colors = CRT_colorSchemes[colorScheme];
++
++   if (COLORS <= 8) {
++       for (int i = 0; i < LAST_COLORELEMENT; ++i) {
++           if (CRT_colors[i] == ColorPairGrayBlack)
++               CRT_colors[i] = A_BOLD | CRT_colors[i];
++       }
++   }
+ }
