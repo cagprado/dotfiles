@@ -6,7 +6,7 @@
 set $mod Mod4
 focus_follows_mouse no
 floating_modifier $mod
-font pango:wmfont 9
+font pango:wmfont 6
 
 # Define some variables
 set $terminal terminal

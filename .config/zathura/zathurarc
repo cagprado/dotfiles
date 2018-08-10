@@ -1,4 +1,4 @@
-set font "terminalfont 8"
+set font "terminalfont 7"
 set selection-clipboard clipboard
 set adjust-open width
 set pages-per-row 2
