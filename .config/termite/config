@@ -1,6 +1,6 @@
 # vim: ft=dosini cms=#%s
 [options]
-font = Iosevka Term 7
+font = Iosevka Term 10
 fullscreen = false
 
 [colors]
