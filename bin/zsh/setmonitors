@@ -3,7 +3,7 @@
 autoload +X parse_cmdline help err war
 
 # Configuration
-if [[ "$HOSTNAME" = "mredson" ]]; then
+if [[ "$(hostname)" = "mredson" ]]; then
   local PRIORITY='eDP-1 HDMI-2 DP-2 HDMI-1 DP-1'
 fi
 
