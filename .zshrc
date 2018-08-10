@@ -221,23 +221,17 @@ function term_check()
 
 function cfg_git_status()
 {
-    $=CFG_COMMAND update-index --refresh >/dev/null || echo '%F{red} %F{default}'
+    $=CFG_COMMAND update-index --refresh >/dev/null || echo '%F{red} %F{default}'
 }
 
 function battery_status()
 {
-    # Set location of battery status files
-    local CHARGE=/sys/class/power_supply/BAT0/energy_now
-    local FULL=/sys/class/power_supply/BAT0/energy_full
-    local STATUS=/sys/class/power_supply/BAT0/status
+    local STATUS=$(acpi -b | cut -d: -f2 | cut -d% -f1 | tr -d ' ')
 
-    # If file exists then we have battery
-    if [[ -r $STATUS ]]; then
-        # Check if it's charging
-        [[ "$(<$STATUS)" = "Charging" ]] && STATUS="%F{blue}" || STATUS=''
+    if [[ -n "$STATUS" ]]; then
+        local FRACTION=${STATUS//[^0-9]/}
+        [[ "${STATUS%,*}" = "Charging" ]] && STATUS="%F{blue}" || STATUS=''
 
-        # Eval current charge in battery
-        local FRACTION="$((100 * $(<$CHARGE) / $(<$FULL)))"
         if [[ "$TERM" =~ "linux" || "$TERM" = "tmux" ]]; then
             if [[ $FRACTION -le 5 ]]; then
                 local ICON="%F{red}%F{blink}${STATUS}····"
