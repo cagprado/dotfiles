@@ -3,6 +3,7 @@
 autoload +X parse_cmdline help err war
 
 # Configuration
+local SCREEN_EDID="$HOME/etc/screen_edid"
 if [[ "$(hostname)" = "mredson" ]]; then
   local PRIORITY='eDP-1 HDMI-2 DP-2 HDMI-1 DP-1'
 fi
@@ -12,7 +13,8 @@ local DESC="Set resolution and positon of multiple monitors in X."
 local LONGHELP
 LONGHELP=$(<<END
 Default behaviour enables all connected outputs to their preferred resolution
-and different workspaces side-by-side.
+and different workspaces side-by-side.  It sets the DPI according to the
+available list of DPI, otherwise it fallsback to 96.
 These options change the default:
   %B-s%b
       Single mode: Activates all connected outputs to their preferred
@@ -76,6 +78,12 @@ for ITEM in $PRIORITY; do
   fi
 done
 
+# get DPI of primary monitor
+local EDID=$(hexdump -ve '1/1 "%x"' /sys/class/drm/card0-${PRIMARY}/edid)
+local DPI=$(grep "$EDID" "$SCREEN_EDID" | awk '{print $2}')
+[[ -z "$DPI" ]] && DPI="96"
+echo $DPI
+
 # Setup other screens
 IDX=1
 while [[ $IDX -le $#MONITORS ]]; do
@@ -95,6 +103,6 @@ while [[ $IDX -le $#MONITORS ]]; do
   ((IDX+=1))
 done
 
-# Finally run command and update background
-xrandr $=MONITORS
-feh --bg-scale $HOME/usr/me/pictures/wallpaper/current
+# run command and update screens
+xrandr --dpi $DPI $=MONITORS
+feh --bg-fill $HOME/usr/me/pictures/wallpaper/current

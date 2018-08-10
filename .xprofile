@@ -3,7 +3,8 @@
 
 # Setup screens
 xset s off -dpms
-$HOME/bin/zsh/setmonitors
+DPI=$($HOME/bin/zsh/setmonitors)
+echo "Xft.dpi: $DPI" > $HOME/.Xresources
 
 # Set keyboard and IM
 setxkbmap -layout caio -variant us

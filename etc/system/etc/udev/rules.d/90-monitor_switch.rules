@@ -2,6 +2,7 @@
 # This rule runs a script whenever monitor configuration changes
 ACTION=="change", KERNEL=="card0", SUBSYSTEM=="drm", \
   ENV{DISPLAY}=":0", \
+  ENV{HOME}="/home/cagprado", \
   ENV{XAUTHORITY}="/home/cagprado/.Xauthority", \
   ENV{FPATH}="/home/cagprado/bin/zsh.zwc", \
   RUN+="/home/cagprado/bin/zsh/setmonitors"
