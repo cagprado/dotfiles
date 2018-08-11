@@ -219,59 +219,55 @@ function term_check()
     echo "$TERM"
 }
 
-function cfg_git_status()
+function precmd()
 {
-    $=CFG_COMMAND update-index --refresh >/dev/null || echo '%F{red} %F{default}'
-}
+    # Update terminal information from TMUX
+    TERM="$(term_check)"
 
-function battery_status()
-{
+    # Setup UTF-8 symbols
+    if [[ "$TERM" =~ "linux" || "$TERM" = "tmux" ]]; then
+        local ALERT="⠁⠂"
+        local BAT0=""
+        local BAT1=""
+        local BAT2=""
+        local BAT3="⠃"
+        local BAT4="⠃⠄"
+    else
+        local ALERT=" "
+        local BAT0="  "
+        local BAT1="  "
+        local BAT2="  "
+        local BAT3="  "
+        local BAT4="  "
+    fi
+
+    # Test if there are changes in cfg git repository
+    $=CFG_COMMAND update-index --refresh >/dev/null \
+        && PROMPT_CFGSTAT="" \
+        || PROMPT_CFGSTAT="%F{red}$ALERT%F{default}"
+
+    # Check battery status
+    PROMPT_BATSTAT=""
     local STATUS=$(acpi -b | cut -d: -f2 | cut -d% -f1 | tr -d ' ')
 
     if [[ -n "$STATUS" ]]; then
         local FRACTION=${STATUS//[^0-9]/}
         [[ "${STATUS%,*}" = "Charging" ]] && STATUS="%F{blue}" || STATUS=''
 
-        if [[ "$TERM" =~ "linux" || "$TERM" = "tmux" ]]; then
-            if [[ $FRACTION -le 5 ]]; then
-                local ICON="%F{red}%F{blink}${STATUS}····"
-            elif [[ $FRACTION -le 15 ]]; then
-                local ICON="%F{yellow}${STATUS}█···"
-            elif [[ $FRACTION -le 25 ]]; then
-                local ICON="%F{green}${STATUS}█···"
-            elif [[ $FRACTION -le 50 ]]; then
-                local ICON="%F{green}${STATUS}██··"
-            elif [[ $FRACTION -le 75 ]]; then
-                local ICON="%F{green}${STATUS}███·"
-            else
-                local ICON="%F{green}${STATUS}████"
-            fi
+        if [[ $FRACTION -le 5 ]]; then
+            PROMPT_BATSTAT="%F{red}${STATUS}$BAT0"
+        elif [[ $FRACTION -le 15 ]]; then
+            PROMPT_BATSTAT="%F{yellow}${STATUS}$BAT1"
+        elif [[ $FRACTION -le 25 ]]; then
+            PROMPT_BATSTAT="%F{green}${STATUS}$BAT1"
+        elif [[ $FRACTION -le 50 ]]; then
+            PROMPT_BATSTAT="%F{green}${STATUS}$BAT2"
+        elif [[ $FRACTION -le 75 ]]; then
+            PROMPT_BATSTAT="%F{green}${STATUS}$BAT3"
         else
-            if [[ $FRACTION -le 5 ]]; then
-                local ICON="%F{red}${STATUS}  "
-            elif [[ $FRACTION -le 15 ]]; then
-                local ICON="%F{yellow}${STATUS}  "
-            elif [[ $FRACTION -le 25 ]]; then
-                local ICON="%F{green}${STATUS}  "
-            elif [[ $FRACTION -le 50 ]]; then
-                local ICON="%F{green}${STATUS}  "
-            elif [[ $FRACTION -le 75 ]]; then
-                local ICON="%F{green}${STATUS}  "
-            else
-                local ICON="%F{green}${STATUS}  "
-            fi
+            PROMPT_BATSTAT="%F{green}${STATUS}$BAT4"
         fi
-
-        # Print value
-        echo $ICON
     fi
-}
-
-function precmd()
-{
-    TERM="$(term_check)"
-    PROMPT_CFGSTAT="$(cfg_git_status)"
-    PROMPT_BATSTAT="$(battery_status)"
 
     # alert so terminal can blink on long commands
     echo -ne '\a'
