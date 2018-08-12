@@ -223,9 +223,15 @@ function precmd()
 {
     # Update terminal information from TMUX
     TERM="$(term_check)"
+    if [[ "$TERM" =~ "linux" || "$TERM" = "tmux" ]]; then
+        export IS_CONSOLE=1
+    else
+        export IS_CONSOLE=0
+    fi
+
 
     # Setup UTF-8 symbols
-    if [[ "$TERM" =~ "linux" || "$TERM" = "tmux" ]]; then
+    if [[ $IS_CONSOLE -eq 1 ]]; then
         local ALERT="⠁⠂"
         local BAT0=""
         local BAT1=""

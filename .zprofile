@@ -80,5 +80,16 @@ export PATH="$HOME/bin:$PATH"
 
 # CONSOLE ###################################################################
 if [[ "$TERM" =~ linux && -z "$SSH_CONNECTION" ]]; then
-  /home/cagprado/bin/zsh/colors
+  tput setab 7
+  tput setaf 0
+  echo -ne "\e]P04d4d4c\e]P8000000"
+  echo -ne "\e]P1c82829\e]P9ff3334"
+  echo -ne "\e]P2718c00\e]PA9ec400"
+  echo -ne "\e]P3f5871f\e]PBeab700"
+  echo -ne "\e]P44271ae\e]PC5795e6"
+  echo -ne "\e]P58959a8\e]PDb777e0"
+  echo -ne "\e]P63e999f\e]PE54ced6"
+  echo -ne "\e]P7fafafa\e]PF8e908c"
+  echo -ne "\e[8]\e[1;15]"
+  clear
 fi

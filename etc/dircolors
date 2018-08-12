@@ -94,6 +94,7 @@ TERM screen.xterm-new
 TERM st
 TERM termite
 TERM tmux
+TERM tmux-256color
 TERM vt100
 TERM xterm
 TERM xterm-new

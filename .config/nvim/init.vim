@@ -25,7 +25,7 @@ call vundle#begin('~/.vundle')
   Plugin 'VundleVim/Vundle.vim'
 
   " iBus plugin won't work remotely
-  if $SESSION ==# "local" && $TERM !~ '\vlinux|cons'
+  if $SESSION ==# "local" && $IS_CONSOLE == '0'
     Plugin 'lsrdg/vibusen.vim'                " Ibus management
   endif
 
@@ -125,8 +125,8 @@ set formatoptions=tcroqjn       " options for formating, :help fo-table croql
 " formatlistpat will match numeric and bullet (-|·) lists
 set formatlistpat=^\\s*\\(\\d\\+[\\]:.)}\\t\ ]\\\\|-\\\\|·\\)\\s*
 
-" Set cursor shape for different modes
-if has('nvim') && $TERM !~ '\vlinux|cons'
+" Set cursor shape for different modes (tmux will do it right)
+if has('nvim') && $TERM !~ '\vlinux'
     set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor-blinkon0,r-cr:hor20-Cursor/lCursor-blinkon0
 else
   let &t_SI = system('tput Ss 6 2>/dev/null')
