@@ -9,9 +9,6 @@ export EDITOR=vim
 export DE="generic"
 export TEXMFHOME="$HOME/.texmf"
 export TMPHOME="/tmp/cagprado"
-export LESS="-cx3MRFX"
-export LESSOPEN="| /usr/bin/lesspipe.sh %s"
-export LESSCOLORIZER="pygmentize"
 export GNUPGHOME="$HOME/.gnupg"
 export HOMEPRINTER=""
 export WORKPRINTER="hpiopp"
@@ -22,6 +19,13 @@ export FT2_SUBPIXEL_HINTING=2
 export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
 export MAKEFLAGS='-j'
 export LOCALBUILDS="$HOME/usr/local"
+export LESS="-cx3MRFX"
+export LESSCOLORIZER="pygmentize"
+if [[ -e "/usr/bin/lesspipe.sh" ]]; then
+    export LESSOPEN="| /usr/bin/lesspipe.sh %s"
+else
+    export LESSOPEN="| /usr/bin/lesspipe %s"
+fi
 
 # KEYRING ###################################################################
 if [[ -n "$DESKTOP_SESSION" ]]; then
