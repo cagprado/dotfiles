@@ -36,11 +36,6 @@ call vundle#begin('~/.vundle')
   Plugin 'SirVer/ultisnips'                   " Snippets engine
   Plugin 'tpope/vim-fugitive'                 " Git plugin
 
-  " theming
-  Plugin 'vim-airline/vim-airline-themes'     " Themes for Airline
-  Plugin 'lifepillar/vim-solarized8'          " Solarized theme
-  Plugin 'chriskempson/base16-vim'            " Base16 vim themes
-
   " syntax
   Plugin 'vim-pandoc/vim-pandoc-syntax'       " Pandoc markdown syntax
   Plugin 'chikamichi/mediawiki.vim'           " Mediawiki syntax
@@ -170,6 +165,7 @@ if has('syntax')
 
   elseif &t_Co >= 8
     colorscheme peachpuff
+    let g:airline_theme='tomorrow'
     hi CursorLine    term=NONE ctermfg=NONE ctermbg=NONE cterm=bold guifg=NONE guibg=NONE gui=NONE guisp=NONE
   endif
 
