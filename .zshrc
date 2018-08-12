@@ -210,7 +210,7 @@ function term_check()
 {
     if [[ -n "${TMUX}" && -n "${commands[tmux]}" ]]; then
         case "$(tmux showenv TERM 2>/dev/null)" in
-            *linux*)
+            *linux*|*tmux)
                 echo "tmux" && return;;
             *)
                 echo "tmux-256color" && return;;
