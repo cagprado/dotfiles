@@ -254,7 +254,7 @@ function precmd()
 
     # Check battery status
     PROMPT_BATSTAT=""
-    if [[ $SESSION = "local"]]; then
+    if [[ "$SESSION" = "local" ]]; then
         local STATUS=$(acpi -b | cut -d: -f2 | cut -d% -f1 | tr -d ' ')
 
         if [[ -n "$STATUS" ]]; then
