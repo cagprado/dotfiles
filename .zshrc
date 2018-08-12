@@ -254,24 +254,26 @@ function precmd()
 
     # Check battery status
     PROMPT_BATSTAT=""
-    local STATUS=$(acpi -b | cut -d: -f2 | cut -d% -f1 | tr -d ' ')
+    if [[ $SESSION = "local"]]; then
+        local STATUS=$(acpi -b | cut -d: -f2 | cut -d% -f1 | tr -d ' ')
 
-    if [[ -n "$STATUS" ]]; then
-        local FRACTION=${STATUS//[^0-9]/}
-        [[ "${STATUS%,*}" = "Charging" ]] && STATUS="%F{blue}" || STATUS=''
+        if [[ -n "$STATUS" ]]; then
+            local FRACTION=${STATUS//[^0-9]/}
+            [[ "${STATUS%,*}" = "Charging" ]] && STATUS="%F{blue}" || STATUS=''
 
-        if [[ $FRACTION -le 5 ]]; then
-            PROMPT_BATSTAT="%F{red}${STATUS}$BAT0"
-        elif [[ $FRACTION -le 15 ]]; then
-            PROMPT_BATSTAT="%F{yellow}${STATUS}$BAT1"
-        elif [[ $FRACTION -le 25 ]]; then
-            PROMPT_BATSTAT="%F{green}${STATUS}$BAT1"
-        elif [[ $FRACTION -le 50 ]]; then
-            PROMPT_BATSTAT="%F{green}${STATUS}$BAT2"
-        elif [[ $FRACTION -le 75 ]]; then
-            PROMPT_BATSTAT="%F{green}${STATUS}$BAT3"
-        else
-            PROMPT_BATSTAT="%F{green}${STATUS}$BAT4"
+            if [[ $FRACTION -le 5 ]]; then
+                PROMPT_BATSTAT="%F{red}${STATUS}$BAT0"
+            elif [[ $FRACTION -le 15 ]]; then
+                PROMPT_BATSTAT="%F{yellow}${STATUS}$BAT1"
+            elif [[ $FRACTION -le 25 ]]; then
+                PROMPT_BATSTAT="%F{green}${STATUS}$BAT1"
+            elif [[ $FRACTION -le 50 ]]; then
+                PROMPT_BATSTAT="%F{green}${STATUS}$BAT2"
+            elif [[ $FRACTION -le 75 ]]; then
+                PROMPT_BATSTAT="%F{green}${STATUS}$BAT3"
+            else
+                PROMPT_BATSTAT="%F{green}${STATUS}$BAT4"
+            fi
         fi
     fi
 
