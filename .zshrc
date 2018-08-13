@@ -62,7 +62,7 @@ alias zshfunctions='zcompile -Uz $ZSH_FUNCTIONS $ZSH_FUNCTIONS/*(.x)'
 
 # buggy programs (application mode)
 function app() { echoti smkx && $@ && echoti rmkx }
-alias alot='app alot'
+alias alot='[[ "$IS_CONSOLE" -eq 1 ]] && app alot -C16 || app alot'
 alias ncmpcpp='app ncmpcpp'
 
 # lists all aliases and scripts
