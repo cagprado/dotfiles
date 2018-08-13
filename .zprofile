@@ -21,10 +21,10 @@ export MAKEFLAGS='-j'
 export LOCALBUILDS="$HOME/usr/local"
 export LESS="-cx3MRFX"
 export LESSCOLORIZER="pygmentize"
-if [[ -e "/usr/bin/lesspipe.sh" ]]; then
+if [[ "$SESSION" = "local" ]]; then
     export LESSOPEN="| /usr/bin/lesspipe.sh %s"
 else
-    # fallback lesspipe
+    # fallback lesspipe for servers
     export LESSOPEN="| lesspipe %s"
 fi
 
