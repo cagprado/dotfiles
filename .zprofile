@@ -24,7 +24,8 @@ export LESSCOLORIZER="pygmentize"
 if [[ -e "/usr/bin/lesspipe.sh" ]]; then
     export LESSOPEN="| /usr/bin/lesspipe.sh %s"
 else
-    export LESSOPEN="| /usr/bin/lesspipe %s"
+    # fallback lesspipe
+    export LESSOPEN="| lesspipe %s"
 fi
 
 # KEYRING ###################################################################
