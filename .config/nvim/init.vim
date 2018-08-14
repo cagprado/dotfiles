@@ -141,36 +141,16 @@ endif
 " Syntax highlighting and appearance
 if has('syntax')
   syntax on
+  colorscheme default
+  let g:airline_theme='tomorrow'
+  let g:airline_powerline_fonts = 1
 
   let s:has_truecolor = system('tput Tc 2>/dev/null && echo 1 || echo 0')
   if (has('termguicolors') && s:has_truecolor) || has('gui_running')
     " Set truecolor option and load colorscheme
     set termguicolors
-    colorscheme tomorrow
-    let g:airline_theme='tomorrow'
     let g:rainbow_active=1
-
-    " Add italics to strings and comments and add some background to spell
-    hi String     cterm=italic  gui=italic
-    hi Comment    cterm=italic  gui=italic
-    hi SpellBad   cterm=reverse gui=reverse guibg=#ffffff guifg=#c82829
-    hi SpellCap   cterm=reverse gui=reverse guibg=#ffffff guifg=#eab700
-    hi SpellLocal cterm=reverse gui=reverse guibg=#ffffff guifg=#4271ae
-    hi SpellRare  cterm=reverse gui=reverse guibg=#ffffff guifg=#3e999f
-
-    " Disable background color erase so it won't give rendering artifacts
-    if !has('nvim')
-      let &t_ut = ""
-    endif
-
-  elseif &t_Co >= 8
-    colorscheme peachpuff
-    let g:airline_theme='tomorrow'
-    hi CursorLine    term=NONE ctermfg=NONE ctermbg=NONE cterm=bold guifg=NONE guibg=NONE gui=NONE guisp=NONE
   endif
-
-  " Set powerline fonts
-  let g:airline_powerline_fonts = 1
 endif
 
 " ULTISNIPS #################################################################

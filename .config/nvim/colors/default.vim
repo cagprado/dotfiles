@@ -1,88 +1,256 @@
-" This theme is intended for use with:
-" - linux console: 8 colors; not true 16 colors since background is limited
-"   to 8, although 16 colors of foreground is achievable using bold
-"   attribute.
-" - 24bit color terminal (gui): truecolor in terminals which supports it.
-"
-" It does NOT use 256 palette colors (if truecolor is not supported it will
-" be limited to the 8+8 colors). It completely ignores monochromatic
-" terminals (unset all 'term' attributes).
-"
-" All 'gui' attributes are reproduced in 'cterm', including italics. No
-" undercurl is used at all.
-"
-" Normally I'll avoid underline, I hate it. I also avoid setting the
-" background directly and prefer to use reverse to accomplish the same
-" result, this way the background will not be changed by cursorline. I must
-" say I hate colored backgrounds and restrict it to errors, spelling and
-" other items that deserve imediate attention, and also some vim elements.
-"
-" Finally, it's intended for light background only and assumes that the
-" default 8+8 colors have good visibility (default 16 colors usually have
-" not, i.e. yellow is terrible, or cyan) so it probably will only work nice
-" if the default terminal colors have been tweeked a little bit. I based my
-" terminal colors in the Tomorrow theme.
-"############################################################################
+" vi:syntax=vim
 
-" Cleanup everything before starting
+" Modified for personal taste from base16-tomorrow
+" base16-vim (https://github.com/chriskempson/base16-vim)
+" by Chris Kempson (http://chriskempson.com)
+" Tomorrow scheme by Chris Kempson (http://chriskempson.com)
+
+" GUI color definitions
+let s:gui00 = "#fafafa"
+let s:gui01 = "#e0e0e0"
+let s:gui02 = "#d6d6d6"
+let s:gui03 = "#8e908c"
+let s:gui04 = "#969896"
+let s:gui05 = "#4d4d4c"
+let s:gui06 = "#282a2e"
+let s:gui07 = "#1d1f21"
+let s:gui08 = "#c82829"
+let s:gui09 = "#f5871f"
+let s:gui0A = "#eab700"
+let s:gui0B = "#718c00"
+let s:gui0C = "#3e999f"
+let s:gui0D = "#4271ae"
+let s:gui0E = "#8959a8"
+let s:gui0F = "#a3685a"
+
+" Terminal color definitions
+let s:cterm00 = "07"
+let s:cterm01 = "07"
+let s:cterm02 = "15"
+let s:cterm03 = "15"
+let s:cterm04 = "15"
+let s:cterm05 = "00"
+let s:cterm06 = "08"
+let s:cterm07 = "08"
+let s:cterm08 = "09"
+let s:cterm09 = "03"
+let s:cterm0A = "01"
+let s:cterm0B = "02"
+let s:cterm0C = "06"
+let s:cterm0D = "04"
+let s:cterm0E = "05"
+let s:cterm0F = "01"
+
+" Theme setup
 hi clear
 syntax reset
+let g:colors_name = "base16-tomorrow"
 
-" Basic syntax groups
-hi Normal        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi ColorColumn   term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Comment       term=NONE ctermfg=7    ctermbg=NONE cterm=bold guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Conceal       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Constant      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi String        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Cursor        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi CursorColumn  term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi CursorLine    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi CursorLineNr  term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi DiffAdd       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi DiffChange    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi DiffDelete    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi DiffText      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Directory     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Error         term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi ErrorMsg      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi FoldColumn    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Folded        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Identifier    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Ignore        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi IncSearch     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi lCursor       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi LineNr        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi MatchParen    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi ModeMsg       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi MoreMsg       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi NonText       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Pmenu         term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi PmenuSbar     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi PmenuSel      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi PmenuThumb    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi PreProc       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Question      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Search        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi SignColumn    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Special       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi SpecialKey    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi SpellBad      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi SpellCap      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi SpellLocal    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi SpellRare     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Statement     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi StatusLine    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi StatusLineNC  term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi TabLine       term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi TabLineFill   term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi TabLineSel    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Title         term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Todo          term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Type          term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Underlined    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi VertSplit     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi Visual        term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi VisualNOS     term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi WarningMsg    term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
-hi WildMenu      term=NONE ctermfg=NONE ctermbg=NONE cterm=NONE guifg=NONE guibg=NONE gui=NONE guisp=NONE
+" Highlighting function
+fun <sid>hi(group, guifg, guibg, ctermfg, ctermbg, guiattr, attr, guisp)
+  exec "hi" a:group "guifg=" a:guifg "guibg=" a:guibg "ctermfg=" a:ctermfg "ctermbg=" a:ctermbg "gui=" a:guiattr "cterm=" a:attr "guisp=" a:guisp
+endfun
+
+" Vim editor colors
+call <sid>hi("Bold",          "NONE", "NONE", "NONE", "NONE", "BOLD", "NONE", "NONE")
+call <sid>hi("Debug",         s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Directory",     s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Error",         s:gui00, s:gui08, s:cterm00, s:cterm08, "NONE", "NONE", "NONE")
+call <sid>hi("ErrorMsg",      s:gui08, s:gui00, s:cterm08, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("Exception",     s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("FoldColumn",    s:gui0C, s:gui01, s:cterm0C, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("Folded",        s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("IncSearch",     s:gui01, s:gui09, s:cterm01, s:cterm09, "NONE", "NONE", "NONE")
+call <sid>hi("Italic",        "NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Macro",         s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("MatchParen",    "NONE", s:gui03, "NONE", s:cterm03,  "NONE", "NONE", "NONE")
+call <sid>hi("ModeMsg",       s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("MoreMsg",       s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Question",      s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Search",        s:gui03, s:gui0A, s:cterm03, s:cterm0A,  "NONE", "NONE", "NONE")
+call <sid>hi("SpecialKey",    s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("TooLong",       s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Underlined",    s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Visual",        "NONE", s:gui02, "NONE", s:cterm02, "NONE", "REVERSE", "NONE")
+call <sid>hi("VisualNOS",     s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("WarningMsg",    s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("WildMenu",      s:gui08, s:gui0A, s:cterm08, s:cterm0A, "NONE", "NONE", "NONE")
+call <sid>hi("Title",         s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Conceal",       s:gui0D, s:gui00, s:cterm0D, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("Cursor",        s:gui00, s:gui05, s:cterm00, s:cterm05, "NONE", "NONE", "NONE")
+call <sid>hi("NonText",       s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Normal",        s:gui05, s:gui00, s:cterm05, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("LineNr",        s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("SignColumn",    s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("StatusLine",    s:gui04, s:gui02, s:cterm04, s:cterm02, "NONE", "NONE", "NONE")
+call <sid>hi("StatusLineNC",  s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("VertSplit",     s:gui02, s:gui02, s:cterm02, s:cterm02, "NONE", "NONE", "NONE")
+call <sid>hi("ColorColumn",   "NONE", s:gui01, "NONE", s:cterm05, "NONE", "NONE", "NONE")
+call <sid>hi("CursorColumn",  "NONE", s:gui01, "NONE", s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("CursorLine",    "NONE", s:gui01, "NONE", s:cterm01, "NONE", "BOLD", "NONE")
+call <sid>hi("CursorLineNr",  s:gui04, s:gui01, s:cterm04, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("PMenu",         s:gui04, s:gui01, s:cterm04, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("PMenuSel",      s:gui01, s:gui04, s:cterm01, s:cterm04, "NONE", "NONE", "NONE")
+call <sid>hi("TabLine",       s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("TabLineFill",   s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("TabLineSel",    s:gui0B, s:gui01, s:cterm0B, s:cterm01, "NONE", "NONE", "NONE")
+
+" Standard syntax highlighting
+call <sid>hi("Boolean",      s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Character",    s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Comment",      s:gui03, "NONE", s:cterm03, "NONE", "italic", "NONE", "NONE")
+call <sid>hi("Conditional",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Constant",     s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Define",       s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Delimiter",    s:gui0F, "NONE", s:cterm0F, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Float",        s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Function",     s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Identifier",   s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Include",      s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Keyword",      s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Label",        s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Number",       s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Operator",     s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("PreProc",      s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Repeat",       s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Special",      s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("SpecialChar",  s:gui0F, "NONE", s:cterm0F, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Statement",    s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StorageClass", s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("String",       s:gui0B, "NONE", s:cterm0B, "NONE", "italic", "NONE", "NONE")
+call <sid>hi("Structure",    s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Tag",          s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Todo",         s:gui0A, s:gui01, s:cterm0A, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("Type",         s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("Typedef",      s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+
+" C highlighting
+call <sid>hi("cOperator",   s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("cPreCondit",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+
+" C# highlighting
+call <sid>hi("csClass",                 s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("csAttribute",             s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("csModifier",              s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("csType",                  s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("csUnspecifiedStatement",  s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("csContextualStatement",   s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("csNewDecleration",        s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+
+" CSS highlighting
+call <sid>hi("cssBraces",      s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("cssClassName",   s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("cssColor",       s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+
+" Diff highlighting
+call <sid>hi("DiffAdd",      s:gui0B, s:gui01,  s:cterm0B, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("DiffChange",   s:gui03, s:gui01,  s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("DiffDelete",   s:gui08, s:gui01,  s:cterm08, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("DiffText",     s:gui0D, s:gui01,  s:cterm0D, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("DiffAdded",    s:gui0B, s:gui00,  s:cterm0B, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("DiffFile",     s:gui08, s:gui00,  s:cterm08, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("DiffNewFile",  s:gui0B, s:gui00,  s:cterm0B, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("DiffLine",     s:gui0D, s:gui00,  s:cterm0D, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("DiffRemoved",  s:gui08, s:gui00,  s:cterm08, s:cterm00, "NONE", "NONE", "NONE")
+
+" Git highlighting
+call <sid>hi("gitcommitOverflow",       s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitSummary",        s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitComment",        s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitUntracked",      s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitDiscarded",      s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitSelected",       s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitHeader",         s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitSelectedType",   s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitUnmergedType",   s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitDiscardedType",  s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitBranch",         s:gui09, "NONE", s:cterm09, "NONE", "BOLD", "BOLD", "NONE")
+call <sid>hi("gitcommitUntrackedFile",  s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("gitcommitUnmergedFile",   s:gui08, "NONE", s:cterm08, "NONE", "BOLD", "BOLD", "NONE")
+call <sid>hi("gitcommitDiscardedFile",  s:gui08, "NONE", s:cterm08, "NONE", "BOLD", "BOLD", "NONE")
+call <sid>hi("gitcommitSelectedFile",   s:gui0B, "NONE", s:cterm0B, "NONE", "BOLD", "BOLD", "NONE")
+
+" GitGutter highlighting
+call <sid>hi("GitGutterAdd",     s:gui0B, s:gui01, s:cterm0B, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("GitGutterChange",  s:gui0D, s:gui01, s:cterm0D, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("GitGutterDelete",  s:gui08, s:gui01, s:cterm08, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("GitGutterChangeDelete",  s:gui0E, s:gui01, s:cterm0E, s:cterm01, "NONE", "NONE", "NONE")
+
+" HTML highlighting
+call <sid>hi("htmlBold",    s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("htmlItalic",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("htmlEndTag",  s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("htmlTag",     s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+
+" JavaScript highlighting
+call <sid>hi("javaScript",        s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("javaScriptBraces",  s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("javaScriptNumber",  s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+" pangloss/vim-javascript highlighting
+call <sid>hi("jsOperator",          s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsStatement",         s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsReturn",            s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsThis",              s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsClassDefinition",   s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsFunction",          s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsFuncName",          s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsFuncCall",          s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsClassFuncName",     s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsClassMethodType",   s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsRegexpString",      s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsGlobalObjects",     s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsGlobalNodeObjects", s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsExceptions",        s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("jsBuiltins",          s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+
+" Markdown highlighting
+call <sid>hi("markdownCode",              s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("markdownError",             s:gui05, s:gui00, s:cterm05, s:cterm00, "NONE", "NONE", "NONE")
+call <sid>hi("markdownCodeBlock",         s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("markdownHeadingDelimiter",  s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+
+" NERDTree highlighting
+call <sid>hi("NERDTreeDirSlash",  s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("NERDTreeExecFile",  s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+
+" PHP highlighting
+call <sid>hi("phpMemberSelector",  s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("phpComparison",      s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("phpParent",          s:gui05, "NONE", s:cterm05, "NONE", "NONE", "NONE", "NONE")
+
+" Python highlighting
+call <sid>hi("pythonOperator",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("pythonRepeat",    s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+
+" Ruby highlighting
+call <sid>hi("rubyAttribute",               s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("rubyConstant",                s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("rubyInterpolationDelimiter",  s:gui0F, "NONE", s:cterm0F, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("rubyRegexp",                  s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("rubySymbol",                  s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("rubyStringDelimiter",         s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+
+" SASS highlighting
+call <sid>hi("sassidChar",     s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("sassClassChar",  s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("sassInclude",    s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("sassMixing",     s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("sassMixinName",  s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+
+" Signify highlighting
+call <sid>hi("SignifySignAdd",     s:gui0B, s:gui01, s:cterm0B, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("SignifySignChange",  s:gui0D, s:gui01, s:cterm0D, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("SignifySignDelete",  s:gui08, s:gui01, s:cterm08, s:cterm01, "NONE", "NONE", "NONE")
+
+" Spelling highlighting
+call <sid>hi("SpellBad",     s:gui08, s:gui00, s:cterm08, s:cterm00, "REVERSE", "REVERSE", s:gui08)
+call <sid>hi("SpellCap",     s:gui0A, s:gui00, s:cterm0A, s:cterm00, "REVERSE", "REVERSE", s:gui0D)
+call <sid>hi("SpellLocal",   s:gui0D, s:gui00, s:cterm0D, s:cterm00, "REVERSE", "REVERSE", s:gui0C)
+call <sid>hi("SpellRare",    s:gui0C, s:gui00, s:cterm0C, s:cterm00, "REVERSE", "REVERSE", s:gui0E)
+
+" Remove functions
+delf <sid>hi
+
+" Remove color variables
+unlet s:gui00 s:gui01 s:gui02 s:gui03  s:gui04  s:gui05  s:gui06  s:gui07  s:gui08  s:gui09 s:gui0A  s:gui0B  s:gui0C  s:gui0D  s:gui0E  s:gui0F
+unlet s:cterm00 s:cterm01 s:cterm02 s:cterm03 s:cterm04 s:cterm05 s:cterm06 s:cterm07 s:cterm08 s:cterm09 s:cterm0A s:cterm0B s:cterm0C s:cterm0D s:cterm0E s:cterm0F
