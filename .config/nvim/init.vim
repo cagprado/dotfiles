@@ -140,17 +140,16 @@ endif
 
 " Syntax highlighting and appearance
 if has('syntax')
-  syntax on
-  colorscheme default
-  let g:airline_theme='tomorrow'
-  let g:airline_powerline_fonts = 1
-
   let s:has_truecolor = system('tput Tc 2>/dev/null && echo 1 || echo 0')
   if (has('termguicolors') && s:has_truecolor) || has('gui_running')
     " Set truecolor option and load colorscheme
     set termguicolors
     let g:rainbow_active=1
   endif
+
+  syntax on
+  colorscheme default
+  let g:airline_powerline_fonts = 1
 endif
 
 " ULTISNIPS #################################################################

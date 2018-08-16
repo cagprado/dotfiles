@@ -26,15 +26,15 @@ let s:gui0F = "#a3685a"
 " Terminal color definitions
 let s:cterm00 = "07"
 let s:cterm01 = "07"
-let s:cterm02 = "15"
+let s:cterm02 = "07"
 let s:cterm03 = "15"
 let s:cterm04 = "15"
 let s:cterm05 = "00"
 let s:cterm06 = "08"
 let s:cterm07 = "08"
-let s:cterm08 = "09"
+let s:cterm08 = "01"
 let s:cterm09 = "03"
-let s:cterm0A = "01"
+let s:cterm0A = "11"
 let s:cterm0B = "02"
 let s:cterm0C = "06"
 let s:cterm0D = "04"
@@ -68,6 +68,7 @@ call <sid>hi("ModeMsg",       s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE"
 call <sid>hi("MoreMsg",       s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("Question",      s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("Search",        s:gui03, s:gui0A, s:cterm03, s:cterm0A,  "NONE", "NONE", "NONE")
+call <sid>hi("Substitute",    s:gui03, s:gui0A, s:cterm03, s:cterm0A, "NONE", "NONE", "NONE")
 call <sid>hi("SpecialKey",    s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("TooLong",       s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("Underlined",    s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
@@ -85,10 +86,11 @@ call <sid>hi("SignColumn",    s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "N
 call <sid>hi("StatusLine",    s:gui04, s:gui02, s:cterm04, s:cterm02, "NONE", "NONE", "NONE")
 call <sid>hi("StatusLineNC",  s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
 call <sid>hi("VertSplit",     s:gui02, s:gui02, s:cterm02, s:cterm02, "NONE", "NONE", "NONE")
-call <sid>hi("ColorColumn",   "NONE", s:gui01, "NONE", s:cterm05, "NONE", "NONE", "NONE")
+call <sid>hi("ColorColumn",   "NONE", s:gui01, s:cterm03, s:cterm05, "NONE", "NONE", "NONE")
 call <sid>hi("CursorColumn",  "NONE", s:gui01, "NONE", s:cterm01, "NONE", "NONE", "NONE")
 call <sid>hi("CursorLine",    "NONE", s:gui01, "NONE", s:cterm01, "NONE", "BOLD", "NONE")
 call <sid>hi("CursorLineNr",  s:gui04, s:gui01, s:cterm04, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("QuickFixLine",  "NONE", s:gui01, "NONE", s:cterm01, "NONE", "NONE", "NONE")
 call <sid>hi("PMenu",         s:gui04, s:gui01, s:cterm04, s:cterm01, "NONE", "NONE", "NONE")
 call <sid>hi("PMenuSel",      s:gui01, s:gui04, s:cterm01, s:cterm04, "NONE", "NONE", "NONE")
 call <sid>hi("TabLine",       s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
@@ -203,6 +205,16 @@ call <sid>hi("jsGlobalNodeObjects", s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", 
 call <sid>hi("jsExceptions",        s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("jsBuiltins",          s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
 
+" Mail highlighting
+call <sid>hi("mailQuoted1",  s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailQuoted2",  s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailQuoted3",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailQuoted4",  s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailQuoted5",  s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailQuoted6",  s:gui0A, "NONE", s:cterm0A, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailURL",      s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("mailEmail",    s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
+
 " Markdown highlighting
 call <sid>hi("markdownCode",              s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("markdownError",             s:gui05, s:gui00, s:cterm05, s:cterm00, "NONE", "NONE", "NONE")
@@ -221,6 +233,8 @@ call <sid>hi("phpParent",          s:gui05, "NONE", s:cterm05, "NONE", "NONE", "
 " Python highlighting
 call <sid>hi("pythonOperator",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
 call <sid>hi("pythonRepeat",    s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("pythonInclude",   s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("pythonStatement", s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
 
 " Ruby highlighting
 call <sid>hi("rubyAttribute",               s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE", "NONE")
@@ -248,9 +262,65 @@ call <sid>hi("SpellCap",     s:gui0A, s:gui00, s:cterm0A, s:cterm00, "REVERSE", 
 call <sid>hi("SpellLocal",   s:gui0D, s:gui00, s:cterm0D, s:cterm00, "REVERSE", "REVERSE", s:gui0C)
 call <sid>hi("SpellRare",    s:gui0C, s:gui00, s:cterm0C, s:cterm00, "REVERSE", "REVERSE", s:gui0E)
 
-" Remove functions
-delf <sid>hi
+" Startify highlighting
+call <sid>hi("StartifyBracket",  s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifyFile",     s:gui07, "NONE", s:cterm07, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifyFooter",   s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifyHeader",   s:gui0B, "NONE", s:cterm0B, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifyNumber",   s:gui09, "NONE", s:cterm09, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifyPath",     s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifySection",  s:gui0E, "NONE", s:cterm0E, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifySelect",   s:gui0C, "NONE", s:cterm0C, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifySlash",    s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
+call <sid>hi("StartifySpecial",  s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NONE", "NONE")
 
-" Remove color variables
+" Airline highlighting
+let g:airline#themes#base16_tomorrow#palette = {}
+
+if !&termguicolors
+    call airline#parts#define_accent('mode', 'none')
+    call airline#parts#define_accent('linenr', 'none')
+    call airline#parts#define_accent('maxlinenr', 'none')
+endif
+
+let s:N1   = [ s:gui01, s:gui0B, s:cterm01, s:cterm0B ]
+let s:N2   = [ s:gui06, s:gui02, s:cterm03, s:cterm05 ]
+let s:N3   = [ s:gui09, s:gui01, s:cterm09, s:cterm01 ]
+let g:airline#themes#base16_tomorrow#palette.normal = airline#themes#generate_color_map(s:N1, s:N2, s:N3)
+
+let s:I1   = [ s:gui01, s:gui0D, s:cterm01, s:cterm0D ]
+let s:I2   = [ s:gui06, s:gui02, s:cterm03, s:cterm05 ]
+let s:I3   = [ s:gui09, s:gui01, s:cterm09, s:cterm01 ]
+let g:airline#themes#base16_tomorrow#palette.insert = airline#themes#generate_color_map(s:I1, s:I2, s:I3)
+
+let s:R1   = [ s:gui01, s:gui08, s:cterm01, s:cterm08 ]
+let s:R2   = [ s:gui06, s:gui02, s:cterm03, s:cterm05 ]
+let s:R3   = [ s:gui09, s:gui01, s:cterm09, s:cterm01 ]
+let g:airline#themes#base16_tomorrow#palette.replace = airline#themes#generate_color_map(s:R1, s:R2, s:R3)
+
+let s:V1   = [ s:gui01, s:gui0E, s:cterm01, s:cterm0E ]
+let s:V2   = [ s:gui06, s:gui02, s:cterm03, s:cterm05 ]
+let s:V3   = [ s:gui09, s:gui01, s:cterm09, s:cterm01 ]
+let g:airline#themes#base16_tomorrow#palette.visual = airline#themes#generate_color_map(s:V1, s:V2, s:V3)
+
+let s:IA1   = [ s:gui05, s:gui01, s:cterm05, s:cterm01 ]
+let s:IA2   = [ s:gui05, s:gui01, s:cterm05, s:cterm01 ]
+let s:IA3   = [ s:gui05, s:gui01, s:cterm05, s:cterm01 ]
+let g:airline#themes#base16_tomorrow#palette.inactive = airline#themes#generate_color_map(s:IA1, s:IA2, s:IA3)
+
+" Here we define the color map for ctrlp.  We check for the g:loaded_ctrlp
+" variable so that related functionality is loaded if the user is using
+" ctrlp. Note that this is optional, and if you do not define ctrlp colors
+" they will be chosen automatically from the existing palette.
+if get(g:, 'loaded_ctrlp', 0)
+    let g:airline#themes#base16_tomorrow#palette.ctrlp = airline#extensions#ctrlp#generate_color_map(
+        \ [ s:gui07, s:gui02, s:cterm07, s:cterm02, '' ],
+        \ [ s:gui07, s:gui04, s:cterm07, s:cterm04, '' ],
+        \ [ s:gui05, s:gui01, s:cterm05, s:cterm01, 'bold' ])
+endif
+
+" Remove functions and color variables
+delf <sid>hi
 unlet s:gui00 s:gui01 s:gui02 s:gui03  s:gui04  s:gui05  s:gui06  s:gui07  s:gui08  s:gui09 s:gui0A  s:gui0B  s:gui0C  s:gui0D  s:gui0E  s:gui0F
 unlet s:cterm00 s:cterm01 s:cterm02 s:cterm03 s:cterm04 s:cterm05 s:cterm06 s:cterm07 s:cterm08 s:cterm09 s:cterm0A s:cterm0B s:cterm0C s:cterm0D s:cterm0E s:cterm0F
+unlet s:N1 s:N2 s:N3 s:I1 s:I2 s:I3 s:R1 s:R2 s:R3 s:V1 s:V2 s:V3 s:IA1 s:IA2 s:IA3
