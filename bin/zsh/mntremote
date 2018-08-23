@@ -42,7 +42,7 @@ elif $UMOUNT; then
 
     # it is mounted, try to umount, halt if fail
     if $(mount | grep -q $MOUNTROOT/$HOST); then
-        fusermount -u "$MOUNTROOT/$HOST" || return $?
+        fusermount3 -u "$MOUNTROOT/$HOST" || return $?
         ((EXECUTED_STEPS+=1))
     fi
 
