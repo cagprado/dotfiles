@@ -8,7 +8,7 @@ print -P -n " - Do you want to setup console fonts (need root)? "
 read ANS
 if [[ "$ANS" = (yes|YES|Yes|y|Y) ]]; then
   # copy font to default location
-  sudo cp $HOME/.local/share/fonts/bitmap/tamsyn-patched/Tamsyn8x16r.psf.gz /usr/share/kbd/consolefonts/consolefont.psf.gz
+  sudo cp $HOME/etc/system/usr/share/kbd/consolefonts/* /usr/share/kbd/consolefonts
 
   # setup vconsole.conf to load consolefont
   if [[ -r /etc/vconsole.conf ]]; then
