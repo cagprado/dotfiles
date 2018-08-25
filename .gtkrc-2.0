@@ -3,6 +3,6 @@
 gtk-theme-name = "Arc"
 style "user-font"
 {
-  font_name="Aller 9"
+  font_name="sans-serif 9"
 }
 widget_class "*" style "user-font"
