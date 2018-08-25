@@ -5,7 +5,7 @@ autoload +X parse_cmdline help err war
 # Configuration
 local SCREEN_EDID="$HOME/etc/screen_edid"
 if [[ "$(hostname)" = "mredson" ]]; then
-  local PRIORITY='eDP-1 HDMI-2 DP-2 HDMI-1 DP-1'
+  local PRIORITY='eDP1 DP1 DP2'
 fi
 
 local USAGE="%Busage:%b $0 [option] [RESOLUTION...]"
@@ -79,7 +79,7 @@ for ITEM in $PRIORITY; do
 done
 
 # get DPI of primary monitor
-local EDID=$(hexdump -ve '1/1 "%x"' /sys/class/drm/card0-${PRIMARY}/edid)
+local EDID=$(hexdump -ve '1/1 "%x"' /sys/class/drm/card0-${${PRIMARY//-/}:0:-1}-${PRIMARY: -1}/edid)
 local DPI=$(grep "$EDID" "$SCREEN_EDID" | awk '{print $2}')
 [[ -z "$DPI" ]] && DPI="96"
 echo $DPI
