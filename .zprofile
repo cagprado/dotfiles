@@ -4,21 +4,22 @@
 [[ "$(id -un)" == "$(id -gn)" ]] && umask 002 || umask 022
 
 # GENERIC VARIABLES #########################################################
-export CFG_COMMAND="/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME"
 export EDITOR=vim
-export DE="generic"
+export CFG_COMMAND="/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME"
+export GNUPGHOME="$HOME/.gnupg"
 export TEXMFHOME="$HOME/.texmf"
 export TMPHOME="/tmp/cagprado"
-export GNUPGHOME="$HOME/.gnupg"
+
+# printers
 export HOMEPRINTER=""
 export WORKPRINTER="hpiopp"
 export PRINTER=$WORKPRINTER
-export QT_QPA_PLATFORMTHEME=qt5ct
-export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
-export FT2_SUBPIXEL_HINTING=2
-export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
+
+# build
 export MAKEFLAGS='-j'
 export LOCALBUILDS="$HOME/usr/local"
+
+# interface
 export LESS="-cx3MRFX"
 export LESSCOLORIZER="pygmentize"
 if [[ "$SESSION" = "local" ]]; then

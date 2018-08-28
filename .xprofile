@@ -1,6 +1,11 @@
 # vim: ft=sh:
 # X configuration file
 
+export DE="generic"
+export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
+export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
+export QT_QPA_PLATFORMTHEME=qt5ct
+
 # Setup screens
 xset s off -dpms
 DPI=$($HOME/bin/zsh/setmonitors)
@@ -12,6 +17,11 @@ if [ "$DPI" -gt 150 ]; then
     export GDK_DPI_SCALE=0.5
     export QT_AUTO_SCREEN_SCALE_FACTOR=0
     export QT_SCREEN_SCALE_FACTORS=2
+
+    export GTK2_RC_FILES=$HOME/.config/gtkrc-2.0-HiDPI
+else
+    export FT2_SUBPIXEL_HINTING=2
+    export GTK2_RC_FILES=$HOME/.config/gtkrc-2.0
 fi
 
 # Set keyboard and IM
