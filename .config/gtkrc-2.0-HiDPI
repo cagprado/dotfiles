@@ -1,6 +1,4 @@
-# Auto-written by gtk2_prefs. Do not edit.
-
-gtk-theme-name = "Arc"
+gtk-theme-name = "Arc-solid-HiDPI"
 style "user-font"
 {
   font_name="sans-serif 9"

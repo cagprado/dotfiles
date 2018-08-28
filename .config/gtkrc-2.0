@@ -1,0 +1,6 @@
+gtk-theme-name = "Arc-solid"
+style "user-font"
+{
+  font_name="sans-serif 9"
+}
+widget_class "*" style "user-font"
