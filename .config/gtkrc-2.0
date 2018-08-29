@@ -1,6 +1,3 @@
 gtk-theme-name = "Arc-solid"
-style "user-font"
-{
-  font_name="sans-serif 9"
-}
-widget_class "*" style "user-font"
+gtk-icon-theme-name = "Papirus"
+gtk-font-name = "sans-serif 9"
