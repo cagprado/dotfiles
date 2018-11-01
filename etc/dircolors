@@ -2,8 +2,8 @@
 # FILE TYPE #################################################################
 NORMAL     00
 FILE       00
-DIR      1;34
 LINK       35
+DIR      1;34
 ORPHAN   7;31
 MISSING  7;31
 FIFO     7;34
@@ -15,13 +15,13 @@ EXEC     1;32
 # FILE EXTENSION ############################################################
 
 # cryptography
-*.gpg    1;34
-*.gpg    1;34
-*.pgp    1;34
-*.asc    1;34
-*.3des   1;34
-*.aes    1;34
-*.enc    1;34
+*.gpg      34
+*.gpg      34
+*.pgp      34
+*.asc      34
+*.3des     34
+*.aes      34
+*.enc      34
 
 # regular text
 *.txt      36
@@ -31,6 +31,7 @@ EXEC     1;32
 *.conf     36
 
 # source code text
+*Makefile  32
 *.asy      32
 *.tex      32
 *.h        32
@@ -142,7 +143,7 @@ EXEC     1;32
 *.wmv    1;33
 *.3gp    1;33
 
-# documents
+# documents and binary files
 *.pdf      31
 *.ps       31
 *.div      31
@@ -158,6 +159,7 @@ EXEC     1;32
 *.pptx     31
 *.fla      31
 *.psd      31
+*.root    ;31
 
 # archives, compressed
 *.7z     1;35
