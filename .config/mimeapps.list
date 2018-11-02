@@ -1,1 +1,23 @@
-../.local/share/applications/mimeapps.list
+# vim: ft=dosini
+[Default Applications]
+
+# browser
+text/html=google-chrome.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
+
+# torrent
+application/x-bittorrent=torrent.desktop
+x-scheme-handler/magnet=torrent.desktop
+
+# image files
+image/png=feh.desktop
+image/jpeg=feh.desktop
+
+# PDF & docs
+application/pdf=org.pwmt.zathura.desktop
+application/wps-office.doc=wps-office-wps.desktop
+application/wps-office.xls=wps-office-et.desktop
+application/wps-office.ppt=wps-office-wpp.desktop
