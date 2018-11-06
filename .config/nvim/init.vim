@@ -24,11 +24,6 @@ set runtimepath+=~/.vundle/Vundle.vim
 call vundle#begin('~/.vundle')
   Plugin 'VundleVim/Vundle.vim'
 
-  " iBus plugin won't work remotely
-  if $SESSION ==# "local" && $IS_CONSOLE == '0'
-    Plugin 'lsrdg/vibusen.vim'                " Ibus management
-  endif
-
   " interface
   Plugin 'vim-airline/vim-airline'            " Airline status line
   Plugin 'luochen1990/rainbow'                " Rainbow parenthesis
