@@ -13,14 +13,21 @@ echo "Xft.dpi: $DPI" > $HOME/.Xresources
 
 if [ "$DPI" -gt 150 ]; then
     # HiDPI monitor
+    export HIDPI=true
+
+    # set scale of common GUI toolkits
     export GDK_SCALE=2
     export GDK_DPI_SCALE=0.5
     export QT_AUTO_SCREEN_SCALE_FACTOR=0
     export QT_SCREEN_SCALE_FACTORS=2
 
+    # GTK2 does not support scaling: set manually tuned HiDPI theme
     export GTK2_RC_FILES=$HOME/.config/gtkrc-2.0-HiDPI
 else
+    # use subpixel for non-HiDPI monitors
     export FT2_SUBPIXEL_HINTING=2
+
+    # Set default GTK2 theme
     export GTK2_RC_FILES=$HOME/.config/gtkrc-2.0
 fi
 
