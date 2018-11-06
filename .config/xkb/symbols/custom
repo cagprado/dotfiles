@@ -2,7 +2,7 @@
 // Hacked keyboard layout to add dead keys and special symbols to lvl 3/4
 
 default xkb_symbols "us" {
-    include "caio(basic)"
+    include "custom(basic)"
 
     key <TLDE> { [dead_grave,   dead_tilde,      questiondown,         exclamdown           ] };
     key <AE06> { [6,            dead_circumflex, dead_caron,           threequarters        ] };
@@ -20,7 +20,7 @@ default xkb_symbols "us" {
 };
 
 xkb_symbols "br" {
-    include "caio(basic)"
+    include "custom(basic)"
     include "kpdl(comma)"
 
     key <TLDE> { [apostrophe,   quotedbl,        questiondown,         exclamdown           ] };
