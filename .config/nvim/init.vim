@@ -25,19 +25,21 @@ call vundle#begin('~/.vundle')
   Plugin 'VundleVim/Vundle.vim'
 
   " interface
-  Plugin 'vim-airline/vim-airline'            " Airline status line
-  Plugin 'luochen1990/rainbow'                " Rainbow parenthesis
-  Plugin 'tpope/vim-surround'                 " Module for surrounding moves
-  Plugin 'SirVer/ultisnips'                   " Snippets engine
-  Plugin 'tpope/vim-fugitive'                 " Git plugin
+  Plugin 'vim-airline/vim-airline'            " airline status line
+  Plugin 'lilydjwg/fcitx.vim'                 " fcitx input method
+  Plugin 'tpope/vim-fugitive'                 " git interaction
+  Plugin 'luochen1990/rainbow'                " rainbow color parenthesis
+  Plugin 'tpope/vim-surround'                 " surrounding moves
+  Plugin 'SirVer/ultisnips'                   " snippets engine
 
   " syntax
-  Plugin 'vim-pandoc/vim-pandoc-syntax'       " Pandoc markdown syntax
-  Plugin 'chikamichi/mediawiki.vim'           " Mediawiki syntax
-  Plugin 'lervag/vimtex'                      " LaTeX plugin
+  Plugin 'chikamichi/mediawiki.vim'           " mediawiki
+  Plugin 'vim-pandoc/vim-pandoc-syntax'       " pandoc/markdown
+  Plugin 'peterhoeg/vim-qml'                  " qt-qml
 
-  "Plugin 'honza/vim-snippets'                 " Snippets collection
-  "Plugin 'klen/python-mode'                   " Python syntax plugin
+  " ide-like
+  Plugin 'lervag/vimtex'                      " LaTeX plugin
+  Plugin 'klen/python-mode'                   " Python syntax plugin
 call vundle#end()
 filetype plugin indent on                     " Required (indent is optional)
 
@@ -159,9 +161,7 @@ let g:pymode_python = 'python3'
 
 " VIMTEX ####################################################################
 let g:vimtex_fold_enabled = 1
-let g:vimtex_fold_types = {
-  \ 'envs' : { 'blacklist' : ['center'], },
-  \}
+let g:vimtex_fold_types = {'envs' : { 'blacklist' : ['center'], }}
 
 " FUNCTIONS/AUTOCMD #########################################################
 
@@ -292,42 +292,3 @@ imap <silent> <F11> <C-o>:w <bar> :make!<CR>
 
 " snippets
 map <leader>esn :UltiSnipsEdit<CR>
-
-" ###########################################################################
-" ###########################################################################
-" ###########################################################################
-"augroup filetype
-"  autocmd BufNewFile,BufRead *.txt set filetype=human
-"  autocmd BufNewFile,BufRead *.mail set filetype=mail
-"augroup END
-"
-"" in human-language files, automatically format everything at 72 chars:
-"autocmd FileType mail,human set formatoptions+=t textwidth=72
-"
-"" for C-like programming, have automatic indentation:
-"autocmd FileType c,cpp,slang set cindent
-"
-"" for actual C (not C++) programming where comments have explicit end
-"" characters, if starting a new line in the middle of a comment automatically
-"" insert the comment leader characters:
-"autocmd FileType c set formatoptions+=ro
-"
-"" for Perl programming, have things in braces indenting themselves:
-"autocmd FileType perl set smartindent
-"
-"" for CSS, also have things in braces indented:
-"autocmd FileType css set smartindent
-"
-"" for HTML, generally format text, but if a long line has been created leave it
-"" alone when editing:
-"autocmd FileType html,php set formatoptions+=tl
-"
-"" for both CSS and HTML, use genuine tab characters for indentation, to make
-"" files a few bytes smaller:
-"autocmd FileType html,css,php set noexpandtab tabstop=2
-"
-"" in makefiles, don't expand tabs to spaces, since actual tab characters are
-"" needed, and have indentation at 8 chars to be sure that all indents are tabs
-"" (despite the mappings later):
-"autocmd FileType make set noexpandtab shiftwidth=8
-
