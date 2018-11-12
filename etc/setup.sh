@@ -12,9 +12,10 @@ mkdir -p $HOME/var/backup
 mkdir -p $HOME/.msmtp.queue
 
 # VIM
-print -P "%BInstalling Vundle...%b"
-mkdir -p $HOME/.vundle
-git clone http://github.com/VundleVim/Vundle.vim $HOME/.vundle/Vundle.vim
+print -P "%BInstalling dein...%b"
+curl 'https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh' > installer.sh
+mkdir -p $HOME/.vim/bundles
+sh ./installer.sh $HOME/.vim/bundles && rm ./installer.sh
 
 # tmux
 print -P "%BInstalling tmux plugins...%b"
