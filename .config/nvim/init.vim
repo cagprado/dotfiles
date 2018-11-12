@@ -1,47 +1,44 @@
 " INITIALIZATION ############################################################
 " clear autocmd and set nocompatible (not vi compatible)
 autocmd!
-set nocompatible   " this is also REQUIRED for Vundle
+set nocompatible   " required for bundles
 let mapleader=','  " set mapleader for custom maps
 
-" PLUGIN MANAGER ############################################################
-"                                                                           |
-" First time installation:                                                  |
-"   mkdir ~/.vundle                                                         |
-"   git clone http://github.com/VundleVim/Vundle.vim .vundle/Vundle.vim     |
-"                                                                           |
-" Basic commands:                                                           |
-"   :PluginList           - list current plugins                            |
-"   :PluginInstall[!]     - install (or update with !)                      |
-"   :PluginUpdate         - update                                          |
-"   :PluginSearch[!] foo  - search foo (force cache update with !)          |
-"   :PluginClean[!]       - remove unused plugins (no confirm with !)       |
-"                                                                           |
-"----------------------------------------------------------------------------
+" Dein plugin manager
+set runtimepath+=~/.vim/bundles/repos/github.com/Shougo/dein.vim
+if dein#load_state('~/.vim/bundles')
+    call dein#begin('~/.vim/bundles')
+    call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
 
-filetype off                                  " Required for Vundle to work
-set runtimepath+=~/.vundle/Vundle.vim
-call vundle#begin('~/.vundle')
-  Plugin 'VundleVim/Vundle.vim'
+    " interface
+    call dein#add('vim-airline/vim-airline')      " airline status line
+    call dein#add('lilydjwg/fcitx.vim')           " fcitx input method
+    call dein#add('tpope/vim-fugitive')           " git interaction
+    call dein#add('luochen1990/rainbow')          " rainbow color parenthesis
+    call dein#add('tpope/vim-surround')           " surrounding moves
+    call dein#add('SirVer/ultisnips')             " snippets engine
 
-  " interface
-  Plugin 'vim-airline/vim-airline'            " airline status line
-  Plugin 'lilydjwg/fcitx.vim'                 " fcitx input method
-  Plugin 'tpope/vim-fugitive'                 " git interaction
-  Plugin 'luochen1990/rainbow'                " rainbow color parenthesis
-  Plugin 'tpope/vim-surround'                 " surrounding moves
-  Plugin 'SirVer/ultisnips'                   " snippets engine
+    " syntax
+    call dein#add('chikamichi/mediawiki.vim')     " mediawiki
+    call dein#add('vim-pandoc/vim-pandoc-syntax') " pandoc/markdown
+    call dein#add('peterhoeg/vim-qml')            " qt-qml
 
-  " syntax
-  Plugin 'chikamichi/mediawiki.vim'           " mediawiki
-  Plugin 'vim-pandoc/vim-pandoc-syntax'       " pandoc/markdown
-  Plugin 'peterhoeg/vim-qml'                  " qt-qml
+    " ide-like
+    call dein#add('lervag/vimtex')                " LaTeX plugin
+    call dein#add('klen/python-mode')             " Python syntax plugin
 
-  " ide-like
-  Plugin 'lervag/vimtex'                      " LaTeX plugin
-  Plugin 'klen/python-mode'                   " Python syntax plugin
-call vundle#end()
-filetype plugin indent on                     " Required (indent is optional)
+    call dein#end()
+    call dein#save_state()
+endif
+filetype plugin indent on " indent is optional
+
+" auto install plugins on startup
+if dein#check_install()
+    call dein#install()
+endif
+
+" auto remove unused plugins on startup
+call map(dein#check_clean(), "delete(v:val, 'rf')")
 
 " BASIC INTERFACE ###########################################################
 " options depending on other sections of .vimrc are commented with <USER SEC>
