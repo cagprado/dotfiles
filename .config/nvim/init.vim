@@ -12,11 +12,13 @@ if dein#load_state('~/.vim/bundles')
 
     " interface
     call dein#add('vim-airline/vim-airline')      " airline status line
+    call dein#add('Shougo/deoplete.nvim')         " completion
     call dein#add('lilydjwg/fcitx.vim')           " fcitx input method
     call dein#add('tpope/vim-fugitive')           " git interaction
     call dein#add('luochen1990/rainbow')          " rainbow color parenthesis
     call dein#add('tpope/vim-surround')           " surrounding moves
-    call dein#add('SirVer/ultisnips')             " snippets engine
+    call dein#add('Shougo/neosnippet.vim')        " snippets engine
+    call dein#add('Shougo/neosnippet-snippets')   " snippets library
 
     " syntax
     call dein#add('chikamichi/mediawiki.vim')     " mediawiki
@@ -25,7 +27,7 @@ if dein#load_state('~/.vim/bundles')
 
     " ide-like
     call dein#add('lervag/vimtex')                " LaTeX plugin
-    call dein#add('klen/python-mode')             " Python syntax plugin
+    call dein#add('python-mode/python-mode')      " Python syntax plugin
 
     call dein#end()
     call dein#save_state()
@@ -146,12 +148,8 @@ if has('syntax')
   let g:airline_powerline_fonts = 1
 endif
 
-" ULTISNIPS #################################################################
-let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
+" COMPLETION ################################################################
+let g:deoplete#enable_at_startup = 1
 
 " PYTHON-MODE ###############################################################
 let g:pymode_python = 'python3'

@@ -1,99 +1,0 @@
-# PYTHON HELPER FUNCTIONS ###################################################
-global !p
-def LabelFromFilename(filename):
-    if '.' in filename:
-        return filename[:filename.find('.')]
-    else:
-        return filename
-
-
-def LabelFromName(name):
-    return name[:5].lower()
-endglobal
-
-# SYMBOLS ###################################################################
-snippet \\\\ "\textbackslash" iA
-\textbackslash{}$0
-endsnippet
-
-# TEXT FORMATTING ###########################################################
-snippet \tbf "\textbf{...}" iA
-\textbf{$1}$0
-endsnippet
-
-snippet \ttt "\texttt{...}" iA
-\texttt{$1}$0
-endsnippet
-
-snippet \tsc "\textsc{...}" iA
-\textsc{$1}$0
-endsnippet
-
-snippet \emph "\emph{...}" iA
-\emph{$1}$0
-endsnippet
-
-# SIMPLE COMMANDS (\command{arg1}{arg2}...) #################################
-snippet \chap "\chapter{...}" iA
-\chapter{$1}\label{chap:`!p snip.rv = LabelFromName(t[1])`}$0
-endsnippet
-
-snippet \sec "\section{...}" iA
-\section{$1}\label{sec:`!p snip.rv = LabelFromName(t[1])`}$0
-endsnippet
-
-snippet \ssec "\subsection{...}" iA
-\subsection{$1}\label{ssec:`!p snip.rv = LabelFromName(t[1])`}$0
-endsnippet
-
-snippet \sssec "\subsubsection{...}" iA
-\subsubsection{$1}\label{sssec:`!p snip.rv = LabelFromName(t[1])`}$0
-endsnippet
-
-# ENVIRONMENTS ##############################################################
-snippet \beg "\begin{environment}...\end{environment}" iA
-\begin{${1:environment}}	${2:Content}\end{$1}$0
-endsnippet
-
-snippet \frame "\begin{frame}[fragile]...\end{frame}" iA
-\begin{frame}[fragile]{$1}	${2:Contents}\end{frame}$0
-endsnippet
-
-snippet \item "\begin{itemize}...\end{itemize}" iA
-\begin{itemize}	\item ${1:Content}\end{itemize}$0
-endsnippet
-
-snippet \enum "\begin{enumerate}...\end{enumerate}" iA
-\begin{enumerate}	\item ${1:Content}\end{enumerate}$0
-endsnippet
-
-snippet \desc "\begin{description}...\end{description}" iA
-\begin{description}	\item ${1:Content}\end{description}$0
-endsnippet
-
-snippet \fig "\begin{figure}...\end{figure}" iA
-\begin{figure}[${1:htb}]
-	\centering
-	\includegraphics{${2:filename}}
-	\caption{${3:caption}}
-	\label{fig:${4:`!p snip.rv = LabelFromFilename(t[2])`}}
-\end{figure}
-$0
-endsnippet
-
-snippet \asy "\begin{figure}...(asy)...\end{figure}" iA
-\begin{figure}[${1:htb}]
-	\centering
-	\input{${2:filename}.asy.tex}
-	\caption{${3:caption}}
-	\label{fig:${4:`!p snip.rv = LabelFromFilename(t[2])`}}
-\end{figure}
-$0
-endsnippet
-
-snippet \eqn "\begin{equation}...\end{equation}" iA
-\begin{equation}
-  $1
-\end{equation}
-$0
-endsnippet
