@@ -4,6 +4,9 @@ autocmd!
 set nocompatible   " required for bundles
 let mapleader=','  " set mapleader for custom maps
 
+" add VIM runtime
+if has('nvim') | set rtp^=/usr/share/vim/vimfiles | endif
+
 " Dein plugin manager
 set runtimepath+=~/.vim/bundles/repos/github.com/Shougo/dein.vim
 if dein#load_state('~/.vim/bundles')
