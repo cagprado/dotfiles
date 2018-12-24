@@ -23,14 +23,14 @@ set $wsPlay  "8:  "
 set $wsMail  "9:  "
 set $wsShow "10:  "
 set $wsMisc "11:  "
-workspace $wsEdit output eDP1
-workspace $wsTerm output eDP1
-workspace $wsWeb  output DP1
-workspace $wsArti output DP1
-workspace $wsPlay output DP1
-workspace $wsMail output eDP1
-workspace $wsShow output DP1
-workspace $wsMisc output eDP1
+workspace $wsEdit output eDP1 eDP-1 eDP-1-1
+workspace $wsTerm output eDP1 eDP-1 eDP-1-1
+workspace $wsWeb  output DP1  DP-1  DP-1-1
+workspace $wsArti output DP1  DP-1  DP-1-1
+workspace $wsPlay output DP1  DP-1  DP-1-1
+workspace $wsMail output eDP1 eDP-1 eDP-1-1
+workspace $wsShow output DP1  DP-1  DP-1-1
+workspace $wsMisc output eDP1 eDP-1 eDP-1-1
 
 # Specify clients to workspaces
 assign [class="Gvim"] $wsEdit
