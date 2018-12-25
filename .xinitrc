@@ -2,12 +2,22 @@
 # X configuration file (via startx)
 source $HOME/.xprofile
 
-# Parse /etc/x11/xinit/xinitrc.d
+# load xinit scripts
 if [ -d /etc/X11/xinit/xinitrc.d ] ; then
   for f in /etc/X11/xinit/xinitrc.d/* ; do
     [ -x "$f" ] && . "$f"
   done
   unset f
 fi
+
+# load Xresources
+if [ -d /etc/X11/Xresources ]; then
+  for i in /etc/X11/Xresources/*; do
+    [ -f $i ] && xrdb -merge $i
+  done
+elif [ -f /etc/X11/Xresources ]; then
+  xrdb -merge /etc/X11/Xresources
+fi
+[ -f $HOME/.Xresources ] && xrdb -merge $HOME/.Xresources
 
 exec i3
