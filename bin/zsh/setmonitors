@@ -4,9 +4,7 @@ autoload +X parse_cmdline help err war
 
 # Configuration
 local SCREEN_EDID="$HOME/etc/screen_edid"
-if [[ "$(hostname)" = "mredson" ]]; then
-  local PRIORITY='eDP1 DP1 DP2 eDP-1 DP-1 DP-2 eDP-1-1 DP-1-1 DP-1-2'
-fi
+local PRIORITY='eDP1 DP1 DP2 eDP-1 DP-1 DP-2 eDP-1-1 DP-1-1 DP-1-2'
 
 local USAGE="%Busage:%b $0 [option] [RESOLUTION...]"
 local DESC="Set resolution and positon of multiple monitors in X."
