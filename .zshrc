@@ -56,6 +56,7 @@ alias pk12util='pk12util -d sql:$HOME/.pki/nssdb'
 alias lp='lp -d $PRINTER -o collate=true'
 
 # utils
+alias vpn='/usr/local/Astrill/astrill'
 alias dropbox='dropbox-cli'
 alias o='xdg-open'
 alias zshfunctions='zcompile -Uz $ZSH_FUNCTIONS $ZSH_FUNCTIONS/*(.x)'
