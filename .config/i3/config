@@ -65,8 +65,7 @@ bindsym XF86Calculator         exec --no-startup-id $terminal -t orpie -e orpie
 bindsym $mod+Return            exec --no-startup-id $terminal
 
 # program launcher
-bindsym $mod+r                 exec --no-startup-id i3-dmenu-desktop
-bindsym $mod+Shift+r           exec dmenu_run
+bindsym $mod+r                 exec --no-startup-id rofi -show combi
 
 # change focus
 bindsym $mod+h                 focus left
