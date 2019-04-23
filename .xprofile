@@ -9,7 +9,10 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 # Setup screens
 xset s off -dpms
 DPI=$($HOME/bin/zsh/setmonitors)
-echo "Xft.dpi: $DPI" > $HOME/.Xresources
+cat > $HOME/.Xresources <<-END
+	Xft.dpi: $DPI
+	rofi.dpi: $DPI
+END
 
 if [ "$DPI" -gt 150 ]; then
     # HiDPI monitor
