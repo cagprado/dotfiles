@@ -5,6 +5,8 @@
 
 # GENERIC VARIABLES #########################################################
 export EDITOR=vim
+export BROWSER=qutebrowser
+export TERMINAL=termite
 export CFG_COMMAND="/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME"
 export GNUPGHOME="$HOME/.gnupg"
 export TEXMFHOME="$HOME/.texmf"
