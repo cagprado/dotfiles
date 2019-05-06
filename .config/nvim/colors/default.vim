@@ -277,12 +277,6 @@ call <sid>hi("StartifySpecial",  s:gui03, "NONE", s:cterm03, "NONE", "NONE", "NO
 " Airline highlighting
 let g:airline#themes#default#palette = {}
 
-if !&termguicolors
-    call airline#parts#define_accent('mode', 'none')
-    call airline#parts#define_accent('linenr', 'none')
-    call airline#parts#define_accent('maxlinenr', 'none')
-endif
-
 let s:N1   = [ s:gui01, s:gui0B, s:cterm01, s:cterm0B ]
 let s:N2   = [ s:gui06, s:gui02, s:cterm03, s:cterm05 ]
 let s:N3   = [ s:gui09, s:gui01, s:cterm09, s:cterm01 ]
@@ -322,6 +316,13 @@ if get(g:, 'loaded_ctrlp', 0)
         \ [ s:gui07, s:gui02, s:cterm07, s:cterm02, '' ],
         \ [ s:gui07, s:gui04, s:cterm07, s:cterm04, '' ],
         \ [ s:gui05, s:gui01, s:cterm05, s:cterm01, 'bold' ])
+endif
+
+if !&termguicolors
+    " remove accent (bold) if terminal doesn't support bold (i.e. console)
+    call airline#parts#define_accent('mode', 'none')
+    call airline#parts#define_accent('linenr', 'none')
+    call airline#parts#define_accent('maxlinenr', 'none')
 endif
 
 " Remove functions and color variables
