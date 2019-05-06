@@ -14,7 +14,7 @@ cat > $HOME/.Xresources <<-END
 	rofi.dpi: $DPI
 END
 
-if [ "$DPI" -gt 150 ]; then
+if [ "${DPI%.*}" -gt 150 ]; then
     # HiDPI monitor
     export HIDPI=true
 
