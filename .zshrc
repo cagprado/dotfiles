@@ -310,4 +310,4 @@ if [[ -f "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting
 fi
 
 # Show a nice cowsay message
-(which cowsay >/dev/null 2>&1) && (which fortune >/dev/null 2>&1) && cowsay $(fortune) || :
+(which cowsay >/dev/null 2>&1) && (which fortune >/dev/null 2>&1) && fortune | cowsay -n || :
