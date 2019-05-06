@@ -174,9 +174,12 @@ let g:airline_symbols.notexists = 'Ɇ'
 call airline#parts#define('linenr', {
         \ 'raw' : ' %l',
         \ 'accent' : 'bold' })
+if !&termguicolors | call airline#parts#define_accent('linenr', 'none') | endif
+
 call airline#parts#define('maxlinenr', {
         \ 'raw' : ':%v %{g:airline_symbols.maxlinenr} %L',
         \ 'accent' : 'none'})
+
 let g:airline_section_z = airline#section#create([ 'windowswap', 'obsession',
         \ '%p%% %{g:airline_symbols.linenr}', 'linenr', 'maxlinenr' ])
 
