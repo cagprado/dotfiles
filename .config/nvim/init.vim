@@ -151,44 +151,34 @@ if has('syntax')
 endif
 
 " AIRLINE ###################################################################
-" variables
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
+let g:airline_skip_empty_sections = 1
 let g:airline#parts#ffenc#skip_expected_string = 'utf-8[unix]'
+
+if !exists('g:airline_symbols') | let g:airline_symbols = {} | endif
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
+let g:airline_symbols.linenr = ' '
+let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.branch = ''
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.crypt = ' '
-let g:airline_symbols.linenr = ' '
 let g:airline_symbols.whitespace = ' '
-let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.dirty='⚡'
 let g:airline_symbols.paste = ' '
 let g:airline_symbols.spell = 'Ꞩ'
 let g:airline_symbols.notexists = 'Ɇ'
 
-"" redefine (max)linenr to remove padding and move symbol out of accent scope
-"call airline#parts#define_raw('linenr', '%l')
-"call airline#parts#define_raw('maxlinenr', '/%L')
-"
-"function! AirlineInit()
-"    if airline#util#winwidth() > 79
-"        let g:airline_section_z = airline#section#create([
-"            \ 'windowswap', 'obsession',
-"            \ '%3p%%' . g:airline_symbols.space . '%{g:airline_symbols.linenr}',
-"            \ 'linenr', 'maxlinenr',
-"            \ '%{g:airline_symbols.maxlinenr}%-3v'])
-"    else
-"        let g:airline_section_z = airline#section#create([
-"            \ '%3p%%' . g:airline_symbols.space . '%{g:airline_symbols.linenr}',
-"            \ 'linenr',  ':%-3v'])
-"    endif
-"endfunction
-"autocmd User AirlineAfterInit call AirlineInit()
+" redefine line number section
+call airline#parts#define('linenr', {
+        \ 'raw' : ' %l',
+        \ 'accent' : 'bold' })
+call airline#parts#define('maxlinenr', {
+        \ 'raw' : ':%v %{g:airline_symbols.maxlinenr} %L',
+        \ 'accent' : 'none'})
+let g:airline_section_z = airline#section#create([ 'windowswap', 'obsession',
+        \ '%p%% %{g:airline_symbols.linenr}', 'linenr', 'maxlinenr' ])
 
 " COMPLETION ################################################################
 let g:deoplete#enable_at_startup = 1

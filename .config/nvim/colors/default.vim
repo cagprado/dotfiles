@@ -307,6 +307,20 @@ let s:IA2   = [ s:gui05, s:gui01, s:cterm05, s:cterm01 ]
 let s:IA3   = [ s:gui05, s:gui01, s:cterm05, s:cterm01 ]
 let g:airline#themes#default#palette.inactive = airline#themes#generate_color_map(s:IA1, s:IA2, s:IA3)
 
+let s:W1 = [ s:gui00, s:gui09, s:cterm00, s:cterm09 ]
+let g:airline#themes#default#palette.normal.airline_warning = s:W1
+let g:airline#themes#default#palette.commandline.airline_warning = s:W1
+let g:airline#themes#default#palette.insert.airline_warning = s:W1
+let g:airline#themes#default#palette.replace.airline_warning = s:W1
+let g:airline#themes#default#palette.visual.airline_warning = s:W1
+
+if !&termguicolors
+    " remove accent (bold) if terminal doesn't support bold (i.e. console)
+    call airline#parts#define_accent('mode', 'none')
+    call airline#parts#define_accent('linenr', 'none')
+    call airline#parts#define_accent('maxlinenr', 'none')
+endif
+
 " Here we define the color map for ctrlp.  We check for the g:loaded_ctrlp
 " variable so that related functionality is loaded if the user is using
 " ctrlp. Note that this is optional, and if you do not define ctrlp colors
@@ -318,15 +332,8 @@ if get(g:, 'loaded_ctrlp', 0)
         \ [ s:gui05, s:gui01, s:cterm05, s:cterm01, 'bold' ])
 endif
 
-if !&termguicolors
-    " remove accent (bold) if terminal doesn't support bold (i.e. console)
-    call airline#parts#define_accent('mode', 'none')
-    call airline#parts#define_accent('linenr', 'none')
-    call airline#parts#define_accent('maxlinenr', 'none')
-endif
-
 " Remove functions and color variables
 delf <sid>hi
 unlet s:gui00 s:gui01 s:gui02 s:gui03  s:gui04  s:gui05  s:gui06  s:gui07  s:gui08  s:gui09 s:gui0A  s:gui0B  s:gui0C  s:gui0D  s:gui0E  s:gui0F
 unlet s:cterm00 s:cterm01 s:cterm02 s:cterm03 s:cterm04 s:cterm05 s:cterm06 s:cterm07 s:cterm08 s:cterm09 s:cterm0A s:cterm0B s:cterm0C s:cterm0D s:cterm0E s:cterm0F
-unlet s:N1 s:N2 s:N3 s:I1 s:I2 s:I3 s:R1 s:R2 s:R3 s:V1 s:V2 s:V3 s:IA1 s:IA2 s:IA3
+unlet s:N1 s:N2 s:N3 s:I1 s:I2 s:I3 s:R1 s:R2 s:R3 s:V1 s:V2 s:V3 s:IA1 s:IA2 s:IA3 s:W1
