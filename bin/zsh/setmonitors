@@ -77,7 +77,7 @@ for ITEM in $PRIORITY; do
 done
 
 # get DPI of primary monitor
-local EDID=$(hexdump -ve '1/1 "%x"' /sys/class/drm/card0-${PRIMARY%%[^A-Za-z]*}-${PRIMARY: -1}/edid)
+local EDID=$(hexdump -ve '1/1 "%x"' /sys/class/drm/card?-${PRIMARY%%[^A-Za-z]*}-${PRIMARY: -1}/edid)
 local DPI=$(grep "$EDID" "$SCREEN_EDID" | awk '{print $2}')
 [[ -z "$DPI" ]] && DPI="96"
 echo $DPI
