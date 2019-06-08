@@ -8,7 +8,7 @@ patch:
   switches:
     - name: ascii_mode
       states: [ '中 ','英' ]
-      reset: 0
+      reset: 1
     - name: full_shape
       states: [ '单 ','全' ]
       reset: 0
