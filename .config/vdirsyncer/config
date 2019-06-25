@@ -44,4 +44,6 @@
 	collections = [
 		["personal", "personal", "56FB9884-FB3E-4ACC-AC19-87142D308D63"],
 		["work", "work", "AF2E4FCB-AF78-48E4-875F-FB05A3652371"],
+		["study", "study", "F8D278B9-B48F-4573-B056-CA81625A3355"],
+		["exercise", "exercise", "C6E9D1A0-991F-4A5B-858D-C15B5CD95288"],
 		["tasks", "tasks", "CCA66167-6F53-4761-A1AF-FB9C6F28CDC7"]]

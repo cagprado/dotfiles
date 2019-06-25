@@ -36,3 +36,11 @@
   [[work]]
     type = calendar
     path = ~/.config/vdirsyncer/data/calendars/work
+
+  [[study]]
+    type = calendar
+    path = ~/.config/vdirsyncer/data/calendars/study
+
+  [[exercise]]
+    type = calendar
+    path = ~/.config/vdirsyncer/data/calendars/exercise
