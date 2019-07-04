@@ -53,7 +53,11 @@ else
     export SESSION="local"
 fi
 
-if [[ "$HOSTNAME" != "mredson" ]]; then
+if [[ "$HOSTNAME" == "mredson" ]]; then
+    # set vaapi correct driver
+    export LIBVA_DRIVER_NAME=iHD
+
+else # remote access to clusters
     # first get rid of LD_LIBRARY_PATH poison =P
     unsetopt GLOBAL_RCS
     unset LD_LIBRARY_PATH
