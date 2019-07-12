@@ -5,7 +5,7 @@ IFACE=$1
 ACTION=$2
 
 case ${IFACE} in
-    eth*|usb*|en*)
+    eth*|usb*|en*|net*)
         case ${ACTION} in
             up)
                 log "disabling wifi radio"
