@@ -12,5 +12,7 @@ Nuclear Physics = Nucl. Phys.
 Nuovo Cimento, Supplemento = Nuovo Cimento, Suppl.
 Physics Letters = Phys. Lett.
 PoS, Proceedings of Science = PoS Proc. Sci.
+Scholarpedia = Scholarpedia
+SoftwareX = SoftwareX
 The Astronomical Journal = Astron. J.
 Zeitschrift für Physik = Z. Phys.
