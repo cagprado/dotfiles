@@ -1,0 +1,231 @@
+#!/usr/bin/env python3
+
+import subprocess
+from os import listdir, environ
+from os.path import isfile, basename
+from binascii import b2a_base64
+from argparse import ArgumentParser
+
+syspath = "/sys/class/drm/"
+wallpaper = environ['HOME'] + "/usr/me/pictures/wallpaper/current"
+
+
+def main():
+    args = parse_arguments()
+    monitors = get_monitors()
+
+    if args.i:
+        print_monitors(monitors)
+    else:
+        setup_monitors(monitors, args)
+        subprocess.run(['feh', '--bg-fill', wallpaper])
+
+
+# known monitors EDID (base64) vs DPI
+dpi_table = {
+    "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBG"
+    "jaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAA"
+    "AAAAACQQMoABIAAAsBCiAgAGY=": 132.5,  # XPS13
+    "AP///////wAoiSpCAAAAAAAbAQSlHRR4A95Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBt"
+    "5i4oLDQPnAIIAgMJcQQAAAat5i4oLDQQXIIIAgMJcQQAAAaAAAA/gBKREkgICAgICAgICAgAA"
+    "AA/gBMUE0xMzlNNDIyQSAgADk=": 205.0   # HMBPX
+}
+
+
+def error(msg):
+    print("{}: error: {}".format(basename(__file__), msg))
+    exit(1)
+
+
+def parse_arguments():
+    parser = ArgumentParser(description='''Sets resolution and position of
+                            multiple monitors using xrandr. Without any options
+                            it will turn on all connected monitors with the
+                            internal eDP positioned to the right. (-m [M1 [M2
+                            ...]] eDP!)''')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-i', action='store_true', help='''list available
+                       monitor configuration and exit''')
+    group.add_argument('-m', metavar=('M1', 'M2'), type=str, nargs='+',
+                       help='''list of monitors to set as active in order from
+                       left to right. Specify the primary monitor by appending
+                       an '!' to the name, ex: eDP-1!''')
+    group.add_argument('-S', action='store_true')
+    group.add_argument('-s', action='store_true', help='''turn off all
+                       monitors except for one (single monitor mode). The
+                       uppercase '-S' will select the internal monitor (eDP)
+                       while the lowercase '-s' version selects an external
+                       monitor. Equivalent to "-m NAME!"''')
+    group.add_argument('-r', action='store_true', help='''same as with no
+                       arguments but arrange monitors by the right instead of
+                       left side''')
+    return parser.parse_args()
+
+
+def get_monitors():
+    # get available devices from syspath
+    devices = [i for i in listdir(syspath) if isfile(syspath + i + "/status")]
+    devices.sort()
+
+    # get available monitors from xrandr
+    xrandr = subprocess.run(['xrandr'], capture_output=True, text=True).stdout
+    names = [l.split()[0] for l in xrandr.split('\n') if "connected" in l]
+    names.sort()
+
+    # remove blacklisted output (virtual and such)
+    blacklist = ['VIRTUAL']
+    blacklist = [any(pat in name for pat in blacklist) for name in names]
+    names = [x for (x, rm) in zip(names, blacklist) if not rm]
+
+    return [Monitor(a, b) for a, b in zip(names, devices)]
+
+
+def print_monitors(monitors):
+    for monitor in monitors:
+        print(monitor)
+
+
+def setup_monitors(monitors, args):
+    priority = build_priority([i.name for i in monitors if i.connected], args)
+
+    # order monitors on priority list
+    monitors = sorted(monitors, key=lambda monitor: monitor.priority(priority))
+
+    # set scale of non-hidpi monitors if one hidpi is available
+    if any(monitor.hidpi for monitor in monitors):
+        for monitor in monitors:
+            if not monitor.hidpi:
+                monitor.scale = [2, 2]
+
+    # set position of monitors
+    position = 0
+    for monitor in monitors:
+        if monitor.connected:
+            monitor.position = [position, 0]
+            position += monitor.scale[0] * monitor.mode[0]
+
+    # generate command line for xrandr
+    command_args = ['xrandr', '--dpi',
+                    str(max([i.dpi for i in monitors if i.connected]))]
+    for monitor in monitors:
+        command_args += monitor.xrandr.split()
+
+    print(command_args[2])
+    subprocess.run(command_args)
+
+
+def build_priority(connected, args):
+    if args.m:
+        # manually given priority list: just check validity
+        for name in args.m:
+            if name.strip('!') not in connected:
+                error("argument -m: invalid monitor name '{}'".format(name))
+        return args.m
+
+    # no list given, build one automatically from all connected monitors
+    for i, name in enumerate(connected):
+        # set eDP monitor (laptop internal) first in the list
+        if "eDP" in name:
+            connected.insert(0, connected.pop(i))
+
+    if args.s:
+        # turn on only one monitor (preferably external)
+        connected = connected[-1:]
+    elif args.S:
+        # turn on only one monitor (preferably internal)
+        connected = connected[:1]
+
+    # set the primary monitor
+    connected[0] += '!'
+
+    # order position alternating left and right
+    connected = [x for _, x in sorted(zip(
+        [i % 2 and -i or i for i, _ in enumerate(connected)], connected))]
+
+    # reverse order if '-r' is given
+    if args.r:
+        connected.reverse()
+
+    return connected
+
+
+def readfile(filename):
+    """Reads a file and returns its contents as string"""
+    if filename.endswith('edid'):
+        # we need to read binary data for this file
+        with open(filename, 'rb') as file:
+            return b2a_base64(file.read()).decode('ascii').strip()
+    else:
+        with open(filename, 'r') as file:
+            return file.readline().strip()
+
+
+class Monitor:
+    """Describes the properties of monitors available to the system"""
+
+    def __init__(self, name, dev):
+        """Initializes the basic properties of a Monitor"""
+        self.name = name
+        self.connected = ('connected' == readfile(syspath + dev + "/status"))
+
+        if self.connected:
+            self.position = [0, 0]
+            self.primary = False
+            self.scale = [1, 1]
+
+            mode = readfile(syspath + dev + "/modes")
+            self.mode = [int(x) for x in mode.split('x')]
+
+            edid = readfile(syspath + dev + "/edid")
+            self.dpi = edid in dpi_table and dpi_table[edid] or 96.0
+
+    @property
+    def hidpi(self):
+        return self.connected and self.dpi > 150
+
+    @property
+    def xrandr(self):
+        if not self.connected:
+            return "--output {} --off".format(self.name)
+
+        else:
+            out = "--output {}".format(self.name)
+            out += " --mode {}x{}".format(self.mode[0], self.mode[1])
+            out += " --scale {}x{}".format(self.scale[0], self.scale[1])
+            out += " --pos {}x{}".format(self.position[0], self.position[1])
+            if self.primary:
+                out += " --primary"
+            return out
+
+    def __str__(self):
+        """Returns the string representation of a Monitor object"""
+        output = self.name + ":\n - Connected:\t"
+        if self.connected:
+            output += "Yes\n" \
+                " - Primary:    \t{}\n" \
+                " - DPI:        \t{} {}\n" \
+                " - Mode:       \t{}x{}\n" \
+                " - Scale:      \t{}x{}\n" \
+                " - Position:   \t{}x{}\n" \
+                .format(self.primary, self.dpi, self.hidpi and "(HiDPI)" or "",
+                        self.mode[0], self.mode[1], self.scale[0],
+                        self.scale[1], self.position[0], self.position[1])
+        else:
+            output += "No\n"
+        return output
+
+    def priority(self, priority):
+        if self.name + '!' in priority:
+            self.primary = True
+            return priority.index(self.name + '!')
+
+        elif self.name in priority:
+            return priority.index(self.name)
+
+        else:
+            self.connected = False
+            return len(priority)
+
+
+if __name__ == "__main__":
+    main()

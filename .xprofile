@@ -8,7 +8,7 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 
 # Setup screens
 xset s off -dpms
-DPI=$($HOME/bin/zsh/setmonitors)
+DPI=$($HOME/bin/setmonitors)
 cat > $HOME/.Xresources <<-END
 	Xft.dpi: $DPI
 	rofi.dpi: $DPI
