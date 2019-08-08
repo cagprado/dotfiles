@@ -1,0 +1,28 @@
+% redefine \address to take three arguments: country / city, state / street address
+% and automatically sets \fromlocation to city
+\renewcommand\address[3]{\begingroup%
+    \newcommand\append[1]{\ifx&##1&\else\ifx&\fromaddress&%
+        \global\def\fromaddress{##1}%
+    \else%
+        \global\expandafter\def\expandafter\fromaddress\expandafter{\fromaddress\\##1}%
+    \fi\fi}%
+    \append{#3}\append{#2}\append{#1}%
+    \def\getlocation##1,##2\@end@token{\global\def\fromlocation{##1}}%
+    \getlocation #2,\@end@token%
+\endgroup}
+
+% define a \title command which when not empty change letter format to a Declaration
+\makeatletter
+\renewcommand\title[1]{%
+    \renewcommand\opening[1]{\begin{center}\Large\textbf{#1}\end{center}\vspace\parskip}%
+    \signature{%
+        \newlength\underlinelength%
+        \settowidth\underlinelength\fromname%
+        \addtolength\underlinelength{2em}%
+        \rule\underlinelength\linethickness\\%
+        \hspace*{1em}\fromname%
+    }%
+    \let\oldclosing\closing%
+    \renewcommand\closing[1]{\oldclosing{\fromlocation, \@date}}%
+}
+\makeatother

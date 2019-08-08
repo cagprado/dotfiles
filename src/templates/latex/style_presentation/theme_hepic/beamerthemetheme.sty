@@ -11,7 +11,7 @@
 % After loading beamer document class with:                                 %
 %   \documentclass{beamer}                                                  %
 % Just load the theme in your preamble:                                     %
-%   \usetheme[options]{hepic}                                               %
+%   \usetheme[options]{themename}                                           %
 %                                                                           %
 % Available options are:                                                    %
 % - numbering:  shows slide numbers at the right-bottom corner of slide.    %
@@ -21,7 +21,7 @@
 %               will not appear on the table of contents.                   %
 %                                                                           %
 % Commands defined in this theme:                                           %
-% - \logoframe              Frame with HEPIC logo centered.                 %
+% - \logoframe              Frame with logo centered.                       %
 % - \titleframe             Title frame.                                    %
 % - \tocframe{title}        Table of Contents frame with given title.       %
 % - \transitionframe{text}  Transition frame with given text.               %
@@ -29,6 +29,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Defining the preamble
+\RequirePackage{varwidth}
+\RequirePackage{appendixnumberbeamer}
 \newif\if@transition
 \@transitionfalse
 \DeclareOption{transition}{\@transitiontrue}
@@ -42,236 +44,236 @@
 
 %%% Some useful commands
 
-%  If you want to stop counting frames after \appendix comment this line or
-%  add it to your preamble (between \makeatletter and \makeatother commands).
-%  This should work with other templates that rely on the number of frames:
-\g@addto@macro\appendix{\edef\realtotalframenumber{\the\c@framenumber}\AtEndDocument{\immediate\write\@auxout{\string\@writefile{nav}{\noexpand\headcommand{\noexpand\def\noexpand\inserttotalframenumber{\realtotalframenumber}}}}}}
-
 % Remove numbers from frames:
 %  \nonumbering{\frame{...}} or \nonumbering{\begin{frame}...\end{frame}}
 \newcommand\nonumbering[1]{\if@numbering\@numberingfalse#1\@numberingtrue\else#1\fi}
 
 % Adds a transition frame called “Backup” and resets sections after \appendix
+\newif\if@notappendix
+\@notappendixtrue
 \g@addto@macro{\appendix}{
   \@numberingfalse
+  \@notappendixfalse
   \section*{}
   \subsection*{Backup}
   \transitionframe{Backup}
 }
 
-%%% HEPIC Theme
+%%% Theme definition
 \mode<all> {
-  \usepackage{calc}
-  \usepackage{ifluatex}
+    \usepackage{calc}
 
-  % Font theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \usefonttheme{professionalfonts}
+    % Font theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \usefonttheme{professionalfonts}
 
-  % Fonts
-  \ifluatex
-    \usepackage{fontspec}
-    \defaultfontfeatures{Ligatures=TeX}
-    \setmainfont{eau_sans_}[ Extension = .otf, UprightFont = *book_osf, BoldFont = *bold_osf, ItalicFont = *book_osf_obl, BoldItalicFont = *bold_osf_obl ]
-    \setsansfont{eau_sans_}[ Extension = .otf, UprightFont = *book_osf, BoldFont = *bold_osf, ItalicFont = *book_osf_obl, BoldItalicFont = *bold_osf_obl ]
-    \setmonofont{SourceCodePro}[ Extension = .otf, UprightFont = *-Regular, BoldFont = *-Bold, ItalicFont = *-RegularIt, BoldItalicFont = *-BoldIt, Numbers = Lowercase ]
-    \newfontfamily\eaulining{eau_sans_}[ Extension = .otf, UprightFont = *book, BoldFont = *bold, ItalicFont = *book_obl, BoldItalicFont = *bold_obl ]
-    \renewcommand\lfstyle{\eaulining}
+    \setsansfont{Eau Sans}[
+        Scale = MatchLowercase,
+        UprightFont = * Book Old-styled Figures,
+        SlantedFont = * Book Old-styled Figures Oblique,
+        BoldFont       = * Bold Old-styled Figures,
+        BoldItalicFont = * Bold Old-styled Figures Oblique,
+    ]
+
+    \newfontfamily\eaulining{Eau Sans}[
+        Scale = MatchLowercase,
+        UprightFont = * Book Lining,
+        SlantedFont = * Book Lining Oblique,
+        BoldFont       = * Bold Lining,
+        BoldItalicFont = * Bold Lining Oblique,
+    ]
+    \renewcommand\lfstyle{\IfFontFeatureActiveTF{Numbers=OldStyle}{\addfontfeature{Numbers=Lining}}{\eaulining}}
 
     % Math fonts
-    \usepackage{unicode-math}
-    \setmathfont{Asana-Math.otf}
-    \setmathfont{latinmodernmath}[range=cal]
-  \else
-    \message{^^JHEPIC Theme Warning: HEPIC fonts were not loaded, use luaLaTeX if you want^^Jto use them.^^J^^J}
-    \usepackage[p,osf]{newtxtext}  % old-style figures in text mode
-    \usepackage{newtxmath}
-    \renewcommand\familydefault\sfdefault
-    \renewcommand\lfstyle{}  % sans family don't have oldstyle numbers
-  \fi
+    %\usepackage{unicode-math}
+    %\setmathfont{Asana-Math.otf}
+    %\setmathfont{latinmodernmath}[range=cal]
 
-  \setbeamerfont{title}{series=\bfseries,size=\huge}
-  \setbeamerfont{subtitle}{series=\bfseries,size=\Large}
-  \setbeamerfont{author}{size=\normalsize}
-  \setbeamerfont{institute}{size=\small}
-  \setbeamerfont{date}{size=\tiny}
-  \setbeamerfont{headline section}{series=\bfseries,size=\tiny}
-  \setbeamerfont{headline subsection}{series=\bfseries,size=\Large}
-  \setbeamerfont{footline}{size=\tiny}
+    \setbeamerfont{title}{series=\bfseries,size=\huge}
+    \setbeamerfont{subtitle}{series=\bfseries,size=\Large}
+    \setbeamerfont{author}{size=\normalsize}
+    \setbeamerfont{institute}{size=\small}
+    \setbeamerfont{date}{size=\tiny}
+    \setbeamerfont{headline section}{series=\bfseries,size=\tiny}
+    \setbeamerfont{headline subsection}{series=\bfseries,size=\Large}
+    \setbeamerfont{footline}{size=\tiny}
 
-  \setbeamerfont{frametitle}{series=\bfseries}
-  \setbeamerfont{block title}{series=\bfseries}
-  \setbeamerfont{item projected}{family=\lfstyle,series=\bfseries}
+    \setbeamerfont{frametitle}{series=\bfseries}
+    \setbeamerfont{block title}{series=\bfseries}
+    \setbeamerfont{item projected}{family=\lfstyle,series=\bfseries}
 
-  % Color theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Color theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  % HEPIC colors
-  \definecolor{00}{HTML}{FFFFFF} % white
-  \definecolor{01}{HTML}{6D6E70} % gray
-  \definecolor{02}{HTML}{2C96D3} % blue
-  \definecolor{A0}{HTML}{231F20} % black/dark gray
-  \definecolor{A1}{HTML}{404041}
-  \definecolor{A2}{HTML}{58585B}
-  \definecolor{B0}{HTML}{003F5E} % blue
-  \definecolor{B1}{HTML}{13597F}
-  \definecolor{B2}{HTML}{2172A0}
-  \definecolor{C0}{HTML}{CCCAB6} % sand
-  \definecolor{C1}{HTML}{D4D3C4}
-  \definecolor{C2}{HTML}{DCDCD1}
-  \definecolor{D0}{HTML}{BBBDC0} % light gray
-  \definecolor{D1}{HTML}{D1D2D4}
-  \definecolor{D2}{HTML}{E6E7E8}
+    % colors
+    \newcommand\logoimg{hepic_logo}
+    \newcommand\fulllogoimg{hepic_full_logo}
+    \definecolor{00}{HTML}{FFFFFF} % white
+    \definecolor{01}{HTML}{6D6E70} % gray
+    \definecolor{02}{HTML}{2C96D3} % blue
+    \definecolor{A0}{HTML}{231F20} % black/dark gray
+    \definecolor{A1}{HTML}{404041}
+    \definecolor{A2}{HTML}{58585B}
+    \definecolor{B0}{HTML}{003F5E} % blue
+    \definecolor{B1}{HTML}{13597F}
+    \definecolor{B2}{HTML}{2172A0}
+    \definecolor{C0}{HTML}{CCCAB6} % sand
+    \definecolor{C1}{HTML}{D4D3C4}
+    \definecolor{C2}{HTML}{DCDCD1}
+    \definecolor{D0}{HTML}{BBBDC0} % light gray
+    \definecolor{D1}{HTML}{D1D2D4}
+    \definecolor{D2}{HTML}{E6E7E8}
 
-  % titlepage
-  \setbeamercolor{title}{fg = 00, bg = 02}
+    % titlepage
+    \setbeamercolor{title}{fg=00,bg=02}
 
-  % body
-  \setbeamercolor{normal text}{fg = 01, bg = 00}
-  \setbeamercolor{background}{fg = 02, bg = 00}
+    % body
+    \setbeamercolor{normal text}{fg=01,bg=00}
+    \setbeamercolor{background}{fg=02,bg=00}
+    \setbeamercolor{alerted text}{fg=02,bg=00}
 
-  % table of contents
-  \setbeamercolor{section in toc}{fg=02}
-  \setbeamercolor{subsection in toc}{fg=B1}
-  \setbeamercolor{subsubsection in toc}{fg=A2}
+    % table of contents
+    \setbeamercolor{section in toc}{fg=02}
+    \setbeamercolor{subsection in toc}{fg=B1}
+    \setbeamercolor{subsubsection in toc}{fg=A2}
 
-  % header/footer
-  \setbeamercolor{headline}{fg = 00, bg = 02}
-  \setbeamercolor{footline}{fg = D2, bg = A0}
-  \setbeamercolor{frametitle}{fg=00,bg=02}
+    % header/footer
+    \setbeamercolor{headline}{fg=00,bg=02}
+    \setbeamercolor{footline}{fg=D2,bg=A0}
+    \setbeamercolor{frametitle}{fg=00,bg=02}
 
-  % blocks
-  \setbeamercolor{block title}{fg = 00, bg = 02}
-  \setbeamercolor{block body}{fg = 01, bg = D2}
-  \setbeamercolor{block title alerted}{fg = D2, bg = B0}
-  \setbeamercolor{block body alerted}{fg = 00, bg = 02}
-  \setbeamercolor{block title example}{fg = 00, bg = 02}
-  \setbeamercolor{block body example}{fg = 01, bg = C1}
+    % blocks
+    \setbeamercolor{block title}{fg=00,bg=02}
+    \setbeamercolor{block body}{fg=01,bg=D2}
+    \setbeamercolor{block title alerted}{fg=D2,bg=B0}
+    \setbeamercolor{block body alerted}{fg=00,bg=02}
+    \setbeamercolor{block title example}{fg=00,bg=02}
+    \setbeamercolor{block body example}{fg=01,bg=C1}
 
-  % lists
-  \setbeamercolor{item}{fg = 02}
-  \setbeamercolor{subitem}{fg = B1}
-  \setbeamercolor{subsubitem}{fg = A2}
-  \setbeamercolor{item projected}{bg = 02}
-  \setbeamercolor{subitem projected}{bg = B1}
-  \setbeamercolor{subsubitem projected}{bg = A2}
-  \setbeamercolor{enumerate item}{fg = 02}
-  \setbeamercolor{enumerate subitem}{fg = B1}
-  \setbeamercolor{enumerate subsubitem}{fg = A2}
-  \setbeamercolor{description item}{fg = 02}
+    % lists
+    \setbeamercolor{item}{fg=02}
+    \setbeamercolor{subitem}{fg=B1}
+    \setbeamercolor{subsubitem}{fg=A2}
+    \setbeamercolor{item projected}{bg=02}
+    \setbeamercolor{subitem projected}{bg=B1}
+    \setbeamercolor{subsubitem projected}{bg=A2}
+    \setbeamercolor{enumerate item}{fg=02}
+    \setbeamercolor{enumerate subitem}{fg=B1}
+    \setbeamercolor{enumerate subsubitem}{fg=A2}
+    \setbeamercolor{description item}{fg=02}
 
-  % Inner theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Inner theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \usepackage{wasysym}
-  \setbeamertemplate{itemize items}{\raisebox{1.3pt}{\scriptsize\CIRCLE}}
-  \setbeamertemplate{enumerate items}[circle]
-  \setbeamertemplate{blocks}[rounded][shadow=true]
+    \setbeamertemplate{itemize items}{\raisebox{-1.25pt}{\LARGE$\bullet$}}
+    \setbeamertemplate{enumerate items}[circle]
+    \setbeamertemplate{blocks}[rounded][shadow=true]
 
-  % Outer theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Outer theme %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  % Navigation symbols
-  \setbeamertemplate{navigation symbols}{}
+    % Navigation symbols
+    \setbeamertemplate{navigation symbols}{}
 
-  % Background
-  \setbeamertemplate{background}{}
-  \setbeamertemplate{background canvas}{\usebeamercolor[bg]{background}\rule{\paperwidth}{\paperheight}}
+    % Background
+    \setbeamertemplate{background canvas}{\usebeamercolor[bg]{background}\rule{\paperwidth}{\paperheight}}
+    \setbeamertemplate{background}[default]
 
-  % Logo frame
-  \newcommand\logoframe{{%
-    \setbeamertemplate{footline}{}
-    \setbeamertemplate{headline}{\parbox[t][\headheight][t]{\textwidth}{}}
-    \setbeamertemplate{background}{\usebeamercolor[fg]{background}\rule{\paperwidth}{\paperheight}}
-    \frame[noframenumbering]{\centering\includegraphics[width=\textwidth]{hepic_logo}}
-  }}
+    % Logo frame
+    \newcommand\logoframe{{%
+        \setbeamertemplate{background}{\usebeamercolor[fg]{background}\rule{\paperwidth}{\paperheight}}
+        \frame[noframenumbering, plain]{\centering\includegraphics[keepaspectratio, width=\textwidth, height=\textheight]{\logoimg}}
+    }}
 
-  % Title page template
-  \setbeamertemplate{title page}{%
-    \parbox[b][.43\paperheight-\headheight][b]{\textwidth}{\raggedright\usebeamerfont*{title}\usebeamercolor[fg]{title}\inserttitle}
-    \vfill
-    \parbox[t][.43\paperheight-\footheight][b]{\textwidth}{%
-      \centering\usebeamercolor[fg]{normal text}
-      \usebeamerfont*{subtitle}\insertsubtitle
-      \vfill
-      \vfill
-      \usebeamerfont*{author}\insertauthor
-      \vfill
-      \usebeamerfont*{institute}\insertinstitute
-      \vfill
-      \vfill
-      \usebeamerfont*{date}\insertdate
+    % Title frame
+    \newcommand\titleframe{{%
+        \setbeamertemplate{background}{\usebeamercolor[fg]{background}\rule{\paperwidth}{0.5\paperheight}}
+        \frame[noframenumbering, plain]{\titlepage}
+    }}
+
+    % Title page template
+    \setbeamertemplate{title page}{%
+        \begin{minipage}[t][0.43\paperheight][b]{\textwidth}
+            \centering\usebeamercolor[bg]{background}
+            \includegraphics[height=26pt]{\fulllogoimg}
+            \vfill
+            \raggedright\usebeamerfont*{title}\usebeamercolor[fg]{title}
+            \inserttitle
+        \end{minipage}
+        \\\vfill
+        \begin{minipage}[b][0.43\paperheight][t]{\textwidth}
+            \centering\usebeamercolor[fg]{normal text}
+            \usebeamerfont*{subtitle}\insertsubtitle
+            \vfill
+            \vfill
+            \usebeamerfont*{author}\insertauthor
+            \vfill
+            \usebeamerfont*{institute}\insertinstitute
+            \vfill
+            \vfill
+            \usebeamerfont*{date}\insertdate
+        \end{minipage}
     }
-  }
 
-  % Title frame
-  \newcommand\titleframe{{%
-    \setbeamertemplate{footline}{}
-    \setbeamertemplate{headline}{\parbox[t][\headheight][t]{\textwidth}{\centering\includegraphics[height=\headheight]{hepic_full_logo}}}
-    \setbeamertemplate{background}{\usebeamercolor[fg]{background}\rule{\paperwidth}{.5\paperheight}}
-    \frame[t,noframenumbering]{\titlepage}
-  }}
+    % Transition frame
+    \newcommand\transitionframe[1]{{%
+        \setbeamertemplate{background}{\usebeamercolor[fg]{background}\rule{\paperwidth}{0.5\paperheight}}
+        \frame[noframenumbering, plain]{%
+            \begin{minipage}[t][0.43\paperheight][b]{\textwidth}
+                \raggedright\usebeamerfont*{title}\usebeamercolor[fg]{title}#1
+            \end{minipage}
+            \\\vfill\vspace*{0.43\paperheight}
+        }
+    }}
+    \if@transition\AtBeginSection[]{\transitionframe{\insertsectionhead}}\fi
 
-  % Transition frame
-  \newcommand\transitionframe[1]{{%
-    \setbeamertemplate{footline}{}
-    \setbeamertemplate{headline}{\parbox[t][\headheight][t]{\textwidth}{}}
-    \setbeamertemplate{background}{\usebeamercolor[fg]{background}\rule{\paperwidth}{.5\paperheight}}
-    \frame[t,noframenumbering]{\parbox[b][.43\paperheight-\headheight][b]{\textwidth}{\raggedright\usebeamerfont*{title}\usebeamercolor[fg]{title}#1}}
-  }}
-  \if@transition\AtBeginSection[]{\transitionframe{\insertsectionhead}}\fi
+    % Summary frame
+    \newcommand\tocframe[1][Outline]{{%
+        \section*{}
+        \subsection*{#1}
+        \nonumbering{\frame[noframenumbering]{\tableofcontents}}
+    }}
 
-  % Summary frame
-  \newcommand\tocframe[1]{{%
-    \section*{}
-    \subsection*{#1}
-    \nonumbering{\frame[noframenumbering]{\tableofcontents}}
-  }}
+    % Headline
+    \setbeamertemplate{headline}{%
+        \begin{beamercolorbox}[wd=\paperwidth,ht=30pt]{headline}
+        \hspace*{1em}
+        \begin{minipage}[b][30pt][c]{0.7\textwidth}
+            {\usebeamerfont*{headline section}\insertsection}
+            \vspace*{1ex}
 
-  % Headline
-  \setbeamertemplate{headline}{%
-    \begin{beamercolorbox}[wd=\paperwidth,ht=28pt]{headline}
-      \begin{minipage}[b][28pt][t]{0.8\textwidth}
-        \vspace*{4pt}
-        \begin{minipage}[b][8pt][t]{\textwidth}
-          \hspace*{7pt}\usebeamerfont*{headline section}\insertsection
-        \end{minipage}
+            {\usebeamerfont*{headline subsection}\insertsubsection}
+        \end{minipage}\hspace*{1em}
+        \hfill
+        \begin{varwidth}[b][30pt][c]{0.2\textwidth}
+            \includegraphics[height=0.8\headheight]{\logoimg}
+        \end{varwidth}
+        \hspace*{1em}
+        \end{beamercolorbox}
 
-        \begin{minipage}[b][16pt][t]{\textwidth}
-          \hspace*{7pt}\usebeamerfont*{headline subsection}\insertsubsection
-        \end{minipage}
-      \end{minipage}%
-      \begin{minipage}[b][28pt][c]{0.2\textwidth}
-        \centering\includegraphics[height=28pt]{hepic_logo}
-      \end{minipage}
-    \end{beamercolorbox}
+        % Progress bar
+        \if@progressbar
+            \newdimen\barlength
+            \barlength=\paperwidth
+            \divide\barlength by 100 % workaround overflow if 16:9 aspect is selected
+            \if@notappendix
+                \multiply\barlength by \insertframenumber
+                \divide\barlength by \inserttotalframenumber
+            \fi
+            \multiply\barlength by 100
+            \usebeamercolor[fg]{normal text}\rule{\barlength}{2pt}
+        \fi
+    }
 
-    % Progress bar
-    \if@progressbar
-    \newdimen\barlength
-    \barlength=\paperwidth
-    \divide\barlength by 100 % workaround overflow if 16:9 aspect is selected
-    \ifnum \insertframenumber > \inserttotalframenumber
-      \multiply\barlength by \inserttotalframenumber
-    \else
-      \multiply\barlength by \insertframenumber
-    \fi
-    \divide\barlength by \inserttotalframenumber
-    \multiply\barlength by 100
-    \usebeamercolor[fg]{normal text}\rule{\barlength}{2pt}
-    \fi
-  }
-
-  % Footline
-  \setbeamertemplate{footline}{%
-    \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex]{footline}%
-      \begin{minipage}[b][][c]{0.2\paperwidth}
-        \raggedleft\raisebox{.6ex}{\insertshortauthor}\hspace*{1ex}
-      \end{minipage}%
-      \begin{minipage}[b][][c]{0.6\paperwidth}
-        \centering\raisebox{.6ex}{\insertshorttitle}
-      \end{minipage}%
-      \begin{minipage}[b][][c]{0.2\paperwidth}
-        \raisebox{.6ex}{\insertshortdate}\hfill%
-        \if@numbering\raisebox{.6ex}{\insertframenumber\,/\,\inserttotalframenumber}\fi%
-        \hspace*{1ex}
-      \end{minipage}%
-    \end{beamercolorbox}
-  }
+    % Footline
+    \setbeamertemplate{footline}{%
+        \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex]{footline}%
+        \begin{minipage}[c][2.4ex][t]{0.2\paperwidth}
+            \hfill\insertshortauthor\hspace*{1ex}
+        \end{minipage}%
+        \begin{minipage}[c][2.4ex][t]{0.6\paperwidth}
+            \centering\insertshorttitle
+        \end{minipage}%
+        \begin{minipage}[c][2.4ex][t]{0.2\paperwidth}
+            \hspace*{1ex}\insertshortdate\hfill%
+            \if@numbering{\insertframenumber\,/\,\inserttotalframenumber\hspace*{1ex}}\fi%
+        \end{minipage}%
+        \end{beamercolorbox}
+    }
 }

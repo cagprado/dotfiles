@@ -1,57 +1,36 @@
-\documentclass[11pt]{letter}
-\usepackage[a4paper,vmargin={1.3in,1.3in},foot=0.71in]{geometry}
-
-\input{preamble}
-\input{definitions}                                   % shortcut macros for consistency
-
-\setlength{\parskip}{2em} % paragraph spacing
+\documentclass[a4paper,11pt]{letter}
+\usepackage[vmargin={1.3in,1.3in},foot=0.71in]{geometry}
+\usepackage{parskip}      % minor adjustments to paragraph spacing
 \pagenumbering{gobble}    % remove page numbering
 
+\input{preamble}
+\input{definitions}
+\input{letter}
 \input{theme}
-
-\makeatletter
-\renewcommand\title[1]{
-    \setlength{\parskip}{1.5\parskip}
-    \renewcommand\opening[1]{\begin{center}\Large\textbf{#1}\end{center}\vspace\parskip}
-    \signature{
-        \newlength\underlinelength
-        \settowidth\underlinelength\fromname
-        \addtolength\underlinelength{2ex}
-        \rule\underlinelength\linethickness\\
-        \hspace*{1ex}\fromname
-    }
-    \let\oldclosing\closing
-    \renewcommand\closing[1]{\oldclosing{\fromlocation, \@date}}
-}
-\makeatother
 
 \begin{document}
 %\title{Declaration}
+\name{Caio Alves Garcia Prado}
+\date{\today}
+\address {P. R. of China}
+         {Wuhan, Hubei Province}
+         {
+            Central China Normal University\\
+            Institute of Particle Physics\\
+            152 Luoyu Rd., Bldg. 9, 423\\
+            430079 Hongshan District
+         }
 
-\begin{letter}
-{
+\begin{letter}{
     Mr. Big Boss\\
     University of Big Boss\\
     Big Country
 }
-\name{Caio Alves Garcia Prado}
-\location{Wuhan}
-\address{
-    Central China Normal University\\
-    Institute of Particle Physics\\
-    152 Luoyu Rd., \textsc{ccnu}, Bldg. 9, 423\\
-    430079 Hongshan District\\
-    \fromlocation, Hubei Province\\
-    P. R. of China
-}
-\date{\today}
-
 
 \opening{Dear \toname,}
 
 % content ===========================================================
-\input{fontsize}
-
+\input{fontsize}\fontsample
 % signature =========================================================
 \closing{Sincerely,}
 \end{letter}

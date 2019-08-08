@@ -20,11 +20,11 @@ MV         := mv -f
 CP         := cp
 RM         := rm -f
 MKDIR      := mkdir -p
-ASY        := asy -nosafe -tex lualatex -cd $(ASYDIR)
+ASY        := asy -nosafe -tex xelatex -cd $(ASYDIR)
 ifeq ($(VERBOSE),true)
-	LATEXMK = cd $(TEXDIR) && latexmk -pdf -pdflatex='lualatex' --latexoption='$(LATEXARGS)' --output-directory=main_$*.compile main_$*
+	LATEXMK = cd $(TEXDIR) && latexmk -pdf -pdflatex='xelatex' --latexoption='$(LATEXARGS)' --output-directory=main_$*.compile main_$*
 else
-	LATEXMK = cd $(TEXDIR) && latexrun -Wall --verbose-cmds --latex-cmd='lualatex' --latex-args='$(LATEXARGS)' -O main_$*.compile -o main_$*.compile/main_$*.pdf main_$*
+	LATEXMK = cd $(TEXDIR) && latexrun -Wall --verbose-cmds --latex-cmd='xelatex' --latex-args='$(LATEXARGS)' -O main_$*.compile -o main_$*.compile/main_$*.pdf main_$*
 endif
 
 # FUNCTIONS

@@ -4,37 +4,37 @@
 \makeatletter
 \newcommand*{\thickhrulefill}{\leavevmode\leaders\hrule height 1\p@ \hfill \kern \z@}
 \newcommand*\BuildChpNum[2]{%
-  \begin{tabular}[t]{c}
-    \makebox[0pt][c]{#1\strut} \\[.5ex]
-    \colorbox{ChapBoxColor}{%
-      \rule[-10em]{0pt}{0pt}%
-      \rule{1ex}{0pt}\color{white}#2\strut
-      \rule{1ex}{0pt}}%
-  \end{tabular}}
+    \begin{tabular}[t]{c}
+        \makebox[0pt][c]{#1\strut} \\[.5ex]
+        \colorbox{ChapBoxColor}{%
+            \rule[-10em]{0pt}{0pt}%
+            \rule{1ex}{0pt}\color{white}#2\strut
+            \rule{1ex}{0pt}}%
+    \end{tabular}}
 \makechapterstyle{ChapBox}{%
-  \renewcommand{\chapnamefont}{\large\scshape}
-  \renewcommand{\chapnumfont}{\Huge\bfseries}
-  \renewcommand{\chaptitlefont}{\raggedright\Huge\bfseries}
-  \setlength{\beforechapskip}{20pt}
-  \setlength{\midchapskip}{26pt}
-  \setlength{\afterchapskip}{40pt}
-  \renewcommand{\printchaptername}{}
-  \renewcommand{\chapternamenum}{}
-  \renewcommand{\printchapternum}{%
-    \sbox{\ChpNumBox}{%
-      \BuildChpNum{\chapnamefont\@chapapp}%
-      {\chapnumfont\thechapter}}}
-  \renewcommand{\printchapternonum}{%
-    \sbox{\ChpNumBox}{%
-      \BuildChpNum{\chapnamefont\vphantom{\@chapapp}}%
-      {\chapnumfont\hphantom{\thechapter}}}}
-  \renewcommand{\afterchapternum}{}
-  \renewcommand{\printchaptertitle}[1]{%
-    \parbox[t]{\hsize-\wd\ChpNumBox-1em}{%
-      \vspace{\midchapskip}%
-      \thickhrulefill\par
-      \chaptitlefont ##1\par}%
-    \hfill\usebox{\ChpNumBox}}
+    \renewcommand{\chapnamefont}{\large\scshape}
+    \renewcommand{\chapnumfont}{\Huge\bfseries}
+    \renewcommand{\chaptitlefont}{\raggedright\Huge\bfseries}
+    \setlength{\beforechapskip}{20pt}
+    \setlength{\midchapskip}{26pt}
+    \setlength{\afterchapskip}{40pt}
+    \renewcommand{\printchaptername}{}
+    \renewcommand{\chapternamenum}{}
+    \renewcommand{\printchapternum}{%
+        \sbox{\ChpNumBox}{%
+            \BuildChpNum{\chapnamefont\@chapapp}%
+            {\chapnumfont\thechapter}}}
+    \renewcommand{\printchapternonum}{%
+        \sbox{\ChpNumBox}{%
+            \BuildChpNum{\chapnamefont\vphantom{\@chapapp}}%
+            {\chapnumfont\hphantom{\thechapter}}}}
+    \renewcommand{\afterchapternum}{}
+    \renewcommand{\printchaptertitle}[1]{%
+        \parbox[t]{\hsize-\wd\ChpNumBox-1em}{%
+            \vspace{\midchapskip}%
+            \thickhrulefill\par
+            \chaptitlefont ##1\par}%
+        \hfill\usebox{\ChpNumBox}}
 }
 \chapterstyle{ChapBox}
 \pagestyle{ruled}
@@ -55,7 +55,7 @@
 % style numbering of figures/tables
 \makeatletter
 \g@addto@macro{\mainmatter}{
-  \renewcommand\thefigure{\thechapter.\arabic{figure}}
-  \renewcommand\thetable{\thechapter.\arabic{table}}
+    \renewcommand\thefigure{\thechapter.\arabic{figure}}
+    \renewcommand\thetable{\thechapter.\arabic{table}}
 }
 \makeatother

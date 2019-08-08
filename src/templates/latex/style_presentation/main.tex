@@ -1,4 +1,4 @@
-\documentclass[aspectratio=43,hyperref={hidelinks}]{beamer}
+\documentclass[aspectratio=43,hyperref={hidelinks,breaklinks,unicode}]{beamer}
 
 \input{preamble}
 \input{definitions}
@@ -19,17 +19,22 @@
 \begin{document}
 \logoframe
 \titleframe
-\tocframe{Outline}
+\tocframe
 \transitionframe{Forced Transition}
 
+\section{Section}
+\subsection{Subsection}
 \begin{frame}[fragile]
-    \input{fontsize}
+    \input{fontsize}\fontsample[0.6]
 \end{frame}
 
 \section{Conclusions}
 \section*{ }\subsection*{Conclusions}
-
 \begin{frame}[fragile]
 \end{frame}
 
+\appendix
+\begin{frame}[fragile]
+    Appendix
+\end{frame}
 \end{document}

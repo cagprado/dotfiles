@@ -1,27 +1,30 @@
-\usepackage{siunitx}                                  % Parsing numbers and units
-\sisetup{
-  detect-all,         % detect font features
-  detect-mode=false,  % do not detect mode
-  mode=text,          % use text mode for everything
-  text-rm=\lfstyle,   % force lining figures
-  text-sf=\lfstyle,   % force lining figures
-  text-tt=\lfstyle,   % force lining figures
-}
-\usepackage{hyperref}                                  % PDF cross-refs
-\hypersetup{
-  hidelinks,  % won't show links in pdf (ugly squares)
-  breaklinks, % allow breaking links (link itself, not the text)
-  unicode,    % allow unicode in strings
-}
-\usepackage[noabbrev]{cleveref}                       % Cross-refs formatting
+\usepackage[
+    detect-all,         % detect font features
+    detect-mode=false,  % do not detect mode
+    mode=text,          % use text mode for everything
+]{siunitx}              % Parsing numbers and units
+\AtBeginDocument{\sisetup{
+    text-rm=\lfstyle,   % force lining figures
+    text-sf=\lfstyle,   % force lining figures
+    text-tt=\lfstyle,   % force lining figures
+}}
+\usepackage[
+    hidelinks,          % won't show links in pdf (ugly squares)
+    breaklinks,         % allow breaking links (link itself, not the text)
+    unicode             % allow unicode in string
+]{hyperref}             % PDF cross-refs
+
+\usepackage[noabbrev]{cleveref}            % Cross-refs formatting
 \newcommand\crefrangeconjunction{ to~}
 \creflabelformat{equation}{#2#1#3}
 
 % make tables more beautiful
-\renewcommand{\arraystretch}{1.2}  % more space between rows
-% remove extra space at borders of table (lines are then justified with text)
-\let\oldtabular\tabular \let\endoldtabular\endtabular
-\renewenvironment{tabular}[2][c]{\begin{oldtabular}[#1]{@{}#2@{}}}{\end{oldtabular}}
+\renewcommand{\arraystretch}{1.2}          % more space between rows
+\expandafter\renewcommand%                 % \tabular[#1]{#2} --> \tabular[#1]{@{}#2@{}}
+\expandafter\tabular%                      % justify tabular lines to text
+\expandafter[\expandafter 2\expandafter]%
+\expandafter[\expandafter c\expandafter]%
+\expandafter{\tabular[#1]{@{}#2@{}}}
 
 % prevents that citations in list of floats affect the order of the bibliography
 \makeatletter

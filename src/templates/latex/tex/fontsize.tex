@@ -1,32 +1,78 @@
 \makeatletter
-\newcommand\thefontsize[1]{
-{\ttfamily\string#1}
-& #1\let\currentsize\f@size\normalsize\currentsize
-& #1\let\currentskip\f@baselineskip\normalsize\currentskip
-\\
-}
+\newcommand\getsize[1]{{#1\global\let\@value\f@size}\@value}
+\newcommand\getskip[1]{{#1\global\let\@value\f@baselineskip}\@value}
+\newcommand\printsize[1]{{\ttfamily\string#1} & \getsize{#1} & \getskip{#1}}
 \makeatother
-\begin{center}
-\begin{tabular}{@{}lrrr@{}}
-\textbf{Property} & \textbf{Roman} & \textbf{Sans} & \textbf{Mono} \\
-Encoding & \rmfamily\makeatletter\detokenize\expandafter{\f@encoding}\makeatother & \sffamily\makeatletter\detokenize\expandafter{\f@encoding}\makeatother & \ttfamily\makeatletter\detokenize\expandafter{\f@encoding}\makeatother \\
-Family &   \rmfamily\makeatletter\detokenize\expandafter{\f@family}\makeatother   & \sffamily\makeatletter\detokenize\expandafter{\f@family}\makeatother   & \ttfamily\makeatletter\detokenize\expandafter{\f@family}\makeatother   \\
-Series &   \rmfamily\makeatletter\detokenize\expandafter{\f@series}\makeatother   & \sffamily\makeatletter\detokenize\expandafter{\f@series}\makeatother   & \ttfamily\makeatletter\detokenize\expandafter{\f@series}\makeatother   \\
-Shape &    \rmfamily\makeatletter\detokenize\expandafter{\f@shape}\makeatother    & \sffamily\makeatletter\detokenize\expandafter{\f@shape}\makeatother    & \ttfamily\makeatletter\detokenize\expandafter{\f@shape}\makeatother    \\
-\end{tabular}
-\vspace*{1cm}
-\begin{tabular}{@{}lrr@{}}
-\textbf{Size} & \textbf{Value} & \textbf{Skip} \\
-\thefontsize\tiny
-\thefontsize\scriptsize
-\thefontsize\footnotesize
-\thefontsize\small
-\thefontsize\normalsize
-\thefontsize\large
-\thefontsize\Large
-\thefontsize\LARGE
-\thefontsize\huge
-\thefontsize\Huge
-\end{tabular}
-\end{center}
 
+% Draw a line showing a font metric
+%  #1 color, #2 vertical position, #3 label
+\newcommand{\drawmetric}[3]{%
+  \clap{%
+    \color{#1}\rule[#2]{9.8cm}{0.05pt}%
+    \raisebox{#2}{\scalebox{0.3}{\tiny\selectfont\sffamily #3}}%
+  }%
+}
+\newcommand\drawallmetrics{%
+  \drawmetric{red}{0pt}{baseline}%
+  \drawmetric{blue}{1ex}{x-height}%
+  \drawmetric{red}{\fontcharht\font`X}{cap-height}%
+  \drawmetric{cyan}{\the\fontdimen22\textfont2}{math axis}%
+}
+
+\newcommand\tenglish{%
+    normal, \textbf{bold,} \textit{italic,} \textsl{slanted,} %
+    \textbf{\textit{bolditalic,} \textsl{boldslanted,}} %
+    0123456789%
+}
+\newcommand\tchinese{%
+    普通，\textbf{粗体，}\textit{斜体，}\textsl{倾斜，}%
+    \textbf{\textit{粗斜体} \textsl{粗倾斜体，}}%
+    0123456789%
+}
+\newcommand\test{\noindent\tenglish\\\textsc{\tenglish}\\\tchinese\vspace*{1em}}
+
+\newcommand\fontsample[1][1]{\begin{center}\scalebox{#1}{
+\begin{minipage}{13.4cm}
+\begin{center}
+    \sisetup{
+        table-format = 3.2,
+        table-alignment = center,
+    }
+    \begin{tabular}{
+            lSS[table-space-text-post=~pt]
+            lSS[table-space-text-post=~pt]}
+        \toprule
+        {\textbf{Size}} & {\textbf{Value}} & {\textbf{Skip}}
+            & {\textbf{Size}} & {\textbf{Value}} & {\textbf{Skip}} \\
+
+        \midrule
+        \printsize\tiny         & \printsize\large \\
+        \printsize\scriptsize   & \printsize\Large \\
+        \printsize\footnotesize & \printsize\LARGE \\
+        \printsize\small        & \printsize\huge  \\
+        \printsize\normalsize   & \printsize\Huge  \\
+        \bottomrule
+    \end{tabular}
+    \vspace*{1em}
+
+    \noindent\clap{\textrm{abcde} \textsf{abcde} \texttt{abcde}}\drawallmetrics{}
+
+    \noindent\clap{
+    \textrm{\lfstyle01234ABCDE}
+    \textsf{\lfstyle01234ABCDE}
+    \texttt{\lfstyle01234ABCDE}
+    \textrm{中国普通话}
+    }\drawallmetrics{}
+
+    \noindent\clap{
+    \textrm{中国普通话}
+    \textrm{\textit{中国普通话}}
+    \textsf{中国普通话}
+    \textsf{\textit{中国普通话}}
+    \texttt{中国普通话}
+    }\drawallmetrics{}
+\end{center}
+\vspace*{1em}
+
+\textrm{\test}\\ \textsf{\test}\\ \texttt{\test}
+\end{minipage}}\end{center}}
