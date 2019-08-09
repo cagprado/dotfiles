@@ -77,7 +77,7 @@
     sans-style=italic,
     nabla=upright,
     partial=upright,
-    ]{unicode-math}
+]{unicode-math}
 \setmathfont[Scale=MatchLowercase]{XITS Math}
 \setmathfont[range={cal,bfcal},StylisticSet=1]{XITS Math}
 
@@ -87,6 +87,10 @@
 \newcommand\textlf[1]{{\lfstyle #1}}
 \newcommand\textosf[1]{{\osfstyle #1}}
 \providecommand\Arabic[1]{\textlf{\arabic{#1}}} % \Arabic forces use of lining figures
+
+% roman numerals
+\newcommand\romannum[1]{{\romannumeral#1\relax}}
+\newcommand\Romannum[1]{{\uppercase\expandafter{\romannumeral#1\relax}}}
 
 % math font selection
 \newcommand\bm[1]{\symbf{#1}}

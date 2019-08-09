@@ -1,3 +1,5 @@
+\newcommand*{\email}[1]{\ifx&#1&\else\signature{\fromname\\#1}\fi}
+
 % redefine \address to take three arguments: country / city, state / street address
 % and automatically sets \fromlocation to city
 \renewcommand\address[3]{\begingroup%
