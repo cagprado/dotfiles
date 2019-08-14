@@ -233,18 +233,22 @@
     % Headline
     \setbeamertemplate{headline}{%
         \begin{beamercolorbox}[wd=\paperwidth,ht=30pt]{headline}
-        \hspace*{1em}
-        \begin{minipage}[b][30pt][c]{0.7\textwidth}
-            {\usebeamerfont*{headline section}\insertsection}
-            \vspace*{1ex}
-
-            {\usebeamerfont*{headline subsection}\insertsubsection}
-        \end{minipage}\hspace*{1em}
-        \hfill
-        \begin{varwidth}[b][30pt][c]{0.2\textwidth}
-            \includegraphics[height=0.8\headheight]{\logoimg}
-        \end{varwidth}
-        \hspace*{1em}
+            \hspace*{1em}
+            \setbox0=\hbox{\insertsubsection\unskip}\ifdim\wd0=0pt%
+                \begin{minipage}[b][0.6\headheight][t]{0.7\textwidth}
+                    \usebeamerfont*{headline subsection}\insertsection
+                \end{minipage}
+            \else%
+                \begin{minipage}[b][0.75\headheight][t]{0.7\textwidth}
+                    \usebeamerfont*{headline section}\insertsection\vspace*{-1.5ex}\\
+                    \usebeamerfont*{headline subsection}\insertsubsection
+                \end{minipage}
+            \fi
+            \hfill
+            \begin{varwidth}[b][0.85\headheight][t]{0.2\textwidth}
+                \includegraphics[height=0.8\headheight]{\logoimg}
+            \end{varwidth}
+            \hspace*{1em}
         \end{beamercolorbox}
 
         % Progress bar
