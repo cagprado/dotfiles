@@ -26,7 +26,11 @@ export PRINTER=$WORKPRINTER
 
 # build
 export LOCALBUILDS="$HOME/usr/local"
-export MAKEFLAGS='-j -Otarget'
+if [[ "$(make -v | sed -n '1{s/[^0-9]*//; s/\..*//p}')" -lt 4.0 ]]; then
+    export MAKEFLAGS='-j'
+else
+    export MAKEFLAGS='-j -Otarget'
+fi
 
 # interface
 export LESS="-cx3MRFX"
