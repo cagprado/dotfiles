@@ -103,26 +103,25 @@ set undofile                  " turn on undo file
 set viminfo=%,h,'50           " saves up to 50 buffers, buf-list and disable hlsearch
 
 " editing behaviour:
-set textwidth=77                " text width length
-set colorcolumn=+1              " highlight 1 column after textwidth
-set joinspaces                  " when joining insert two spaces after .?!
-set cpoptions+=J                " a sentence will end with two spaces
-set cpoptions+=n                " showbreak will occur in place of line numbers
-set backspace=indent,eol,start  " backspace over everything
-set virtualedit=all             " allow cursor to travel anywhere
-set clipboard^=unnamedplus      " copy/paste to "+ without explicit set
-set scrolloff=3                 " N lines of context around cursor
-set wrap                        " soft wrap lines
-set linebreak                   " breaks with breakat instead of last char
-set showbreak=\ ··\             " showbreak when soft-wrapping
-set breakindent                 " follow indent when soft-wrapping
-" showbreak before indenting, minimum=any, shift text by 4 chars
-set breakindentopt=sbr,min:0,shift:4
-set list                        " turn on list mode: listchars sets contexts
+if !&diff | set scrolloff=5 | endif  " minimum context around cursor
+set textwidth=77                     " text width length
+set colorcolumn=+1                   " highlight 1 column after textwidth
+set joinspaces                       " when joining insert two spaces after .?!
+set cpoptions+=J                     " a sentence will end with two spaces
+set cpoptions+=n                     " showbreak will occur in place of line numbers
+set backspace=indent,eol,start       " backspace over everything
+set virtualedit=all                  " allow cursor to travel anywhere
+set clipboard^=unnamedplus           " copy/paste to "+ without explicit set
+set wrap                             " soft wrap lines
+set linebreak                        " breaks with breakat instead of last char
+set showbreak=\ ··\                  " showbreak when soft-wrapping
+set breakindent                      " follow indent when soft-wrapping
+set breakindentopt=sbr,min:0,shift:4 " sbr: showbreak before indent / min: 0=any / shift: number of chars to shift
+set list                             " turn on list mode: listchars sets contexts
 set listchars=tab:.…,trail:·,extends:»,precedes:«,nbsp:~
-set formatoptions=tcroqjn       " options for formating, :help fo-table croql
-" formatlistpat will match numeric and bullet (-|·) lists
+set formatoptions=tcroqjn            " options for formating, :help fo-table, pattern matches number and bullet (- or ·) lists
 set formatlistpat=^\\s*\\(\\d\\+[\\]:.)}\\t\ ]\\\\|-\\\\|·\\)\\s*
+
 
 " Set cursor shape for different modes (tmux will do it right)
 if has('nvim') && $TERM !~ '\vlinux'
@@ -301,10 +300,10 @@ function! SetMakePrg()
   let l:is_executable = system("test -x " . expand("%:S") . " && echo 1 || echo 0")
   if l:is_executable
     let &makeprg = "./%:S"                     " Executable: exec itself
-  elseif filereadable(filedir . "/Makefile")
-    let &makeprg = "make -C " . filedir        " Make in the same dir as file
   elseif filereadable("Makefile")
     let &makeprg = "make"                      " Make in the current dir
+  elseif filereadable(filedir . "/Makefile")
+    let &makeprg = "make -C " . filedir        " Make in the same dir as file
   " -- File Specific compile/run commands -----------------------------------
   elseif expand("%") =~ '\.sh$\|\.zsh$'
     let &makeprg = "zsh %:S"
