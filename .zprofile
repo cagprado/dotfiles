@@ -25,8 +25,8 @@ export WORKPRINTER="hpiopp"
 export PRINTER=$WORKPRINTER
 
 # build
-export MAKEFLAGS='-j'
 export LOCALBUILDS="$HOME/usr/local"
+export MAKEFLAGS='-j -Otarget'
 
 # interface
 export LESS="-cx3MRFX"
