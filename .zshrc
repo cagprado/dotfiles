@@ -45,7 +45,7 @@ alias asy='asy -nosafe'
 alias asyinline='asy -inlinetex'
 alias ccorp-config='echo -I$HOME/usr/local/ccorp/include -L$HOME/usr/local/ccorp/lib -lccorp -Wl,-rpath,$HOME/usr/local/ccorp/lib'
 alias GCC='gcc -Wall -ansi -O2'
-alias G++='g++ -Wall -O4 --std=c++1z $=LDFLAGS'
+alias G++='g++ -Wall -O4 --std=c++17 $=LDFLAGS'
 alias root-config='root-config --cflags --libs'
 
 # ssh and certificates
