@@ -5,34 +5,34 @@ Remove Both
 SyncState *
 
 ## ACCOUNTS #################################################################
-IMAPAccount yandex
+IMAPAccount main
 Host imap.yandex.com
 User cagprado@yandex.com
 PassCmd "pass yandex/password"
 SSLType IMAPS
 
 ## LOCAL STORAGE ############################################################
-MaildirStore yandex-local
+MaildirStore main-local
 AltMap yes
-Path ~/var/spool/mail/yandex/
-Inbox ~/var/spool/mail/yandex/INBOX
+Path ~/var/spool/mail/main/
+Inbox ~/var/spool/mail/main/INBOX
 
 ## REMOTE STORAGE ###########################################################
-IMAPStore yandex
-Account yandex
+IMAPStore main
+Account main
 
 ## CHANNELS #################################################################
 
 # YANDEX
-Channel yandex
-Master :yandex:
-Slave :yandex-local:
+Channel main
+Master :main:
+Slave :main-local:
 Patterns INBOX Drafts Spam
 
-Channel yandex-sent
-Master :yandex:Sent
-Slave :yandex-local:Sent
+Channel main-sent
+Master :main:Sent
+Slave :main-local:Sent
 
-Group yandex
-Channel yandex
-Channel yandex-sent
+Group main
+Channel main
+Channel main-sent

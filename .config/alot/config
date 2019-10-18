@@ -77,12 +77,12 @@ user_agent = alot/{version}
 
 # ACCOUNTS ##################################################################
 [accounts]
-  [[yandex]]
+  [[main]]
     address = cagprado@yandex.com
     realname = Caio Prado
-    sendmail_command = msmtpq -t --account=yandex
-    draft_box = maildir:///home/cagprado/var/spool/mail/yandex/Drafts
-    sent_box = maildir:///home/cagprado/var/spool/mail/yandex/Sent
+    sendmail_command = msmtpq -t --account=main
+    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
+    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
     sent_tags = yandex,sent
     signature = /home/cagprado/.config/alot/sign_personal
     signature_as_attachment = False
@@ -95,13 +95,26 @@ user_agent = alot/{version}
       regexp = '^(?P<email>[^@]+@[^\t]+)\t+(?P<name>[^\t]+)'
       ignorecase = True
 
-  [[ccnu]]
+  [[work]]
     address = cagprado@mail.ccnu.edu.cn
     realname = Caio Prado
-    sendmail_command = msmtpq -t --account=ccnu
-    draft_box = maildir:///home/cagprado/var/spool/mail/yandex/Drafts
-    sent_box = maildir:///home/cagprado/var/spool/mail/yandex/Sent
+    sendmail_command = msmtpq -t --account=work
+    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
+    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
     sent_tags = ccnu,sent
+    signature = /home/cagprado/.config/alot/sign_professional
+    signature_as_attachment = False
+    sign_by_default = True
+    gpg_key = cagprado@mail.ccnu.edu.cn
+    encrypt_to_self = True
+
+  [[secondary]]
+    address = caio.agprado@yandex.com
+    realname = Caio Prado
+    sendmail_command = msmtpq -t --account=secondary
+    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
+    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
+    sent_tags = secondary,sent
     signature = /home/cagprado/.config/alot/sign_professional
     signature_as_attachment = False
     sign_by_default = True

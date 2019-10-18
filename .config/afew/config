@@ -5,9 +5,9 @@
 # Move mails marked as spam from INBOX to Spam folder.
 # Move mails without spam mark from Spam to INBOX folder.
 [MailMover]
-folders = yandex/INBOX yandex/Spam
-yandex/INBOX = 'tag:spam':yandex/Spam
-yandex/Spam = 'NOT tag:spam':yandex/INBOX
+folders = main/INBOX main/Spam
+main/INBOX = 'tag:spam':main/Spam
+main/Spam = 'NOT tag:spam':main/INBOX
 
 # DEFINE CUSTOM FILTERS #####################################################
 
