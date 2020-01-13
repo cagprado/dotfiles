@@ -193,6 +193,7 @@ EXEC     1;32
 *.z      1;35
 *.Z      1;35
 *.zip    1;35
+*.zst    1;35
 
 # unimportant files
 *.org_archive 97
