@@ -15,7 +15,7 @@ if dein#load_state('~/.vim/bundles')
 
     " interface
     call dein#add('vim-airline/vim-airline')      " airline status line
-    call dein#add('Shougo/deoplete.nvim')         " completion
+    "call dein#add('Shougo/deoplete.nvim')         " completion
     call dein#add('lilydjwg/fcitx.vim')           " fcitx input method
     call dein#add('tpope/vim-fugitive')           " git interaction
     call dein#add('luochen1990/rainbow')          " rainbow color parenthesis
@@ -43,7 +43,7 @@ if dein#check_install()
 endif
 
 " auto remove unused plugins on startup
-call map(dein#check_clean(), "delete(v:val, 'rf')")
+"call map(dein#check_clean(), "delete(v:val, 'rf')")
 
 " BASIC INTERFACE ###########################################################
 " options depending on other sections of .vimrc are commented with <USER SEC>
