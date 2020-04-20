@@ -66,8 +66,11 @@ bindsym XF86Calculator         exec --no-startup-id $terminal -t orpie -e orpie
 # start a terminal
 bindsym $mod+Return            exec --no-startup-id $terminal
 
+# take screenshot
+bindsym $mod+Print             exec --no-startup-id import -window root screenshot.png
+
 # program launcher
-bindsym $mod+r                 exec --no-startup-id rofi -show combi
+bindsym $mod+r                 exec --no-startup-id rofi -show run
 
 # emoji picker
 bindsym Control+Shift+e        exec --no-startup-id rofimoji
