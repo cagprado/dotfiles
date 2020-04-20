@@ -6,7 +6,7 @@
 
 pkgname=htop
 pkgver=2.2.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Interactive process viewer with solarized patch"
 arch=('i686' 'x86_64' 'armv7h')
 url="http://htop.sourceforge.net/"
