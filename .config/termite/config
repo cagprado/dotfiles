@@ -4,7 +4,7 @@ font = terminalfont 8
 fullscreen = false
 
 [colors]
-cursor = #4d4d4d
+cursor = #4d4d4c
 cursor_foreground = #fafafa
 background = #fafafa
 foreground = #4d4d4c
