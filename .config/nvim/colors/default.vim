@@ -58,7 +58,7 @@ call <sid>hi("Directory",     s:gui0D, "NONE", s:cterm0D, "NONE", "NONE", "NONE"
 call <sid>hi("Error",         s:gui00, s:gui08, s:cterm00, s:cterm08, "NONE", "NONE", "NONE")
 call <sid>hi("ErrorMsg",      s:gui08, s:gui00, s:cterm08, s:cterm00, "NONE", "NONE", "NONE")
 call <sid>hi("Exception",     s:gui08, "NONE", s:cterm08, "NONE", "NONE", "NONE", "NONE")
-call <sid>hi("FoldColumn",    s:gui0C, s:gui01, s:cterm0C, s:cterm01, "NONE", "NONE", "NONE")
+call <sid>hi("FoldColumn",    s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
 call <sid>hi("Folded",        s:gui03, s:gui01, s:cterm03, s:cterm01, "NONE", "NONE", "NONE")
 call <sid>hi("IncSearch",     s:gui01, s:gui09, s:cterm01, s:cterm09, "NONE", "NONE", "NONE")
 call <sid>hi("Italic",        "NONE", "NONE", "NONE", "NONE", "NONE", "NONE", "NONE")
