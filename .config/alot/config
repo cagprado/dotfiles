@@ -87,7 +87,7 @@ user_agent = alot/{version}
     signature = /home/cagprado/.config/alot/sign_personal
     signature_as_attachment = False
     sign_by_default = True
-    gpg_key = cagprado@yandex.com
+    gpg_key = 6F83271536316E64
     encrypt_to_self = True
     [[[abook]]]
       type = shellcommand
@@ -96,16 +96,15 @@ user_agent = alot/{version}
       ignorecase = True
 
   [[work]]
-    address = cagprado@mail.ccnu.edu.cn
+    address = cagprado@zhejianglab.com
     realname = Caio Prado
     sendmail_command = msmtpq -t --account=work
-    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
-    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
-    sent_tags = ccnu,sent
+    draft_box = maildir:///home/cagprado/var/spool/mail/work/Drafts
+    sent_tags = zjlab,sent
     signature = /home/cagprado/.config/alot/sign_professional
     signature_as_attachment = False
     sign_by_default = True
-    gpg_key = cagprado@mail.ccnu.edu.cn
+    gpg_key = 6F83271536316E64
     encrypt_to_self = True
 
   [[secondary]]
@@ -117,9 +116,8 @@ user_agent = alot/{version}
     sent_tags = secondary,sent
     signature = /home/cagprado/.config/alot/sign_professional
     signature_as_attachment = False
-    sign_by_default = True
-    gpg_key = cagprado@mail.ccnu.edu.cn
-    encrypt_to_self = True
+    sign_by_default = False
+    encrypt_to_self = False
 
 # TAGS ######################################################################
 [tags]

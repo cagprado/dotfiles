@@ -5,7 +5,7 @@ path=/home/cagprado/var/spool/mail
 [user]
 name=Caio Prado
 primary_email=cagprado@yandex.com
-other_email=cagprado@mail.ccnu.edu.cn;cagprado@if.usp.br;caio.agprado@yandex.com
+other_email=cagprado@zhejianglab.com;cagprado@mail.ccnu.edu.cn;cagprado@if.usp.br;caio.agprado@yandex.com
 
 [new]
 tags=new

@@ -11,28 +11,50 @@ User cagprado@yandex.com
 PassCmd "pass yandex/password"
 SSLType IMAPS
 
+IMAPAccount work
+Host imap.mxhichina.com
+User cagprado@zhejianglab.com
+PassCmd "pass zhejianglab/password"
+SSLType IMAPS
+#SSLType None
+#AuthMechs LOGIN
+
 ## LOCAL STORAGE ############################################################
 MaildirStore main-local
 AltMap yes
 Path ~/var/spool/mail/main/
 Inbox ~/var/spool/mail/main/INBOX
 
+MaildirStore work-local
+AltMap yes
+Path ~/var/spool/mail/work/
+Inbox ~/var/spool/mail/work/INBOX
+
 ## REMOTE STORAGE ###########################################################
 IMAPStore main
 Account main
 
+IMAPStore work
+Account work
+
 ## CHANNELS #################################################################
 
-# YANDEX
+# MAIN
 Channel main
 Master :main:
 Slave :main-local:
-Patterns INBOX Drafts Spam
+Patterns INBOX Drafts Spam Sent
 
-Channel main-sent
-Master :main:Sent
-Slave :main-local:Sent
+# WORK
+Channel work
+Master :work:
+Slave :work-local:
+Patterns INBOX Spam Sent
 
-Group main
-Channel main
-Channel main-sent
+Channel work-drafts
+Master :work:Draft
+Slave :work-local:Drafts
+
+Group work
+Channel work
+Channel work-drafts
