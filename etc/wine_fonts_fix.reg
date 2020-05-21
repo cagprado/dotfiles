@@ -1,0 +1,21 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Control Panel\Desktop]
+"FontSmoothing"="2"
+"FontSmoothingOrientation"=dword:00000001
+"FontSmoothingType"=dword:00000002
+"FontSmoothingGamma"=dword:00000578
+
+[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontLink\SystemLink]
+"Lucida Sans Unicode"="SourceHanSans-Medium.ttc"
+"Microsoft Sans Serif"="SourceHanSans-Medium.ttc"
+"Microsoft YaHei"="SourceHanSans-Medium.ttc"
+"微软雅黑"="SourceHanSans-Medium.ttc"
+"MS Sans Serif"="SourceHanSans-Medium.ttc"
+"Tahoma"="SourceHanSans-Medium.ttc" 
+"Tahoma Bold"="SourceHanSans-Medium.ttc"
+"SimSun"="SourceHanSans-Medium.ttc"
+"Arial"="SourceHanSans-Medium.ttc"
+"Arial Black"="SourceHanSans-Medium.ttc"
+"宋体"="SourceHanSans-Medium.ttc"
+"新細明體"="SourceHanSans-Medium.ttc"
