@@ -3,7 +3,7 @@
 
 export DE="generic"
 export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
-export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=gasp -Dswing.aatext=true"
+export _JAVA_OPTIONS="-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel -Dswing.crossplatformlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel -Djdk.gtk.version=3 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dsun.java2d.opengl=true"
 export QT_QPA_PLATFORMTHEME=qt5ct
 
 # Setup screens
