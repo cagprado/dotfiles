@@ -107,6 +107,19 @@ user_agent = alot/{version}
     gpg_key = 6F83271536316E64
     encrypt_to_self = True
 
+  [[ccnu]]
+    address = cagprado@mail.ccnu.edu.cn
+    realname = Caio Prado
+    sendmail_command = msmtpq -t --account=ccnu
+    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
+    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
+    sent_tags = ccnu,sent
+    signature = /home/cagprado/.config/alot/sign_professional
+    signature_as_attachment = False
+    sign_by_default = True
+    gpg_key = 6F83271536316E64
+    encrypt_to_self = True
+
   [[secondary]]
     address = caio.agprado@yandex.com
     realname = Caio Prado
