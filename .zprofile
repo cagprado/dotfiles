@@ -21,7 +21,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 
 # printers
 export HOMEPRINTER=""
-export WORKPRINTER="hpiopp"
+export WORKPRINTER="kmc368"
 export PRINTER=$WORKPRINTER
 
 # build
