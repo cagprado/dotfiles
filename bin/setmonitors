@@ -31,7 +31,12 @@ dpi_table = {
     "AA/gBORTE0MEZITS1ONjEKAEM=": 124.0,   # X1 Carbon
     "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBG"
     "jaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAA"
-    "AAAAACQQMoABIAAAsBCiAgAGY=": 132.5   # XPS13
+    "AAAAACQQMoABIAAAsBCiAgAGY=": 132.5,  # XPS13
+    "AP///////wAQrKxBWTk4NREdAQOAPCJ47u6Vo1RMmSYPUFSlSwBxT4GAqUDRwAEBAQEBAQEBV"
+    "l4AoKCgKVAwIDUAVVAhAAAaAAAA/wBHM0NHTVMyCiAgICAgAAAA/ABERUxMIFUyNzE5RFMKAA"
+    "AA/QA4TB5aGQAKICAgICAgAakCAyLxT5AFBAMCBxYBBhESFRMUHyMJfweDAQAAZQMMABAAAjq"
+    "AGHE4LUBYLEUAVVAhAAAefjkAoIA4H0AwIDoAVVAhAAAaAR0AclHQHiBuKFUAVVAhAAAevxYA"
+    "oIA4E0AwIDoAVVAhAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAiA==": 109  # Dell U2719D
 }
 
 
@@ -41,27 +46,29 @@ def error(msg):
 
 
 def parse_arguments():
+    # parse commandline
     parser = ArgumentParser(description='''Sets resolution and position of
-                            multiple monitors using xrandr. Without any options
-                            it will turn on all connected monitors with the
-                            internal eDP positioned to the right. (-m [M1 [M2
-                            ...]] eDP!)''')
+                            multiple monitors using xrandr. If run without
+                            arguments, performs the same as '-l'.''')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-i', action='store_true', help='''list available
                        monitor configuration and exit''')
+    group.add_argument('-l', action='store_true', help='''auto mode: sets
+                       laptop screen (eDP) as primary and position all other
+                       monitors to the left''')  # ignored: default behaviour
+    group.add_argument('-r', action='store_true', help='''auto mode: sets
+                       laptop screen (eDP) as primary and position all other
+                       monitors to the right''')
+    group.add_argument('-s', action='store_true', help='''only one external
+                       monitor is set''')
+    group.add_argument('-S', action='store_true', help='''only laptop internal
+                       monitor (eDP) is set''')
     group.add_argument('-m', metavar=('M1', 'M2'), type=str, nargs='+',
-                       help='''list of monitors to set as active in order from
-                       left to right. Specify the primary monitor by appending
-                       an '!' to the name, ex: eDP-1!''')
-    group.add_argument('-S', action='store_true')
-    group.add_argument('-s', action='store_true', help='''turn off all
-                       monitors except for one (single monitor mode). The
-                       uppercase '-S' will select the internal monitor (eDP)
-                       while the lowercase '-s' version selects an external
-                       monitor. Equivalent to "-m NAME!"''')
-    group.add_argument('-r', action='store_true', help='''same as with no
-                       arguments but arrange monitors by the right instead of
-                       left side''')
+                       help='''setup monitors manually; list monitors by name
+                       from left to right.  Append options to monitor names,
+                       separated by ':', ex: 'eDP-1:lp'. Available options
+                       (l)eft rotation, (r)ight rotation, (i)nverted rotation,
+                       (p)rimary''')
     return parser.parse_args()
 
 
@@ -105,7 +112,10 @@ def setup_monitors(monitors, args):
     for monitor in monitors:
         if monitor.connected:
             monitor.position = [position, 0]
-            position += monitor.scale[0] * monitor.mode[0]
+            if monitor.horizontal:
+                position += monitor.scale[0] * monitor.mode[0]
+            else:
+                position += monitor.scale[1] * monitor.mode[1]
 
     # generate command line for xrandr
     command_args = ['xrandr', '--dpi',
@@ -121,8 +131,11 @@ def build_priority(connected, args):
     if args.m:
         # manually given priority list: just check validity
         for name in args.m:
-            if name.strip('!') not in connected:
+            name, _, options = name.partition(':')
+            if name not in connected:
                 error("argument -m: invalid monitor name '{}'".format(name))
+            if not set(options) <= set('lrip'):
+                error("argument -m: invalid options used '{}'".format(options))
         return args.m
 
     # no list given, build one automatically from all connected monitors
@@ -139,7 +152,7 @@ def build_priority(connected, args):
         connected = connected[:1]
 
     # set the primary monitor
-    connected[0] += '!'
+    connected[0] += ':p'
 
     # order position alternating left and right
     connected = [x for _, x in sorted(zip(
@@ -175,6 +188,7 @@ class Monitor:
             self.position = [0, 0]
             self.primary = False
             self.scale = [1, 1]
+            self.rotation = 'normal'
 
             mode = readfile(syspath + dev + "/modes")
             self.mode = [int(x) for x in mode.split('x')]
@@ -187,6 +201,14 @@ class Monitor:
         return self.connected and self.dpi > 150
 
     @property
+    def horizontal(self):
+        return self.rotation == 'normal' or self.rotation == 'inverted'
+
+    @property
+    def vertical(self):
+        return not self.horizontal
+
+    @property
     def xrandr(self):
         if not self.connected:
             return "--output {} --off".format(self.name)
@@ -196,6 +218,7 @@ class Monitor:
             out += " --mode {}x{}".format(self.mode[0], self.mode[1])
             out += " --scale {}x{}".format(self.scale[0], self.scale[1])
             out += " --pos {}x{}".format(self.position[0], self.position[1])
+            out += " --rotate {}".format(self.rotation)
             if self.primary:
                 out += " --primary"
             return out
@@ -210,24 +233,36 @@ class Monitor:
                 " - Mode:       \t{}x{}\n" \
                 " - Scale:      \t{}x{}\n" \
                 " - Position:   \t{}x{}\n" \
+                " - Rotation:   \t{}\n" \
                 .format(self.primary, self.dpi, self.hidpi and "(HiDPI)" or "",
                         self.mode[0], self.mode[1], self.scale[0],
-                        self.scale[1], self.position[0], self.position[1])
+                        self.scale[1], self.position[0], self.position[1],
+                        self.rotation)
         else:
             output += "No\n"
         return output
 
     def priority(self, priority):
-        if self.name + '!' in priority:
-            self.primary = True
-            return priority.index(self.name + '!')
+        i = [priority.index(x) for x in priority if x.startswith(self.name)]
 
-        elif self.name in priority:
-            return priority.index(self.name)
-
-        else:
+        if not i:
             self.connected = False
             return len(priority)
+
+        if len(i) > 1:
+            error("monitor '{}' specified more than once".format(self.name))
+
+        options = priority[i[0]].partition(':')[2]
+        if 'p' in options:
+            self.primary = True
+        if 'i' in options:
+            self.rotation = 'inverted'
+        elif 'l' in options:
+            self.rotation = 'left'
+        elif 'r' in options:
+            self.rotation = 'right'
+
+        return i[0]
 
 
 if __name__ == "__main__":
