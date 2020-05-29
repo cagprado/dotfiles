@@ -1,0 +1,5 @@
+# vim: ft=dosini
+[miscellaneous]
+cache_dir = /tmp/aurman
+aur_timeout = 999
+skip_news
