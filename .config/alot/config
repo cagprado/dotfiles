@@ -108,7 +108,7 @@ user_agent = alot/{version}
     encrypt_to_self = True
 
   [[ccnu]]
-    address = cagprado@mail.ccnu.edu.cn
+    address = cagprado@ccnu.edu.cn
     realname = Caio Prado
     sendmail_command = msmtpq -t --account=ccnu
     draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
