@@ -7,7 +7,6 @@ from binascii import b2a_base64
 from argparse import ArgumentParser
 
 syspath = "/sys/class/drm/"
-wallpaper = environ['HOME'] + "/usr/me/pictures/wallpaper/current"
 
 
 def main():
@@ -18,7 +17,7 @@ def main():
         print_monitors(monitors)
     else:
         setup_monitors(monitors, args)
-        subprocess.run(['feh', '--bg-fill', wallpaper])
+        subprocess.run([environ['HOME'] + '/.fehbg'])
 
 
 # known monitors EDID (base64) vs DPI
