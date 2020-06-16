@@ -48,17 +48,17 @@ alias GCC='gcc -Wall -ansi -O2'
 alias G++='g++ -Wall -O4 --std=c++17 $=LDFLAGS'
 alias root-config='root-config --cflags --libs'
 
-# ssh and certificates
+# certificates
 alias certutil='certutil -d sql:$HOME/.pki/nssdb'
 alias pk12util='pk12util -d sql:$HOME/.pki/nssdb'
 
-# ssh
-alias lp='lp -d $PRINTER -o collate=true'
-
 # utils
-alias vpn='/usr/local/Astrill/astrill /toggle &!'
 alias dropbox='dropbox-cli'
+alias lp='lp -d $PRINTER -o collate=true'
+alias nsc3open='sshpass -p "$(pass nsc3/password)" ssh -f nsc3tunnel sleep 10'
+alias nsc3='nsc3open && ssh nsc3'
 alias o='xdg-open'
+alias vpn='/usr/local/Astrill/astrill /toggle &!'
 alias zshfunctions='zcompile -Uz $ZSH_FUNCTIONS $ZSH_FUNCTIONS/*(.x)'
 
 # buggy programs (application mode)
