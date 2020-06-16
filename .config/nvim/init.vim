@@ -15,7 +15,7 @@ if dein#load_state('~/.vim/bundles')
 
     " interface
     call dein#add('vim-airline/vim-airline')      " airline status line
-    "call dein#add('Shougo/deoplete.nvim')         " completion
+    call dein#add('Shougo/deoplete.nvim')         " completion
     call dein#add('lilydjwg/fcitx.vim')           " fcitx input method
     call dein#add('tpope/vim-fugitive')           " git interaction
     call dein#add('luochen1990/rainbow')          " rainbow color parenthesis
