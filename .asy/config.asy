@@ -1,5 +1,5 @@
 import settings;
-tex="lualatex";
+tex="xelatex";
 outformat="pdf";
 pdfviewer="xdg-open";
 render=4;
