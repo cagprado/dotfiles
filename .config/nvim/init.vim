@@ -43,7 +43,7 @@ if dein#check_install()
 endif
 
 " auto remove unused plugins on startup
-"call map(dein#check_clean(), "delete(v:val, 'rf')")
+call map(dein#check_clean(), "delete(v:val, 'rf')")
 
 " BASIC INTERFACE ###########################################################
 " options depending on other sections of .vimrc are commented with <USER SEC>
@@ -66,6 +66,7 @@ set laststatus=2       " always show status line
 set showcmd            " show partially-typed commands in status line
 set showmode           " show mode (Insert, Replace, Visual) in status line
 set foldmethod=marker  " set the folding method TODO
+set fillchars=fold:─   " set character to fill lines to window width
 set makeprg=           " set makeprg empty (to be filled later by FileType)
 
 " printing (set html options for :TOhtml)
@@ -119,34 +120,36 @@ set breakindent                      " follow indent when soft-wrapping
 set breakindentopt=sbr,min:0,shift:4 " sbr: showbreak before indent / min: 0=any / shift: number of chars to shift
 set list                             " turn on list mode: listchars sets contexts
 set listchars=tab:.…,trail:·,extends:»,precedes:«,nbsp:~
-set formatoptions=tcroqjn            " options for formating, :help fo-table, pattern matches number and bullet (- or ·) lists
+set formatoptions=tcroqjn            " options for formating, :help fo-table, match number, -, · lists
 set formatlistpat=^\\s*\\(\\d\\+[\\]:.)}\\t\ ]\\\\|-\\\\|·\\)\\s*
 
 
 " Set cursor shape for different modes (tmux will do it right)
 if has('nvim') && $TERM !~ '\vlinux'
-    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor-blinkon0,r-cr:hor20-Cursor/lCursor-blinkon0
+    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,
+                 \i-ci:ver25-Cursor/lCursor-blinkon0,
+                 \r-cr:hor20-Cursor/lCursor-blinkon0
 else
-  let &t_SI = system('tput Ss 6 2>/dev/null')
-  let &t_EI = system('tput Ss 2 2>/dev/null')
-  if exists('&t_SR')
-    let &t_SR = system('tput Ss 4 2>/dev/null')
-  endif
-  autocmd VimEnter * silent exe '!echo -ne ' . shellescape(&t_EI)
-  autocmd VimLeave * silent exe '!tput Se 2>/dev/null'
+    let &t_SI = system('tput Ss 6 2>/dev/null')
+    let &t_EI = system('tput Ss 2 2>/dev/null')
+    if exists('&t_SR')
+        let &t_SR = system('tput Ss 4 2>/dev/null')
+    endif
+    autocmd VimEnter * silent exe '!echo -ne ' . shellescape(&t_EI)
+    autocmd VimLeave * silent exe '!tput Se 2>/dev/null'
 endif
 
 " Syntax highlighting and appearance
 if has('syntax')
-  let s:has_truecolor = system('tput Tc 2>/dev/null && echo 1 || echo 0')
-  if (has('termguicolors') && s:has_truecolor) || has('gui_running')
-    " Set truecolor option and load colorscheme
-    set termguicolors
-    let g:rainbow_active=1
-  endif
+    let s:has_truecolor = system('tput Tc 2>/dev/null && echo 1 || echo 0')
+    if (has('termguicolors') && s:has_truecolor) || has('gui_running')
+        " Set truecolor option and load colorscheme
+        set termguicolors
+        let g:rainbow_active=1
+    endif
 
-  syntax on
-  colorscheme default
+    syntax on
+    colorscheme default
 endif
 
 " AIRLINE ###################################################################
@@ -174,10 +177,11 @@ if $TERM !~ '\vlinux'
 endif
 
 " redefine line number section
-call airline#parts#define('linenr', {
-        \ 'raw' : ' %l',
-        \ 'accent' : 'bold' })
-if !&termguicolors | call airline#parts#define_accent('linenr', 'none') | endif
+if &termguicolors
+    call airline#parts#define('linenr', {'raw': ' %l', 'accent': 'bold' })
+else
+    call airline#parts#define_accent('linenr', 'none')
+endif
 
 call airline#parts#define('maxlinenr', {
         \ 'raw' : ':%v %{g:airline_symbols.maxlinenr} %L',
@@ -200,26 +204,26 @@ let g:vimtex_fold_types = {'envs' : { 'blacklist' : ['center'], }}
 
 " Convert current buffer to pdf
 function! ToPdf()
-  write
+    write
 
-  " Generate HTML file
-  let l:filename=expand('%:S')
-  let l:htmlname=expand('%') . '.html'
-  TOhtml
-  let &l:makeprg = "wkhtmltopdf --disable-smart-shrinking -s A4 --header-left " . l:filename . " --header-right '[page]/[toPage]' --header-line --header-spacing 2 -T 18 -B 12 -L 18 -R 18 %:S %:r:S.pdf"
-  write | make!
+    " Generate HTML file
+    let l:filename=expand('%:S')
+    let l:htmlname=expand('%') . '.html'
+    TOhtml
+    let &l:makeprg = "wkhtmltopdf --disable-smart-shrinking -s A4 --header-left " . l:filename . " --header-right '[page]/[toPage]' --header-line --header-spacing 2 -T 18 -B 12 -L 18 -R 18 %:S %:r:S.pdf"
+    write | make!
 
-  " Delete temporary HTML file
-  call delete(expand('%')) | bdelete!
+    " Delete temporary HTML file
+    call delete(expand('%')) | bdelete!
 endfunction
 command! -bar ToPdf call ToPdf()
 
 " Restore cursor position to last position when load buffer
 function! RestoreCursor()
-  if line("'\"") <= line("$")
-    normal! g`"
-    return 1
-  endif
+    if line("'\"") <= line("$")
+        normal! g`"
+        return 1
+    endif
 endfunction
 au BufWinEnter * call RestoreCursor()
 
