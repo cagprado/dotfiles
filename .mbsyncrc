@@ -14,7 +14,7 @@ SSLType IMAPS
 IMAPAccount work
 Host imap.mxhichina.com
 User cagprado@zhejianglab.com
-PassCmd "pass zhejianglab/password"
+PassCmd "pass zjlab/password"
 SSLType IMAPS
 #SSLType None
 #AuthMechs LOGIN
