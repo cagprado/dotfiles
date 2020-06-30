@@ -52,6 +52,7 @@ call map(dein#check_clean(), "delete(v:val, 'rf')")
 set title              " automatically set window title <USER TERM>
 set hidden             " hide buffer if opening new one (no need to save/undo)
 set ttyfast            " fast terminal connection: smooths things
+set modelineexpr       " allow modeline expressions
 set wildignore=*.swp,*.bak,*.pyc,*.class,*.zwc  " ignore when completing
 set wildmode=list:longest,full  " complete command-line (list options and complete common part then cycle)
 set nospell            " turn off spell checking
