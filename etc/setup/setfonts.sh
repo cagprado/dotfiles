@@ -16,7 +16,7 @@ if [[ "$ANS" = (yes|YES|Yes|y|Y) ]]; then
   else
     VCONSOLE=''
   fi
-  VCONSOLE+='\nFONT=consolefont'
+  VCONSOLE+='\nFONT=ter-v28b'
   echo $VCONSOLE | sudo tee /etc/vconsole.conf >/dev/null
 
   # remind to setup mkinitcpio.conf
