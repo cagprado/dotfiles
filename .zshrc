@@ -47,6 +47,7 @@ alias ccorp-config='echo -I$HOME/usr/local/ccorp/include -L$HOME/usr/local/ccorp
 alias GCC='gcc -Wall -ansi -O2'
 alias G++='g++ -Wall -O4 --std=c++17 $=LDFLAGS'
 alias root-config='root-config --cflags --libs'
+alias vmake='make VERBOSE=1'
 
 # certificates
 alias certutil='certutil -d sql:$HOME/.pki/nssdb'
