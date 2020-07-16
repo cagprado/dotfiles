@@ -197,9 +197,8 @@ let g:deoplete#enable_at_startup = 1
 " PYTHON-MODE ###############################################################
 let g:pymode_python = 'python3'
 
-" VIMTEX ####################################################################
-let g:vimtex_fold_enabled = 1
-let g:vimtex_fold_types = {'envs' : { 'blacklist' : ['center'], }}
+" TEX #######################################################################
+let g:tex_flavor = 'latex'
 
 " FUNCTIONS/AUTOCMD #########################################################
 
