@@ -138,13 +138,13 @@ user_agent = alot/{version}
   [[inbox]]
     translated = " "
   [[junk]]
-    translated = " "
+    translated = " "
   [[replied]]
-    translated = " "
+    translated = " "
   [[sent]]
     translated = " "
   [[.mailman.]]
-    translated = " "
+    translated = " "
   [[delete]]
     translated =
 
@@ -158,55 +158,53 @@ user_agent = alot/{version}
   [[encrypted]]
     translated = " "
   [[signed]]
-    translated = " "
+    translated = " "
 
   # Lists
   [[lists]]
     translated =
   [[.arch-.*]]
-    translated = " "
+    translated = " "
   [[archlinux]]
-    translated = " "
+    translated = " "
   [[.alice-.*]]
-    translated = " "
+    translated = " "
   [[alice]]
-    translated = " "
+    translated = " "
   [[iopp]]
-    translated = " "
-  [[.karatecepeusp.]]
-    translated = " "
+    translated = " "
   [[ifcom]]
-    translated = " "
+    translated = " "
   [[hanyu]]
-    translated = "汉"
+    translated = " "
 
   # Labels
   [[ccnu]]
     translated = " "
   [[yandex]]
-    translated = " "
+    translated = " "
   [[gmail]]
     translated = " "
   [[admin]]
     translated = " "
   [[bibusp]]
-    translated = " "
+    translated = " "
   [[postdoc]]
     translated = " "
   [[events]]
-    translated = " "
+    translated = " "
   [[family]]
     translated = " "
   [[papers]]
     translated = " "
   [[friends]]
-    translated = " "
+    translated = " "
   [[lab]]
-    translated = " "
+    translated = " "
   [[teaching]]
-    translated = " "
+    translated = " "
   [[personal]]
-    translated = " "
+    translated = " "
 
 # KEY BINDINGS ##############################################################
 [bindings]
