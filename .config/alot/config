@@ -176,7 +176,7 @@ user_agent = alot/{version}
   [[ifcom]]
     translated = " "
   [[hanyu]]
-    translated = " "
+    translated = "汉"
 
   # Labels
   [[ccnu]]
