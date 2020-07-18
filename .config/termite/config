@@ -1,6 +1,6 @@
 # vim: ft=dosini cms=#%s
 [options]
-font = terminalfont 8
+font = Iosevka Slab 8
 fullscreen = false
 
 [colors]
