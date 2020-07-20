@@ -1,0 +1,312 @@
+#!/usr/bin/env python3
+
+import re
+import sys
+import time
+import itertools
+import threading
+import argparse
+from os import environ as ENV
+from subprocess import Popen, PIPE, DEVNULL
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        'Run LaTeX commands while parsing the output and reformatting.')
+    parser.add_argument(
+        '-v', action='store_true', help='whether to show complete output')
+    parser.add_argument(
+        '--no-color', action='store_true', help='whether to use color output')
+    parser.add_argument(
+        'cmd', nargs=argparse.REMAINDER, help='Command to run LaTeX')
+    args = parser.parse_args()
+    Message.config(args.no_color)
+
+    with LaTeX(args.cmd, args.v) as process:
+        process.run()
+        process.print_summary()
+    return process.return_code
+
+
+class Spinner:
+    def __init__(self):
+        self.cursor = '⠋⠙⠹⠸⢸⢰⣰⣠⣄⣆⡆⡇⠇⠏'
+        self.busy = False
+        self.thread = None
+        self.delay = 1/len(self.cursor)
+        self.spinner = itertools.cycle(self.cursor)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.stop()
+
+    def loop(self):
+        while self.busy:
+            sys.stdout.write('  ' + next(self.spinner) + '\r')
+            sys.stdout.flush()
+            time.sleep(self.delay)
+
+    def start(self, message):
+        self.stop()
+        sys.stdout.write('    {}\r'.format(message))
+        self.busy = True
+        self.thread = threading.Thread(target=self.loop)
+        self.thread.start()
+
+    def stop(self):
+        if self.busy:
+            self.busy = False
+            self.thread.join()
+            print('\033[K', end='')
+
+
+class Message:
+    use_color = True
+
+    @staticmethod
+    def config(no_color):
+        Message.use_color = not no_color
+
+    @staticmethod
+    def format(n):
+        return '\033[{}m'.format(n)
+
+    @property
+    def level_color(self):
+        return self.level == 'ERR' and 31 or self.level == 'WAR' and 33 or 36
+
+    def __init__(self, level, filename, line, summary, context):
+        self.level = level
+        self.filename = filename
+        self.line = line
+        self.summary = summary
+        self.context = context
+
+    def __str__(self):
+        fmt = Message.use_color and Message.format or (lambda _: '')
+        lvl = self.level_color
+        msg = '{}[{}{}{}]'.format(fmt(1), fmt(lvl), self.level, fmt(30))
+        if self.filename:
+            msg += ' {}{}.{}:'.format(fmt(34), self.filename, self.line)
+        msg += ' {}{}'.format(fmt(''), self.summary)
+        if self.context:
+            msg += ' {}| {}{}'.format(fmt(97), self.context, fmt(''))
+        return msg
+
+
+class LaTeX:
+    class LineMatched(Exception):
+        pass
+
+    def __init__(self, command, verbose):
+        self.cmd = command
+        self.verbose = verbose
+
+    def __enter__(self):
+        self.process = Popen(self.cmd, stdout=PIPE, stderr=DEVNULL, text=True,
+                             env=dict(ENV, **{'max_print_line': '1000000'}))
+        return self
+
+    def __exit__(self, *args):
+        self.process.__exit__(*args)
+        self.return_code = self.process.returncode
+
+    def print_summary(self):
+        for messages in self.messages.values():
+            for message in messages:
+                print(message)
+
+    def run(self):
+        self.count = {}
+        self.messages = {}
+        self.rule = None
+        with Spinner() as self.spinner:
+            for self.line in self.process.stdout:
+                self.process_line()
+
+    def process_line(self):
+        try:
+            self.match_empty()
+            self.match_rule_statement()
+            if self.verbose and self.rule:
+                self.message(self.rule, '', 0, self.line.strip())
+        except LaTeX.LineMatched:
+            return
+
+    def message(self, level, filename, line, summary, context=''):
+        self.messages[self.rule].append(Message(
+            level, filename, line, summary, context))
+
+    def match_empty(self):
+        if not self.line.strip():
+            raise LaTeX.LineMatched
+
+    def match_rule_statement(self):
+        match = re.match(r"Latexmk: applying rule '([^']*)'...", self.line)
+        if match:
+            rule = match[1]
+            self.rule = rule
+            self.count[rule] = 1+self.count[rule] if rule in self.count else 1
+            self.messages[rule] = []
+
+            # print out spinner message
+            self.spinner.start(
+                "Running '{}' ({})".format(rule, self.count[rule]))
+
+            # if xdvipdfmx, ignore the rest of output
+            if rule == 'xdvipdfmx':
+                for _ in self.process.stdout:
+                    pass
+
+            # # if biber/bibtex, forget whatever happened before
+            # elif re.match('(biber|bibtex)', rule):
+            #     self.messages.clear()
+
+            raise LaTeX.LineMatched
+
+
+#         # remove path from file names
+#         line = re.sub(r'.*/([^/]+:\d+: )', r'\1', line)
+#
+#         line_double(line, stdout, output)
+#         line_warning(line, stdout, output)
+#
+#         #  or process_line_append(line, output)
+#     except CaughtLine:
+#         return
+#     output and add_line(line, output)
+# def add_line(line, output):
+#     output.append(line.rstrip())
+#
+#
+# def append_next(line, stdout, output, pattern):
+#     match = re.match(pattern, line)
+#     if match:
+#
+#         line = line.strip() + ' ' + next(stdout)
+#         add_line(line, output)
+#         raise CaughtLine
+#
+#
+# def join_line(line, output):
+#     add_line(output.pop() + ' ' + line, output)
+#
+#
+# def line_double(line, stdout, output):
+#     patterns = [
+#         '> [^<]',
+#         r'(Overfull|Underfull|Loose|Tight) \\[hv]box \(',
+#     ]
+#
+#     for pattern in patterns:
+#         append_next(line, stdout, output, pattern)
+#     # patterns = [
+#     #     '(Ov|Und)erfull', '.*?:[0-9]+:', '!', '> [^<]', '.*pdfTeX warning',
+#     #     'LaTeX Font Warning: Font shape', 'Runaway argument']
+#
+#
+# def line_empty(line, stdout, output):
+#     if not line.rstrip():
+#         raise CaughtLine
+#
+#
+# def line_rule(line, stdout, output):
+#     match = re.match(r"Run number (\d+) of rule '([^ ']+).*'", line)
+#     if match:
+#         control = '### RULE:{} ###'.format(match[2])
+#
+#         # print information
+#         #spinner.ensure_stop()
+#         spinner.start("Running ({}) '{}' ".format(match[1], match[2]))
+#
+#         # ignore everything after xdvipdfmx rule
+#         if match[2] == 'xdvipdfmx':
+#             for line in stdout:
+#                 pass
+#
+#         # if biber/bibtex then forget whatever came before
+#         elif re.match('(bibtex|biber)', match[2]):
+#             output.clear()
+#
+#         # remove repetition of rules (keep last output only)
+#         elif control in output:
+#             del output[output.index(control):]
+#
+#         # finally just add the rule to output
+#         add_line(control, output)
+#         raise CaughtLine
+#
+#
+# def line_warning(line, stdout, output):
+#     pattern = re.compile(r'(Package |Class |LaTeX |pdfTeX )?(\S+) Warning: ')
+#     match = pattern.match(line)
+#     if match:
+#         pattern = re.compile(r'([(]' + match[2] + '[)])? {12,}')
+#         for cont in stdout:
+#             cont, n = pattern.subn('', cont)
+#             if not n:
+#                 break
+#             line = (line + ' ' + cont).strip()
+#
+#         add_line(line, output)
+#         raise CaughtLine
+#
+#
+# def process_line(line, stdout, output):
+#     print(line.strip())
+#     try:
+#         line_empty(line, stdout, output)
+#         line_rule(line, stdout, output)
+#
+#         # remove path from file names
+#         line = re.sub(r'.*/([^/]+:\d+: )', r'\1', line)
+#
+#         line_double(line, stdout, output)
+#         line_warning(line, stdout, output)
+#
+#         #  or process_line_append(line, output)
+#     except CaughtLine:
+#         return
+#     output and add_line(line, output)
+#
+#
+# def format_output(output):
+#     for line in output:
+#         print(line)
+#     # norm_cl = '[97m'
+#     # rule_cl = '[32m'
+#     # file_cl = '[34m'
+#     # full_cl = '[33m'
+#     # warn_cl = '[35m'
+#     # erro_cl = '[31m'
+#
+#     # patterns = [
+#     #     ('[31m', '[m', r'! |.*:\d+: '),
+#     #     # (file_cl, erro_cl, '\(.*end occurred inside a group'),
+#     #     # (file_cl, erro_cl, r'l\.\d+ '),
+#     #     # (file_cl, erro_cl, r'.*:\d+: '),
+#     #     # (erro_cl, norm_cl, '(LaTeX|Package|Class).*Error'),
+#     #     # (warn_cl, norm_cl, '(LaTeX|Package|Class).*Warning'),
+#     #     (full_cl, norm_cl, '(Und|Ov)erfull')]
+#
+#     # for line in output:
+#     #     for pat in patterns:
+#     #         if print_if_match(*pat, line):
+#     #             break
+#
+#
+# def print_if_match(color, ncolor, pattern, line):
+#     m = re.match(pattern, line)
+#     return m and print(color + m[0] + ncolor + line[m.end():] + '[m')
+
+
+min_python = (3, 7)
+if __name__ != "__main__":
+    sys.exit("This module is not supposed to be imported...")
+
+elif sys.version_info < min_python:
+    sys.exit("Python %s.%s or later is required..." % min_python)
+
+sys.exit(main())

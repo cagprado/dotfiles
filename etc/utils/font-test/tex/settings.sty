@@ -1,0 +1,200 @@
+\ProvidesPackage {settings} [2019/04/18 settings Package]
+%  Options «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
+\newcommand* \set@chinese {plain}
+\DeclareOption {chinese} {
+    \renewcommand* \set@chinese {chinese}
+}
+\ProcessOptions\relax
+
+%  Basic packages ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
+\RequirePackage {graphicx, xcolor}                                % Graphics and color
+\RequirePackage {array, dcolumn, longtable}                       % Tables
+\RequirePackage {amsmath, amssymb, mathtools, slashed, textcomp}  % Math and symbols
+\RequirePackage [version=4] {mhchem}                              % Basic chemistry symbols
+\RequirePackage {xparse}                                          % Macros for customizing new commands
+\RequirePackage {iftex}                                           % Test LaTeX engine
+
+%  Font configuration ««««««««««««««««««««««««««««««««««««««««««««««««««««««1
+%    · General «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+\RequirePackage [quiet] {fontspec}                                % Fonts for (Xe|Lua)LaTeX
+\RequirePackage {booktabs}                                        % Tables
+\RequirePackage {indentfirst}                                     % Indentation
+\RequirePackage [scheme = \set@chinese, fontset = none] {ctex}    % Chinese typesetting
+\RequirePackage {microtype}                                       % Fine tune fonts
+\providecommand \xeCJKVerbAddon{}                                 % Placeholder for LuaLaTeX
+
+%    · Roman «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+\defaultfontfeatures [\rmfamily, \sffamily] {
+    Ligatures         = TeX,
+    Numbers           = {Proportional, OldStyle},
+    SmallCapsFeatures = {LetterSpace = 5, Kerning = On},
+}
+
+\defaultfontfeatures [rmfamily] {
+    UprightFont = Linux Libertine O,         BoldFont        = Linux Libertine O Semibold,
+    ItalicFont  = Linux Libertine O Italic,  BoldItalicFont  = Linux Libertine O Semibold Italic,
+    SlantedFont = Linux Libertine O Italic,  BoldSlantedFont = Linux Libertine O Semibold Italic,
+}
+\defaultfontfeatures [sffamily] {
+    UprightFont = Linux Biolinum O,          BoldFont        = Linux Biolinum O Bold,
+    ItalicFont  = Linux Biolinum O Italic,   BoldItalicFont  = Linux Biolinum O Bold Oblique,
+    SlantedFont = Linux Biolinum O Italic,   BoldSlantedFont = Linux Biolinum O Bold Oblique,
+}
+\defaultfontfeatures [ttfamily] {
+    Scale       = MatchLowercase,            ScaleAgain      = 1.05,
+    UprightFont = Iosevka Slab,              BoldFont        = Iosevka Slab Semibold,
+    ItalicFont  = Iosevka Slab Italic,       BoldItalicFont  = Iosevka Slab Semibold Italic,
+    SlantedFont = Iosevka Slab Oblique,      BoldSlantedFont = Iosevka Slab Semibold Oblique,
+}
+
+\setmainfont {rmfamily}
+\setsansfont {sffamily}
+\setmonofont {ttfamily}
+
+%    · Chinese «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+\defaultfontfeatures [zhsong] {
+    Script         = CJK,
+    Scale          = MatchLowercase,
+    UprightFont    = Source Han Serif SC,
+    ItalicFont     = Source Han Serif SC,
+    BoldFont       = Source Han Serif SC SemiBold,
+    BoldItalicFont = Source Han Serif SC SemiBold,
+}
+\defaultfontfeatures [zhhei] {
+    Script         = CJK,
+    Scale          = MatchLowercase,
+    UprightFont    = Source Han Sans SC Normal,
+    ItalicFont     = Source Han Sans SC Normal,
+    BoldFont       = Source Han Sans SC Medium,
+    BoldItalicFont = Source Han Sans SC Medium,
+}
+\defaultfontfeatures [zhmono] {
+    Script         = CJK,
+    Scale          = MatchLowercase,
+    UprightFont    = WenQuanYi Zen Hei Mono,
+    ItalicFont     = WenQuanYi Zen Hei Mono,
+    BoldFont       = WenQuanYi Zen Hei Mono,
+    BoldItalicFont = WenQuanYi Zen Hei Mono,
+}
+\defaultfontfeatures [FZKai-Z03S]   {Script = CJK, Scale = 0.87}
+\defaultfontfeatures [FandolFang R] {Script = CJK, Scale = 0.86}
+
+\newCJKfontfamily \songti   {zhsong}
+\newCJKfontfamily \heiti    {zhhei}
+\newCJKfontfamily \kaishu   {FZKai-Z03S}
+\newCJKfontfamily \fangsong {FandolFang R}
+\newCJKfontfamily \zhmono   {zhmono}
+
+\setCJKmainfont {zhsong} [ItalicFont = FZKai-Z03S]
+\setCJKsansfont {zhhei}  [ItalicFont = FandolFang R]
+\setCJKmonofont {zhmono}
+
+%    · Math ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+\RequirePackage [
+    math-style = ISO,
+    bold-style = ISO,
+    sans-style = italic,
+    nabla      = upright,
+    partial    = upright,
+] {unicode-math}
+\setmathfont {XITS Math} [Scale = MatchLowercase]
+\setmathfont {XITS Math} [range = {cal,bfcal}, StylisticSet=1]
+
+% lining vs oldstyle figures
+\providecommand \lfstyle  {\IfFontFeatureActiveTF{Numbers = OldStyle} {\addfontfeature{Numbers = Lining}} {}}
+\providecommand \osfstyle {\IfFontFeatureActiveTF{Numbers = Lining}   {\addfontfeature{Numbers = OldStyle}} {}}
+\providecommand \textlf  [1] {{\lfstyle #1}}
+\providecommand \textosf [1] {{\osfstyle #1}}
+\providecommand \Arabic  [1] {\textlf{\arabic{#1}}} % \Arabic forces the use of lining figures
+\mhchemoptions {textfontcommand = \lfstyle}
+
+% roman numerals
+\newcommand \romannum[1] {{\romannumeral#1\relax}}
+\newcommand \Romannum[1] {{\uppercase\expandafter{\romannumeral#1\relax}}}
+
+% XITS FIXES
+\def\bigg#1{{\hbox{$\left#1\vbox to3.0ex{}\right.\n@space$}}}  % \bigg originally have the same size as \Big
+\def\Bigg#1{{\hbox{$\left#1\vbox to4.0ex{}\right.\n@space$}}}  % since we increased \bigg, we now have to increase \Bigg too
+%\newcommand\Int[2]{\int_{\mkern-9mu #1}^{\mkern-2mu #2}} TODO
+
+%  Extra packages ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
+%    · Parsing numbers and units «««««««««««««««««««««««««««««««««««««««««««2
+\RequirePackage [
+    detect-all,           % detect font features
+    detect-mode = false,  % do not detect mode
+    mode = text,          % use text mode for everything
+] {siunitx}
+\AtBeginDocument {\sisetup {
+    text-rm = \lfstyle,
+    text-sf = \lfstyle,
+    text-tt = \lfstyle,
+}}
+
+%    · Code highlighting «««««««««««««««««««««««««««««««««««««««««««««««««««2
+\RequirePackage [
+    newfloat      = true,
+    finalizecache = false,
+    frozencache   = false,
+] {minted}
+\setminted {
+    autogobble    = true,
+    linenos       = true,
+    style         = tomorrow,
+    formatcom     = \xeCJKVerbAddon,
+}
+
+%    · Hyperlinks and cross references «««««««««««««««««««««««««««««««««««««2
+\RequirePackage [
+    hidelinks,          % won't show links in pdf (ugly squares)
+    breaklinks,         % allow breaking links (link itself, not the text)
+    unicode             % allow unicode in string
+] {hyperref}
+
+% Cross-refs formatting (doesn't work with beamer)
+\@ifclassloaded {beamer} {} {
+    \RequirePackage [noabbrev, capitalize] {cleveref}
+}
+
+%  Fine tuning settings ««««««««««««««««««««««««««««««««««««««««««««««««««««1
+% make tables more beautiful
+\renewcommand* \arraystretch {1.2}          % more space between rows
+\expandafter\renewcommand%                  % \tabular[#1]{#2} --> \tabular[#1]{@{}#2@{}}
+\expandafter\tabular%                       % justify tabular lines to text
+\expandafter[\expandafter 2\expandafter]%
+\expandafter[\expandafter c\expandafter]%
+\expandafter{\tabular[#1]{@{}#2@{}}}
+
+% math mode align allow page breaks
+\allowdisplaybreaks
+
+%  Bibliography ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
+\ifdefined \thebibliography
+    \RequirePackage [super, sort&compress, comma, elide] {natbib}
+    \RequirePackage {notoccite}
+    \renewcommand \bibnumfmt   [1] {\textbf{\lfstyle #1.}}
+    \renewcommand \citenumfont [1] {\textlf{#1}}
+    \bibliographystyle {bibstyle}
+\fi
+
+%  Asymptote «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
+\newbox\ASYbox
+\newdimen\ASYdimen
+\def\ASYprefix{}
+\long\def\ASYbase#1#2{\leavevmode\setbox\ASYbox=\hbox{#1}%\ASYdimen=\ht\ASYbox%
+\setbox\ASYbox=\hbox{#2}\lower\ASYdimen\box\ASYbox}
+\long\def\ASYaligned(#1,#2)(#3,#4)#5#6#7{\leavevmode%
+\setbox\ASYbox=\hbox{#7}%
+\setbox\ASYbox\hbox{\ASYdimen=\ht\ASYbox%
+\advance\ASYdimen by\dp\ASYbox\kern#3\wd\ASYbox\raise#4\ASYdimen\box\ASYbox}%
+\setbox\ASYbox=\hbox{#5\wd\ASYbox 0pt\dp\ASYbox 0pt\ht\ASYbox 0pt\box\ASYbox#6}%
+\hbox to 0pt{\kern#1pt\raise#2pt\box\ASYbox\hss}}%
+\def\specialpdf#1{\ifXeTeX\special{pdf:literal #1}\else\special{pdf:#1}\fi}
+\long\def\ASYalignT(#1,#2)(#3,#4)#5#6{%
+\ASYaligned(#1,#2)(#3,#4){%
+\specialpdf{q #5 0 0 cm}%
+}{%
+\specialpdf{Q}%
+}{#6}}
+\long\def\ASYalign(#1,#2)(#3,#4)#5{\ASYaligned(#1,#2)(#3,#4){}{}{#5}}
+\def\ASYraw#1{#1}
+% vim: nospell : foldmethod=marker : foldmarker=«,»

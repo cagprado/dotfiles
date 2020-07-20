@@ -1,0 +1,147 @@
+#!/usr/bin/env python
+
+import re
+import os
+import argparse
+
+
+def main():
+    # Parse command line arguments.
+    parser = argparse.ArgumentParser(description="""Generates a dependency list
+        for a latex document listing all asymptote plot files that are needed
+        in order to generate the final pdf.""")
+    parser.add_argument(
+        '-d', default='tex',
+        help='directory containing tex source files (default: %(default)s)')
+    parser.add_argument(
+        '-p', default='asy',
+        help='directory containing asy source files (default: %(default)s)')
+    parser.add_argument(
+        '-o', default='.depends',
+        help='output file to write dependencies list (default: %(default)s)')
+    parser.add_argument(
+        'doclst', nargs='+', metavar='name',
+        help='list of LaTeX document names to build')
+    args = parser.parse_args()
+
+    global docdir, pltdir, commands, globaldeps
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    docdir = os.path.join(curdir, args.d)
+    pltdir = os.path.join(curdir, args.p)
+    output = os.path.join(curdir, args.o)
+    commands = Commands('input', 'include', 'includegraphics')
+    globaldeps = []
+
+    documents = [Document(name) for name in args.doclst]
+    write_output(output, documents)
+
+
+class Commands:
+    def __init__(self, *cmdlist):
+        self.cmdl = cmdlist
+
+    @property
+    def pattern(self):
+        pattern = r'[\\]('
+        for command in self.cmdl:
+            pattern += command + r'|'
+        pattern = pattern[:-1] + r') *(?:\[[^\]]*\])? *{([^}]*)}'
+        return re.compile(pattern, re.M)
+
+    def parse_commands(self, contents):
+        cmdlist = re.findall(self.pattern, contents)
+        return [Source(self.find_filename(*i)) for i in cmdlist]
+
+    def find_filename(self, command, filename):
+        if os.path.splitext(filename)[1]:
+            return filename
+        elif command == 'includegraphics':
+            return filename + '.pdf'
+        else:
+            return filename + '.tex'
+
+
+class Document:
+    def __init__(self, docname):
+        self.name = docname
+        self.deps = set()
+        find_dependencies(self.deps, self.filename)
+
+    @property
+    def filename(self):
+        return os.path.join(docdir, 'main_' + self.name + '.tex')
+
+    @property
+    def target(self):
+        return self.name + '.pdf'
+
+
+class Source:
+    def __init__(self, filename):
+        self.filename = os.path.join(docdir, filename)
+
+    @property
+    def is_plot(self):
+        return os.path.splitext(self.filename)[0].endswith('_asy')
+
+    @property
+    def is_tex(self):
+        return self.filename.endswith('.tex')
+
+    @property
+    def is_parseable(self):
+        return self.is_tex and os.path.isfile(self.filename)
+
+    @property
+    def asyname(self):
+        filename = os.path.splitext(self.filename)[0].replace(docdir, pltdir)
+        return filename[:filename.endswith('_asy') and -4 or -5] + '.asy'
+
+    def tex_pdf(self):
+        return Source(self.filename[:-4] + 'i.pdf')
+
+
+def find_dependencies(dependencies, filename):
+    globaldeps.append(filename)
+
+    for candidate in parse_file(filename):
+        if candidate.filename in globaldeps:
+            continue
+        if candidate.is_plot:
+            dependencies.add(candidate)
+            if candidate.is_tex:
+                dependencies.add(candidate.tex_pdf())
+        elif candidate.is_parseable:
+            find_dependencies(dependencies, candidate.filename)
+
+
+def parse_file(filename):
+    contents = read_file(filename)
+    return commands.parse_commands(contents)
+
+
+def read_file(filename):
+    contents = ''
+    with open(filename) as file:
+        for line in file:
+            # remove comments from each line
+            m = re.search(r'(^%|[^\\](?:\\\\)*%)', line)
+            contents += m and (line[:m.start(0)+1] + '\n') or line
+    return contents
+
+
+def write_output(output, documents):
+    with open(output, 'w') as file:
+        for doc in documents:
+            if doc.deps:
+                file.write('{}: {}\n\n'.format(output, ' '.join(globaldeps)))
+                file.write('{}: {}\n\n'.format(
+                    doc.target, ' '.join([i.filename for i in doc.deps])))
+                for i in doc.deps:
+                    file.write('{}: {}\n\n'.format(i.filename, i.asyname))
+
+
+if __name__ != "__main__":
+    sys.exit("This module is not supposed to be imported...")
+
+main()
