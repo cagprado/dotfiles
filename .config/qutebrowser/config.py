@@ -33,8 +33,7 @@ c.content.headers.accept_language = 'en-US,en'
 c.content.headers.custom = {}
 c.content.headers.do_not_track = True      # send do not track header
 c.content.headers.referer = 'same-domain'  # send referer information
-c.content.headers.user_agent = None
-config.set('content.headers.user_agent', "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.128 Safari/537.36", '*://*.whatsapp.com/')
+c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.128 Safari/537.36"
 c.content.host_blocking.enabled = True     # ad-blocker
 c.content.host_blocking.lists = ['https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts']
 c.content.host_blocking.whitelist = ['piwik.org']
@@ -68,7 +67,7 @@ c.content.ssl_strict = 'ask'
 c.content.user_stylesheets = []
 c.content.webgl = True
 c.content.webrtc_ip_handling_policy = 'all-interfaces'
-c.content.windowed_fullscreen = False
+c.content.fullscreen.window = False
 c.content.xss_auditing = True
 c.downloads.location.directory = None      # None = system default
 c.downloads.location.prompt = True
