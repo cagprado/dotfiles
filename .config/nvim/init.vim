@@ -43,7 +43,7 @@ if dein#check_install()
 endif
 
 " auto remove unused plugins on startup
-call map(dein#check_clean(), "delete(v:val, 'rf')")
+"call map(dein#check_clean(), "delete(v:val, 'rf')")
 
 " BASIC INTERFACE ###########################################################
 " options depending on other sections of .vimrc are commented with <USER SEC>
@@ -79,8 +79,8 @@ let g:html_font="terminalfont"
 
 " indenting
 set tabstop=4             " \t length
-set shiftwidth=0          " indenting steps (=0: tabstop)
-set softtabstop=-1        " <TAB> inserts N spaces|\t if possible (=neg: shiftwidth)
+set shiftwidth=4          " indenting steps (=0: tabstop)
+set softtabstop=4         " <TAB> inserts N spaces|\t if possible (=neg: shiftwidth)
 set expandtab             " <TAB> never inserts \t (C-V<TAB> will do)
 set shiftround            " round > and < to multiples of shiftwidth
 set autoindent            " copies indent of previous line
@@ -110,15 +110,14 @@ set textwidth=77                     " text width length
 set colorcolumn=+1                   " highlight 1 column after textwidth
 set joinspaces                       " when joining insert two spaces after .?!
 set cpoptions+=J                     " a sentence will end with two spaces
-set cpoptions+=n                     " showbreak will occur in place of line numbers
 set backspace=indent,eol,start       " backspace over everything
 set virtualedit=all                  " allow cursor to travel anywhere
 set clipboard^=unnamedplus           " copy/paste to "+ without explicit set
 set wrap                             " soft wrap lines
 set linebreak                        " breaks with breakat instead of last char
-set showbreak=\ ··\                  " showbreak when soft-wrapping
+set showbreak=│\                      " showbreak when soft-wrapping
 set breakindent                      " follow indent when soft-wrapping
-set breakindentopt=sbr,min:0,shift:4 " sbr: showbreak before indent / min: 0=any / shift: number of chars to shift
+set breakindentopt=shift:0           " sbr: showbreak before indent / min: 0=any / shift: number of chars to shift
 set list                             " turn on list mode: listchars sets contexts
 set listchars=tab:.…,trail:·,extends:»,precedes:«,nbsp:~
 set formatoptions=tcroqjn            " options for formating, :help fo-table, match number, -, · lists
@@ -172,9 +171,9 @@ if $TERM !~ '\vlinux'
     let g:airline_symbols.linenr = ' '
     let g:airline_symbols.crypt = ' '
     let g:airline_symbols.whitespace = ' '
-    let g:airline_symbols.dirty=' '
+    let g:airline_symbols.dirty='  '
     let g:airline_symbols.paste = ' '
-    let g:airline_symbols.spell = ' '
+    let g:airline_symbols.spell = ' '
 endif
 
 " redefine line number section
@@ -192,13 +191,10 @@ let g:airline_section_z = airline#section#create([ 'windowswap', 'obsession',
         \ '%p%% %{g:airline_symbols.linenr}', 'linenr', 'maxlinenr' ])
 
 " COMPLETION ################################################################
-let g:deoplete#enable_at_startup = 1
+"let g:deoplete#enable_at_startup = 1
 
 " PYTHON-MODE ###############################################################
 let g:pymode_python = 'python3'
-
-" TEX #######################################################################
-let g:tex_flavor = 'latex'
 
 " FUNCTIONS/AUTOCMD #########################################################
 
