@@ -15,7 +15,7 @@ let g:vimtex_syntax_autoload_packages = ['amsmath', 'natbib', 'cleveref', 'asymp
 let g:vimtex_indent_enabled = 1
 let g:vimtex_indent_bib_enabled = 1
 let g:vimtex_indent_on_ampersands = 0  " breaks manual arrangement of equation parts
-let g:vimtex_indent_delims = { 'open': ['{', '['], 'close': ['}', ']'] }
+let g:vimtex_indent_delims = { 'open': ['[{[]'], 'close': ['[}\]]'] }
 
 " vimtex-fold
 let g:vimtex_fold_enabled = 1
