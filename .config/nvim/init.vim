@@ -192,8 +192,9 @@ let g:airline_section_z = airline#section#create([ 'windowswap', 'obsession',
 
 " COMPLETION ################################################################
 let g:deoplete#enable_at_startup = 1
-set completeopt+=noinsert
-autocmd CompleteDone * silent! pclose!
+set completeopt=menu,noinsert
+" remove the currently typed word from the menu
+call deoplete#custom#source('_', 'matchers', ['matcher_fuzzy', 'matcher_length'])
 
 " PYTHON-MODE ###############################################################
 let g:pymode_python = 'python3'
