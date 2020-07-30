@@ -191,7 +191,9 @@ let g:airline_section_z = airline#section#create([ 'windowswap', 'obsession',
         \ '%p%% %{g:airline_symbols.linenr}', 'linenr', 'maxlinenr' ])
 
 " COMPLETION ################################################################
-"let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_at_startup = 1
+set completeopt+=noinsert
+autocmd CompleteDone * silent! pclose!
 
 " PYTHON-MODE ###############################################################
 let g:pymode_python = 'python3'
