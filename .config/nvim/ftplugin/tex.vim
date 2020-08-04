@@ -39,17 +39,22 @@ let g:vimtex_fold_types = {
 call deoplete#custom#var('omni', 'input_patterns', {'tex': g:vimtex#re#deoplete})
 
 " vimtex custom imaps
+
+function! NoCommWrap(lhs, rhs) abort
+    return call('vimtex#syntax#in', ['texComment'] + a:000) ? a:lhs : a:rhs
+endfunction
+
 " punctuation
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '‘', 'rhs': '`'})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '’', 'rhs': ''''})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '„', 'rhs': ',,'})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '“', 'rhs': '``'})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '”', 'rhs': ''''''})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '–', 'rhs': '--'})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '—', 'rhs': '---'})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '…', 'rhs': '\dots '})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '«', 'rhs': '\guillemetleft'})
-call vimtex#imaps#add_map({'leader': '', 'wrapper': 'vimtex#imaps#wrap_trivial', 'lhs': '»', 'rhs': '\guillemetright'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '‘', 'rhs': '`'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '’', 'rhs': ''''})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '„', 'rhs': ',,'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '“', 'rhs': '``'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '”', 'rhs': ''''''})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '–', 'rhs': '--'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '—', 'rhs': '---'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '…', 'rhs': '\dots '})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '«', 'rhs': '\guillemetleft'})
+call vimtex#imaps#add_map({'leader': '', 'wrapper': 'NoCommWrap', 'lhs': '»', 'rhs': '\guillemetright'})
 
 " math symbols
 call vimtex#imaps#add_map({'leader': '', 'lhs': '·', 'rhs': '\inner'})
@@ -89,6 +94,8 @@ call vimtex#imaps#add_map({'leader': '', 'lhs': '⁶', 'rhs': '^6'})
 call vimtex#imaps#add_map({'leader': '', 'lhs': '⁷', 'rhs': '^7'})
 call vimtex#imaps#add_map({'leader': '', 'lhs': '⁸', 'rhs': '^8'})
 call vimtex#imaps#add_map({'leader': '', 'lhs': '⁹', 'rhs': '^9'})
+call vimtex#imaps#add_map({'leader': '', 'lhs': '⁻', 'rhs': '^-'})
+call vimtex#imaps#add_map({'leader': '', 'lhs': '⁺', 'rhs': '^+'})
 
 " math greek letters
 call vimtex#imaps#add_map({'leader': '', 'lhs': 'ω', 'rhs': '\omega'})
