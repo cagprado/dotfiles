@@ -26,7 +26,7 @@
   <entry key="autoCompFirstNameMode" value="BOTH"/>
   <entry key="autoCompLF" value="false"/>
   <entry key="autoComplete" value="false"/>
-  <entry key="autoCompleteFields" value="author;keywords;editor;publisher;crossref;related;title;journal;entryset"/>
+  <entry key="autoCompleteFields" value="author;keywords;editor;publisher;entryset;crossref;related;title;journal"/>
   <entry key="autoOpenForm" value="true"/>
   <entry key="autoResizeMode" value="false"/>
   <entry key="autoSyncSpecialFieldsToKeywords" value="true"/>
@@ -36,6 +36,7 @@
   <entry key="bibLocAsPrimaryDir" value="true"/>
   <entry key="biblatexMode" value="false"/>
   <entry key="bindings" value=""/>
+  <entry key="caseSensitiveSearch" value="false"/>
   <entry key="citeCommand" value="\cite"/>
   <entry key="collectTelemetry" value="false"/>
   <entry key="columnNames" value="author/editor;journal/booktitle;title;year;bibtexkey;entrytype"/>
@@ -62,7 +63,7 @@
   <entry key="downloadLinkedFiles" value="true"/>
   <entry key="emailSubject" value="References"/>
   <entry key="enforceLegalBibtexKey" value="false"/>
-  <entry key="entryEditorHeightFX" value="0.5579302587176603"/>
+  <entry key="entryEditorHeightFX" value="0.5590551181102362"/>
   <entry key="exportInOriginalOrder" value="false"/>
   <entry key="exportInSpecifiedOrder" value="true"/>
   <entry key="exportPriDescending" value="true"/>
@@ -90,8 +91,8 @@
   <entry key="lastFocused" value="/home/cagprado/usr/research/library/library.bib"/>
   <entry key="localAutoSave" value="false"/>
   <entry key="mainTableColumnNames" value="groups;files;linked_id;field:author/editor;field:journal/booktitle;field:title;field:year;field:bibtexkey;field:entrytype"/>
-  <entry key="mainTableColumnSortOrder" value="field:journal/booktitle"/>
-  <entry key="mainTableColumnSortTypes" value="ASCENDING;DESCENDING;ASCENDING;ASCENDING;ASCENDING;ASCENDING;ASCENDING;ASCENDING;DESCENDING"/>
+  <entry key="mainTableColumnSortOrder" value="field:year"/>
+  <entry key="mainTableColumnSortTypes" value="ASCENDING;DESCENDING;ASCENDING;ASCENDING;ASCENDING;ASCENDING;DESCENDING;ASCENDING;DESCENDING"/>
   <entry key="mainTableColumnWidths" value="28.0;28.0;28.0;190.73274281939808;202.8795132317499;686.5859724070461;63.46935987213017;155.84659036334153;93.94300079345703"/>
   <entry key="memoryStickMode" value="false"/>
   <entry key="mergeEntriesDiffMode" value="WORD_SYMMETRIC"/>
@@ -116,9 +117,11 @@
   <entry key="pushToApplication" value="Vim"/>
   <entry key="recentDatabases" value="/home/cagprado/usr/research/reports/tex/library.bib;/home/cagprado/usr/research/library/library.bib;/home/cagprado/library"/>
   <entry key="reformatFileOnSaveAndExport" value="true"/>
+  <entry key="regExpSearch" value="false"/>
   <entry key="remoteServerPort" value="6050"/>
   <entry key="resolveStringsAllFields" value="false"/>
   <entry key="runAutomaticFileSearch" value="false"/>
+  <entry key="searchDisplayMode" value="FILTER"/>
   <entry key="selectedFetcherIndex" value="10"/>
   <entry key="sendLanguageData" value="false"/>
   <entry key="sendOSData" value="false"/>
