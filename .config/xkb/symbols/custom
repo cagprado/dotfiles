@@ -8,7 +8,7 @@ default xkb_symbols "us" {
 
     key <AD11> { [bracketleft,  braceleft,       leftsinglequotemark,  leftdoublequotemark  ] }; //  [   {   ‘   “
     key <AD12> { [bracketright, braceright,      rightsinglequotemark, rightdoublequotemark ] }; //  ]   }   ’   ”
-    key <BKSL> { [backslash,    bar,             notequal,             doublelowquotemark   ] }; //  \   |   ≠   „
+    key <BKSL> { [backslash,    bar,             notequal,             U2016                ] }; //  \   |   ≠   ‖
 
     key <AC10> { [semicolon,    colon,           degree,               ssharp               ] }; //  ;   :   °   ß
     key <AC11> { [dead_acute,   dead_diaeresis,  masculine,            ordfeminine          ] }; //  '   "   º   ª
@@ -32,7 +32,7 @@ xkb_symbols "br" {
     key <AC11> { [dead_tilde,   dead_circumflex, rightsinglequotemark, rightdoublequotemark ] }; //  ~   ^   ’   ”
     key <BKSL> { [bracketright, braceright,      masculine,            notsign              ] }; //  ]   }   º   ¬
 
-    key <LSGT> { [backslash,    bar,             notequal,             notsign              ] }; //  \   |   ≠   ¬
+    key <LSGT> { [backslash,    bar,             notequal,             U2016                ] }; //  \   |   ≠   ‖
     key <AB08> { [comma,        less,            doublelowquotemark,   lessthanequal        ] }; //  ,   <   „   ≤
     key <AB09> { [period,       greater,         periodcentered,       greaterthanequal     ] }; //  .   >   ·   ≥
     key <AB10> { [semicolon,    colon,           ellipsis,             guillemotleft        ] }; //  ;   :   …   «
