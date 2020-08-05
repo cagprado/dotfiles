@@ -7,10 +7,6 @@ private import palette;
 private import contour;
 
 real barscale = 6;
-// Some basic latex packages
-usepackage("amsmath");
-usepackage("siunitx");
-usepackage("commath");
 
 // Parse user as array of strings
 string[] user = split(settings.user,";");

@@ -8,28 +8,10 @@ import palette;
 import rootasy;
 
 // {{{1 LaTeX configuration #################################################
-// - Load default packages {{{2
-usepackage("fontenc","T1");
-usepackage("inputenc","utf8");
-usepackage("newtxtext","p,osf");
-usepackage("newtxmath");
-usepackage("grffile");
-usepackage("amsmath,amssymb,mathtools,slashed,siunitx,bm");
-// }}}2
 // - LaTeX preamble {{{2
 private string texpreambletext = "";
-texpreambletext += "\sisetup{";
-texpreambletext += "  detect-all,";
-texpreambletext += "  detect-mode=false,";
-texpreambletext += "  mode=text,";
-texpreambletext += "  text-rm=\lfstyle,";
-texpreambletext += "  text-sf=\lfstyle,";
-texpreambletext += "  text-tt=\lfstyle,";
-texpreambletext += "  }";
-texpreambletext += "\DeclareSIUnit{\fm}{\femto\metre}";
-texpreambletext += "\providecommand\bm[1]{\bm{#1}}";
-texpreambletext += "\newcommand\romanup[1]{\text{#1}}";
-texpreambletext += "\newcommand\greekup[1]{{#1}}";
+texpreambletext += "\IfFileExists{../tex/settings.sty}";
+texpreambletext += "    {\usepackage{../tex/settings}} {}";
 texpreambletext += "\InputIfFileExists{../tex/definitions.tex}{}{}";
 // }}}2
 // - Redefine font size commands {{{2
@@ -118,7 +100,7 @@ color.cyclic = true;
 // https://github.com/gka/chroma.js
 private struct lab {
   // CIE L*a*b colorspace
-  restricted real l, a, b;
+  restricted real l, a, b, o;
   private static real K = 18;
   private static real X = 0.950470;
   private static real Y = 1;
@@ -162,10 +144,11 @@ private struct lab {
     return new real[] {x,y,z};
   }
 
-  void operator init(real l, real a, real b) {
+  void operator init(real l, real a, real b, real o = 1.0) {
     this.l = l;
     this.a = a;
     this.b = b;
+    this.o = o;
   }
 
   void operator init(pen p) {
@@ -176,6 +159,7 @@ private struct lab {
     this.l = 116*y - 16;
     this.a = 500*(x - y);
     this.b = 200*(y - z);
+    this.o = opacity(p);
   }
 
   pen rgb() {
@@ -191,7 +175,7 @@ private struct lab {
     r = (r<0) ? 0 : (r>1) ? 1 : r;
     g = (g<0) ? 0 : (g>1) ? 1 : g;
     b = (b<0) ? 0 : (b>1) ? 1 : b;
-    return rgb(r,g,b);
+    return rgb(r,g,b)+opacity(o);
   }
 }
 
@@ -229,29 +213,32 @@ private interpolator bezier_interpolator(lab[] colors)
   interpolator I;
   if (colors.length == 2) { // linear
     I = new lab (real t) {
-      real l,a,b;
+      real l,a,b,o;
       l = colors[0].l + t*(colors[1].l - colors[0].l);
       a = colors[0].a + t*(colors[1].a - colors[0].a);
       b = colors[0].b + t*(colors[1].b - colors[0].b);
-      return lab(l,a,b);
+      o = colors[0].o + t*(colors[1].o - colors[0].o);
+      return lab(l,a,b,o);
     };
   }
   else if (colors.length == 3) { // quadratic
     I = new lab (real t) {
-      real l,a,b;
+      real l,a,b,o;
       l = (1-t)^2 * colors[0].l + 2*(1-t)*t * colors[1].l + t^2 * colors[2].l;
       a = (1-t)^2 * colors[0].a + 2*(1-t)*t * colors[1].a + t^2 * colors[2].a;
       b = (1-t)^2 * colors[0].b + 2*(1-t)*t * colors[1].b + t^2 * colors[2].b;
-      return lab(l,a,b);
+      o = (1-t)^2 * colors[0].o + 2*(1-t)*t * colors[1].o + t^2 * colors[2].o;
+      return lab(l,a,b,o);
     };
   }
   else if (colors.length == 4) { // cubic
     I = new lab (real t) {
-      real l,a,b;
+      real l,a,b,o;
       l = (1-t)^3 * colors[0].l + 3*(1-t)^2*t * colors[1].l + 3*(1-t)*t^2 * colors[2].l + t^3 * colors[3].l;
       a = (1-t)^3 * colors[0].a + 3*(1-t)^2*t * colors[1].a + 3*(1-t)*t^2 * colors[2].a + t^3 * colors[3].a;
       b = (1-t)^3 * colors[0].b + 3*(1-t)^2*t * colors[1].b + 3*(1-t)*t^2 * colors[2].b + t^3 * colors[3].b;
-      return lab(l,a,b);
+      o = (1-t)^3 * colors[0].o + 3*(1-t)^2*t * colors[1].o + 3*(1-t)*t^2 * colors[2].o + t^3 * colors[3].o;
+      return lab(l,a,b,o);
     };
   }
   else if (colors.length == 5) {
@@ -535,6 +522,7 @@ private struct Panel
   bool aspect = false;
   bool center = false;
   bool fixed = true;
+  pair SW, NE;
 
   // set size of the panel
   void size(picture pic = currentpicture, real x, real y, bool keepAspect, bool center, bool fixed)
@@ -582,7 +570,7 @@ private struct Panel
     // adds panel if exists
     if (currentpicture != pages.page && !currentpicture.empty()) {
       // set picture size
-      if (this.fixed) size(this.size.x, this.size.y, point(SW), point(NE));
+      if (this.fixed) size(this.size.x, this.size.y, this.SW, this.NE);
       else plain_size(this.size.x, this.size.y, this.aspect);
 
       // add picture to current page
@@ -600,6 +588,13 @@ private struct Panel
     this.setpanel(x, y, origin);
     this.size(currentpicture, pages.size.x, pages.size.y, false, false, true);
   }
+
+  void setlimits(pair min, pair max)
+  {
+    this.haslimits = true;
+    this.SW = min;
+    this.NE = max;
+  }
 };
 private Panel currentpanel;
 // }}}2
@@ -609,7 +604,7 @@ void graph_limits(picture, pair, pair, bool) = limits;
 void limits(picture, pair, pair, bool) = null;
 void limits(picture pic = currentpicture, pair min = (-inf, -inf), pair max = (inf, inf), bool3 crop = default)
 {
-  if (currentpicture.empty() || currentpicture == pages.page || currentpanel.haslimits) return;
+  if (currentpicture == pages.page || currentpanel.haslimits) return;
 
   // get automatic limits
   pair picmin = point(pic, SW);
@@ -660,13 +655,13 @@ void limits(picture pic = currentpicture, pair min = (-inf, -inf), pair max = (i
 
   // finally set limits
   graph_limits(pic, min, max, (crop == default) ? true : false);
-  currentpanel.haslimits = true;
+  currentpanel.setlimits(min, max);
 }
 
 // new panel
 void newpanel(real x = 0, real y = 0, pair origin = currentpanel.origin)
 {
-  limits();
+  limits(false);
   currentpanel.newpanel(x,-y,origin);
 }
 
