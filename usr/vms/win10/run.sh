@@ -9,16 +9,11 @@
 # Download virtio windows driver (before install):
 # https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
 
+GPU_MODE=0  # 0 - vxl    1 - GVTi    2 - Passthrough
 ## SETUP ENVIRONMENT ########################################################
 # disable HiDPI settings (SPICE won’t scale properly otherwise)
 export GDK_SCALE=1
 export GDK_DPI_SCALE=1
-
-# virtual GPU (intel GVT)
-export MESA_LOADER_DRIVER_OVERRIDE=i965
-GVT_PCI="/sys/bus/pci/devices/0000:00:02.0"
-GVT_TYPE="i915-GVTg_V5_4"
-GVT_GUID="b1306297-6c1e-404f-81e8-b43aab0aa3b0"
 
 ## SETUP VIRTUAL MACHINE ####################################################
 # basic QEMU command
@@ -33,9 +28,23 @@ COMMAND+="    -m $(echo "$(awk '/MemTotal/{print $2}' /proc/meminfo)/2000" | bc)
 COMMAND+="    -usb -device usb-tablet -soundhw hda"
 COMMAND+="    -nic user,model=virtio-net-pci,smb=$HOME/var/shared"
 # GPU
-COMMAND+="    -vga none"
-COMMAND+="    -device vfio-pci,sysfsdev=/sys/bus/mdev/devices/$GVT_GUID,"
-COMMAND+="display=on,x-igd-opregion=on,ramfb=on,driver=vfio-pci-nohotplug"
+if [[ $GPU_MODE -eq 0 ]]; then
+    COMMAND+="    -vga none"
+    COMMAND+="    -device qxl-vga,vgamem_mb=256,vram_size_mb=256"
+
+elif [[ $GPU_MODE -eq 1 ]]; then
+    export MESA_LOADER_DRIVER_OVERRIDE=i965
+    GVT_PCI="/sys/bus/pci/devices/0000:00:02.0"
+    GVT_TYPE="i915-GVTg_V5_4"
+    GVT_GUID="b1306297-6c1e-404f-81e8-b43aab0aa3b0"
+
+    COMMAND+="    -vga none"
+    COMMAND+="    -device vfio-pci,sysfsdev=/sys/bus/mdev/devices/$GVT_GUID,"
+    COMMAND+="display=on,x-igd-opregion=on,ramfb=on,driver=vfio-pci-nohotplug"
+
+elif [[ $GPU_MODE -eq 2 ]]; then
+    :
+fi
 # SPICE
 COMMAND+="    -device virtio-serial-pci"
 COMMAND+="    -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0"
@@ -59,13 +68,21 @@ fi
 
 ## EXECUTE VM ###############################################################
 
-function sudowrite() { echo "$1" | sudo tee "$2" >/dev/null; }
-sudowrite "${GVT_GUID}" "${GVT_PCI}/mdev_supported_types/${GVT_TYPE}/create"
-
-if [[ -d "${GVT_PCI}/${GVT_GUID}/iommu_group" ]]; then
-    DEVICE="/dev/vfio/$(realpath ${GVT_PCI}/${GVT_GUID}/iommu_group | sed 's/.*\///')"
-    echo -n "Waiting for GPU..." && sleep 5 && echo " OK"
-    sudo setfacl -m u:cagprado:rw $DEVICE
+if [[ $GPU_MODE -eq 0 ]]; then
     $COMMAND $@
-    sudowrite 1 "${GVT_PCI}/${GVT_GUID}/remove"
+
+elif [[ $GPU_MODE -eq 1 ]]; then
+    function sudowrite() { echo "$1" | sudo tee "$2" >/dev/null; }
+    sudowrite "${GVT_GUID}" "${GVT_PCI}/mdev_supported_types/${GVT_TYPE}/create"
+
+    if [[ -d "${GVT_PCI}/${GVT_GUID}/iommu_group" ]]; then
+        DEVICE="/dev/vfio/$(realpath ${GVT_PCI}/${GVT_GUID}/iommu_group | sed 's/.*\///')"
+        echo -n "Waiting for GPU..." && sleep 5 && echo " OK"
+        sudo setfacl -m u:$(whoami):rw $DEVICE
+        $COMMAND $@
+        sudowrite 1 "${GVT_PCI}/${GVT_GUID}/remove"
+    fi
+
+elif [[ $GPU_MODE -eq 2 ]]; then
+    :
 fi
