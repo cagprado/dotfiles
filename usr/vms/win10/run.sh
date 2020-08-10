@@ -17,7 +17,7 @@ export GDK_DPI_SCALE=1
 
 ## SETUP VIRTUAL MACHINE ####################################################
 # basic QEMU command
-COMMAND="qemu-system-x86_64 -monitor stdio -display gtk,gl=on"
+COMMAND="qemu-system-x86_64 -monitor stdio -display spice-app,gl=on"
 # CPU/KVM
 COMMAND+="    -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time"
 COMMAND+="    -enable-kvm -machine q35 -device intel-iommu,caching-mode=on"
