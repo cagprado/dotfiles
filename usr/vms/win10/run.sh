@@ -9,7 +9,7 @@
 # Download virtio windows driver (before install):
 # https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
 
-GPU_MODE=0  # 0 - vxl    1 - GVTi    2 - Passthrough
+GPU_MODE=0  # 0 - vxl    1 - GVTi    2 - Passthrough (not implemented)
 ## SETUP ENVIRONMENT ########################################################
 # disable HiDPI settings (SPICE won’t scale properly otherwise)
 export GDK_SCALE=1
@@ -17,14 +17,14 @@ export GDK_DPI_SCALE=1
 
 ## SETUP VIRTUAL MACHINE ####################################################
 # basic QEMU command
-COMMAND="qemu-system-x86_64 -display spice-app,gl=on"
+COMMAND="qemu-system-x86_64 -monitor stdio -display gtk,gl=on"
 # CPU/KVM
 COMMAND+="    -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time"
 COMMAND+="    -enable-kvm -machine q35 -device intel-iommu,caching-mode=on"
 COMMAND+="    -smp 4,cores=2,threads=2"
 # memory
 COMMAND+="    -m $(echo "$(awk '/MemTotal/{print $2}' /proc/meminfo)/2000" | bc)M"
-# USB/Network
+# USB/Audio/Network
 COMMAND+="    -usb -device usb-tablet -soundhw hda"
 COMMAND+="    -nic user,model=virtio-net-pci,smb=$HOME/var/shared"
 # GPU
@@ -42,8 +42,6 @@ elif [[ $GPU_MODE -eq 1 ]]; then
     COMMAND+="    -device vfio-pci,sysfsdev=/sys/bus/mdev/devices/$GVT_GUID,"
     COMMAND+="display=on,x-igd-opregion=on,ramfb=on,driver=vfio-pci-nohotplug"
 
-elif [[ $GPU_MODE -eq 2 ]]; then
-    :
 fi
 # SPICE
 COMMAND+="    -device virtio-serial-pci"
@@ -60,6 +58,7 @@ if [[ ! -f hdd.qcow2 ]]; then
         qemu-img create -o backing_file=hdd0.qcow2,backing_fmt=qcow2 -f qcow2 hdd.qcow2
     else
         # create empty disk and prepare installation
+        qemu-img create -f qcow2 hdd.qcow2 80G
         COMMAND+=" -drive file=win10.iso,index=2,media=cdrom"
         COMMAND+=" -drive file=virtio.iso,index=3,media=cdrom"
         COMMAND+=" -boot order=d"
@@ -83,6 +82,4 @@ elif [[ $GPU_MODE -eq 1 ]]; then
         sudowrite 1 "${GVT_PCI}/${GVT_GUID}/remove"
     fi
 
-elif [[ $GPU_MODE -eq 2 ]]; then
-    :
 fi
