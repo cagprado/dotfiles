@@ -39,6 +39,7 @@ alias ls='ls --quoting-style=literal --color=auto -Fh --group-directories-first'
 alias lsa='ls -A'
 alias lsl='ls -l'
 alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
+alias pacmanips='dig +short $(grep "^Server" /etc/pacman.conf /etc/pacman.d/mirrorlist | cut -d/ -f3 | sort -u) | sed -ne "/^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}$/p" | xclip -selection clipboard'
 
 # compiler
 alias asy='asy -nosafe'
