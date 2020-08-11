@@ -9,3 +9,5 @@
 	lg = log --color --graph --pretty=format:'%C(yellow)%h%C(reset) -%C(red)%d%C(reset) %s %C(green)(%cr) %C(blue)<%an>%C(reset)' --abbrev-commit
 [push]
 	default = tracking
+[pull]
+	ff = only
