@@ -60,6 +60,7 @@ alias lp='lp -d $PRINTER -o collate=true'
 alias nsc3open='sshpass -p "$(pass nsc3/password)" ssh -f nsc3tunnel sleep 10'
 alias nsc3='nsc3open && ssh nsc3'
 alias o='xdg-open'
+alias preview='pdfpc -Ssw both'
 alias vpn='/usr/local/Astrill/astrill /toggle &!'
 alias zshfunctions='zcompile -Uz $ZSH_FUNCTIONS $ZSH_FUNCTIONS/*(.x)'
 
