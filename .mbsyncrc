@@ -10,14 +10,14 @@ Host imap.yandex.com
 User cagprado@yandex.com
 PassCmd "pass yandex/password"
 SSLType IMAPS
+AuthMechs LOGIN
 
 IMAPAccount work
 Host imap.mxhichina.com
 User cagprado@zhejianglab.com
 PassCmd "pass zjlab/password"
 SSLType IMAPS
-#SSLType None
-#AuthMechs LOGIN
+AuthMechs LOGIN
 
 ## LOCAL STORAGE ############################################################
 MaildirStore main-local
