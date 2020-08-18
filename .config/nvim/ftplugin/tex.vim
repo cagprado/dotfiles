@@ -33,6 +33,16 @@ let g:vimtex_fold_types = {
 \           'center',
 \       ],
 \   },
+\   'cmd_single' : {
+\       'cmds' : [
+\           'slide',
+\           'frame',
+\           'hypersetup',
+\           'tikzset',
+\           'pgfplotstableread',
+\           'lstset',
+\       ],
+\   },
 \}
 
 " vimtex + deoplete
