@@ -1,0 +1,7 @@
+[Unit]
+Description=Automatically setup monitors on connection/disconnection
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/home/cagprado/bin/setmonitors -d

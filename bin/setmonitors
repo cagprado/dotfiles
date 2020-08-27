@@ -2,6 +2,7 @@
 
 import re
 from os import environ, listdir, path
+from time import sleep
 from zlib import crc32
 from codecs import encode, decode
 from argparse import ArgumentParser
@@ -232,7 +233,11 @@ def parse_arguments():
     parser.add_argument('-s', action='store_true', help='''Change the behaviour
                         of the program in that it will save the currently in
                         use configuration of the monitors for later use.''')
-    return parser.parse_args().s
+    parser.add_argument('-d', action='store_true', help='''Force a time delay
+                        before doing anything''')
+    args = parser.parse_args()
+    args.d and sleep(1)
+    return args.s
 
 
 exit(main())
