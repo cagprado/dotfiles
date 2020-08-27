@@ -1,268 +1,241 @@
 #!/usr/bin/env python3
 
-import subprocess
-from os import listdir, environ
-from os.path import isfile, basename
-from binascii import b2a_base64
+import re
+from os import environ, listdir, path
+from zlib import crc32
+from codecs import encode, decode
 from argparse import ArgumentParser
-
-syspath = "/sys/class/drm/"
+from subprocess import run
+hidpi_threshold = 180
 
 
 def main():
-    args = parse_arguments()
-    monitors = get_monitors()
+    if parse_arguments():
+        Configuration.save()
 
-    if args.i:
-        print_monitors(monitors)
     else:
-        setup_monitors(monitors, args)
-        subprocess.run([environ['HOME'] + '/.fehbg'])
+        Configuration.load() or Configuration.new()
+        Configuration.set()
 
 
-# known monitors EDID (base64) vs DPI
-dpi_table = {
-    "AP///////wAoiSpCAAAAAAAbAQSlHRR4A95Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBt"
-    "5i4oLDQPnAIIAgMJcQQAAAat5i4oLDQQXIIIAgMJcQQAAAaAAAA/gBKREkgICAgICAgICAgAA"
-    "AA/gBMUE0xMzlNNDIyQSAgADk=": 205.0,   # MateBook Pro X
-    "AP///////wAJ5dsHAAAAAAEcAQSlHxF4An1QpldSnycSUFQAAAABAQEBAQEBAQEBAQEBAQEBO"
-    "jiA3nA4KEAwIDYANa4QAAAa+yyA3nA4KEAwIDYANa4QAAAaAAAA/gBCT0UgQ1EKICAgICAgAA"
-    "AA/gBORTE0MEZITS1ONjEKAEM=": 124.0,   # X1 Carbon
-    "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBG"
-    "jaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAA"
-    "AAAAACQQMoABIAAAsBCiAgAGY=": 132.5,  # XPS13
-    "AP///////wAQrKxBWTk4NREdAQOAPCJ47u6Vo1RMmSYPUFSlSwBxT4GAqUDRwAEBAQEBAQEBV"
-    "l4AoKCgKVAwIDUAVVAhAAAaAAAA/wBHM0NHTVMyCiAgICAgAAAA/ABERUxMIFUyNzE5RFMKAA"
-    "AA/QA4TB5aGQAKICAgICAgAakCAyLxT5AFBAMCBxYBBhESFRMUHyMJfweDAQAAZQMMABAAAjq"
-    "AGHE4LUBYLEUAVVAhAAAefjkAoIA4H0AwIDoAVVAhAAAaAR0AclHQHiBuKFUAVVAhAAAevxYA"
-    "oIA4E0AwIDoAVVAhAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAiA==": 109  # Dell U2719D
-}
+class Configuration:
+    """List of monitors to configure"""
+    id = None
 
+    @classmethod
+    def build(cls):
+        cls.filename = __import__(__name__).__file__
+        cls.monitors = build_monitor_list()
+        cls.id = crc32(encode(''.join(s.edid for s in cls.monitors)))
+        return cls.id
 
-def error(msg):
-    print("{}: error: {}".format(basename(__file__), msg))
-    exit(1)
+    @classmethod
+    def load(cls):
+        id = cls.id or cls.build()
+        with open(cls.filename) as f:
+            cfg = re.search(f'# setup: {id};[^\n]*', f.read())
 
+        if cfg:
+            cfg = [x.split(':') for x in cfg[0].split(';')[1:]]
+            devices = [x[0] for x in cfg]
+            for m in cls.monitors:
+                m.device and m.update(*cfg[devices.index(m.device)][1:])
+            return True
 
-def parse_arguments():
-    # parse commandline
-    parser = ArgumentParser(description='''Sets resolution and position of
-                            multiple monitors using xrandr. If run without
-                            arguments, performs the same as '-l'.''')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-i', action='store_true', help='''list available
-                       monitor configuration and exit''')
-    group.add_argument('-l', action='store_true', help='''auto mode: sets
-                       laptop screen (eDP) as primary and position all other
-                       monitors to the left''')  # ignored: default behaviour
-    group.add_argument('-r', action='store_true', help='''auto mode: sets
-                       laptop screen (eDP) as primary and position all other
-                       monitors to the right''')
-    group.add_argument('-s', action='store_true', help='''only one external
-                       monitor is set''')
-    group.add_argument('-S', action='store_true', help='''only laptop internal
-                       monitor (eDP) is set''')
-    group.add_argument('-m', metavar=('M1', 'M2'), type=str, nargs='+',
-                       help='''setup monitors manually; list monitors by name
-                       from left to right.  Append options to monitor names,
-                       separated by ':', ex: 'eDP-1:lp'. Available options
-                       (l)eft rotation, (r)ight rotation, (i)nverted rotation,
-                       (p)rimary''')
-    return parser.parse_args()
+    @classmethod
+    def save(cls):
+        id = cls.id or cls.build()
+        tag = f'# setup: {id};'
+        cfg = tag + ';'.join(repr(m) for m in cls.monitors if m.enabled)
 
+        with open(cls.filename) as f:
+            src, n = re.subn(f'{tag}[^\n]*', cfg, f.read())
+            src += f'{cfg}\n' if not n else ''
+        with open(cls.filename, 'w') as f:
+            f.write(src)
 
-def get_monitors():
-    # get available devices from syspath
-    devices = [i for i in listdir(syspath) if isfile(syspath + i + "/status")]
-    devices.sort()
+    @classmethod
+    def new(cls):
+        pass
 
-    # get available monitors from xrandr
-    xrandr = subprocess.run(['xrandr'], capture_output=True, text=True).stdout
-    names = [l.split()[0] for l in xrandr.split('\n') if "connected" in l]
-    names.sort()
+    @classmethod
+    def set(cls):
+        command = ['xrandr', '--dpi']
+        command += [str(i.dpi) for i in cls.monitors if i.primary]
+        command += [j for i in cls.monitors for j in i.xrandr.split()]
+        run(command)
 
-    # remove blacklisted output (virtual and such)
-    blacklist = ['VIRTUAL']
-    blacklist = [any(pat in name for pat in blacklist) for name in names]
-    names = [x for (x, rm) in zip(names, blacklist) if not rm]
+        # set DPI in Xresources
+        with open(environ['HOME'] + '/.Xresources', 'w') as f:
+            f.write(f'*.dpi: {command[2]}\n')
+        print(int(command[2]) > hidpi_threshold and 'true' or 'false')
 
-    return [Monitor(a, b) for a, b in zip(names, devices)]
-
-
-def print_monitors(monitors):
-    for monitor in monitors:
-        print(monitor)
-
-
-def setup_monitors(monitors, args):
-    priority = build_priority([i.name for i in monitors if i.connected], args)
-
-    # order monitors on priority list
-    monitors = sorted(monitors, key=lambda monitor: monitor.priority(priority))
-
-    # set scale of non-hidpi monitors if one hidpi is available
-    if any(monitor.hidpi for monitor in monitors):
-        for monitor in monitors:
-            if not monitor.hidpi:
-                monitor.scale = [2, 2]
-
-    # set position of monitors
-    position = 0
-    for monitor in monitors:
-        if monitor.connected:
-            monitor.position = [position, 0]
-            if monitor.horizontal:
-                position += monitor.scale[0] * monitor.mode[0]
-            else:
-                position += monitor.scale[1] * monitor.mode[1]
-
-    # generate command line for xrandr
-    command_args = ['xrandr', '--dpi',
-                    str(max([i.dpi for i in monitors if i.connected]))]
-    for monitor in monitors:
-        command_args += monitor.xrandr.split()
-
-    print(command_args[2])
-    subprocess.run(command_args)
-
-
-def build_priority(connected, args):
-    if args.m:
-        # manually given priority list: just check validity
-        for name in args.m:
-            name, _, options = name.partition(':')
-            if name not in connected:
-                error("argument -m: invalid monitor name '{}'".format(name))
-            if not set(options) <= set('lrip'):
-                error("argument -m: invalid options used '{}'".format(options))
-        return args.m
-
-    # no list given, build one automatically from all connected monitors
-    for i, name in enumerate(connected):
-        # set eDP monitor (laptop internal) first in the list
-        if "eDP" in name:
-            connected.insert(0, connected.pop(i))
-
-    if args.s:
-        # turn on only one monitor (preferably external)
-        connected = connected[-1:]
-    elif args.S:
-        # turn on only one monitor (preferably internal)
-        connected = connected[:1]
-
-    # set the primary monitor
-    connected[0] += ':p'
-
-    # order position alternating left and right
-    connected = [x for _, x in sorted(zip(
-        [i % 2 and -i or i for i, _ in enumerate(connected)], connected))]
-
-    # reverse order if '-r' is given
-    if args.r:
-        connected.reverse()
-
-    return connected
-
-
-def readfile(filename):
-    """Reads a file and returns its contents as string"""
-    if filename.endswith('edid'):
-        # we need to read binary data for this file
-        with open(filename, 'rb') as file:
-            return b2a_base64(file.read()).decode('ascii').strip()
-    else:
-        with open(filename, 'r') as file:
-            return file.readline().strip()
+        # set wallpapers
+        run([environ['HOME'] + '/.fehbg'])
 
 
 class Monitor:
     """Describes the properties of monitors available to the system"""
 
-    def __init__(self, name, dev):
-        """Initializes the basic properties of a Monitor"""
+    def __init__(self, name, edid='', device=None, primary=None, dpi=None,
+                 position=None, mode=[None, None], scale=None, rotation=None):
+        """Initialize Monitor object"""
         self.name = name
-        self.connected = ('connected' == readfile(syspath + dev + "/status"))
+        self.edid = edid
+        self.device = device
+        self.primary = primary
+        self.dpi = dpi
+        self.position = position
+        self.mode = mode[0]
+        self.pref = mode[1]
+        self.scale = scale
+        self.rotation = rotation
 
-        if self.connected:
-            self.position = [0, 0]
-            self.primary = False
-            self.scale = [1, 1]
-            self.rotation = 'normal'
-
-            mode = readfile(syspath + dev + "/modes")
-            self.mode = [int(x) for x in mode.split('x')]
-
-            edid = readfile(syspath + dev + "/edid")
-            self.dpi = edid in dpi_table and dpi_table[edid] or 96.0
+    @property
+    def enabled(self):
+        return bool(self.mode)
 
     @property
     def hidpi(self):
-        return self.connected and self.dpi > 150
-
-    @property
-    def horizontal(self):
-        return self.rotation == 'normal' or self.rotation == 'inverted'
-
-    @property
-    def vertical(self):
-        return not self.horizontal
+        return self.dpi and self.dpi > hidpi_threshold and '(HiDPI)' or ''
 
     @property
     def xrandr(self):
-        if not self.connected:
-            return "--output {} --off".format(self.name)
+        if self.enabled:
+            return (f'--output {self.name} --rotate {self.rotation} '
+                    f'--pos {self.position[0]}x{self.position[1]} '
+                    f'--mode {self.mode[0]}x{self.mode[1]} '
+                    f'--scale {self.scale[0]}x{self.scale[1]}'
+                    + (self.primary and ' --primary' or ''))
+        return f'--output {self.name} --off'
 
-        else:
-            out = "--output {}".format(self.name)
-            out += " --mode {}x{}".format(self.mode[0], self.mode[1])
-            out += " --scale {}x{}".format(self.scale[0], self.scale[1])
-            out += " --pos {}x{}".format(self.position[0], self.position[1])
-            out += " --rotate {}".format(self.rotation)
-            if self.primary:
-                out += " --primary"
-            return out
+    def __lt__(self, other):
+        return self.edid < other.edid
+
+    def __repr__(self):
+        return ':'.join([str(i) for i in [
+            self.device, self.primary, self.dpi,
+            self.position, self.mode, self.scale, self.rotation]])
 
     def __str__(self):
         """Returns the string representation of a Monitor object"""
-        output = self.name + ":\n - Connected:\t"
-        if self.connected:
-            output += "Yes\n" \
-                " - Primary:    \t{}\n" \
-                " - DPI:        \t{} {}\n" \
-                " - Mode:       \t{}x{}\n" \
-                " - Scale:      \t{}x{}\n" \
-                " - Position:   \t{}x{}\n" \
-                " - Rotation:   \t{}\n" \
-                .format(self.primary, self.dpi, self.hidpi and "(HiDPI)" or "",
-                        self.mode[0], self.mode[1], self.scale[0],
-                        self.scale[1], self.position[0], self.position[1],
-                        self.rotation)
+        output = f'{self.name}:\n - Enabled:\t'
+        if self.enabled:
+            output += (
+                'Yes\n'
+                f' - Primary:  \t{self.primary}\n'
+                f' - DPI:      \t{self.dpi} {self.hidpi}\n'
+                f' - Mode:     \t{self.mode[0]}x{self.mode[1]}\n'
+                f' - Position: \t{self.position[0]}x{self.position[1]}\n'
+                f' - Scale:    \t{self.scale[0]}x{self.scale[1]}\n'
+                f' - Rotation: \t{self.rotation}\n')
         else:
-            output += "No\n"
+            output += 'No\n'
         return output
 
-    def priority(self, priority):
-        i = [priority.index(x) for x in priority if x.startswith(self.name)]
-
-        if not i:
-            self.connected = False
-            return len(priority)
-
-        if len(i) > 1:
-            error("monitor '{}' specified more than once".format(self.name))
-
-        options = priority[i[0]].partition(':')[2]
-        if 'p' in options:
-            self.primary = True
-        if 'i' in options:
-            self.rotation = 'inverted'
-        elif 'l' in options:
-            self.rotation = 'left'
-        elif 'r' in options:
-            self.rotation = 'right'
-
-        return i[0]
+    def update(self, primary, dpi, position, mode, scale, rotation):
+        self.primary = eval(primary)
+        self.dpi = eval(dpi)
+        self.position = eval(position)
+        self.mode = eval(mode)
+        self.scale = eval(scale)
+        self.rotation = rotation
 
 
-if __name__ == "__main__":
-    main()
+def normalize_edid(edid):
+    return ''.join(str(encode(edid, 'base64'), 'ascii').split())
+
+
+def get_system_devices():
+    devices = {}
+    syspath = '/sys/class/drm/'
+    for device in listdir(syspath):
+        filename = syspath + device + '/edid'
+        if path.isfile(filename):
+            with open(filename, 'rb') as f:
+                edid = normalize_edid(f.read())
+            if edid:
+                devices[edid] = device
+    return devices
+
+
+def get_xorg_dpi():
+    xdpyinfo = run(['xdpyinfo'], capture_output=True, text=True).stdout
+    return eval(re.search(r'resolution:\s+(\d+)x(\d+)', xdpyinfo).group(1))
+
+
+def xrandr_main_info(monitors, match):
+    if match:
+        monitors.append([match[1]])
+        m = monitors[-1]
+        if not match[2]:
+            m.append(match[3] == 'primary')
+            m.append(get_xorg_dpi())
+            if not match[4]:
+                m += [None, [None]]
+            else:
+                m.append(tuple(int(x) for x in match.group(6, 7)))
+                m.append([tuple(sorted((int(x) for x in match.group(4, 5)),
+                                       reverse=True))])
+            m.append(match[8] or 'normal')
+        return True
+
+
+def xrandr_edid_info(monitors, line, devices):
+    if 'EDID:' in line:
+        edid = normalize_edid(decode(line.split()[1], 'hex'))
+        monitors[-1][1:1] = [edid, devices[edid]]
+        return True
+
+
+def xrandr_true_resolution(monitors, line):
+    if line.startswith('   ') and ('*' in line or '+' in line):
+        modes = monitors[-1][6]
+        match = re.search(r'(\d+)x(\d+).*[+]', line)
+        match and modes.append(tuple(int(x) for x in match.groups()))
+
+        match = re.search(r'(\d+)x(\d+).*[*]', line)
+        if match:
+            real_mode = tuple(int(x) for x in match.groups())
+            scale = tuple(x/y for x, y in zip(modes[0], real_mode))
+            if monitors[-1][7] in ['left', 'right']:
+                scale = (scale[1], scale[0])
+            modes[0] = real_mode
+            monitors[-1].insert(7, scale)
+
+        return True
+
+
+def build_monitor_list():
+    devices = get_system_devices()
+    xrandr = run(['xrandr', '--prop'], capture_output=True, text=True)
+    xrandr = xrandr.stdout.replace('\n\t\t', '').splitlines()
+
+    pattern = re.compile(r'(\w+) (dis)?connected ?(primary)? (?:(\d+)x(\d+)[+]'
+                         r'(\d+)[+](\d+) ?(\w+)?)?')
+
+    monitors = []
+    for line in xrandr:
+        (xrandr_main_info(monitors, re.match(pattern, line))
+         or xrandr_edid_info(monitors, line, devices)
+         or xrandr_true_resolution(monitors, line))
+
+    return sorted([Monitor(*m) for m in monitors])
+
+
+def parse_arguments():
+    parser = ArgumentParser(description='''Set monitor output based on previous
+                            configuration or save current configuration.
+                            Without arguments it will try to set the monitors
+                            using some previously stored configuration or set
+                            sane defaults if none is found.''')
+    parser.add_argument('-s', action='store_true', help='''Change the behaviour
+                        of the program in that it will save the currently in
+                        use configuration of the monitors for later use.''')
+    return parser.parse_args().s
+
+
+exit(main())
+# setup: 2256794240;card0-eDP-1:True:259:(0, 0):(3000, 2000):(1.0, 1.0):normal
+# setup: 875068580;card0-eDP-1:True:158:(0, 0):(1920, 1080):(1.0, 1.0):normal
+# setup: 235771305;card0-eDP-1:True:158:(1440, 1480):(1920, 1080):(1.0, 1.0):normal;card0-HDMI-A-1:False:158:(0, 0):(2560, 1440):(1.0, 1.0):right

@@ -8,16 +8,8 @@ export _JAVA_OPTIONS="-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndF
 
 # Setup screens
 xset s off -dpms
-DPI=$($HOME/bin/setmonitors)
-cat > $HOME/.Xresources <<-END
-	Xft.dpi: $DPI
-	rofi.dpi: $DPI
-END
-
-if [ "${DPI%.*}" -gt 150 ]; then
-    # HiDPI monitor
-    export HIDPI=true
-
+export HIDPI=$($HOME/bin/setmonitors)
+if [ "${HIDPI}" = true ]; then
     # set scale of common GUI toolkits
     export GDK_SCALE=2
     export GDK_DPI_SCALE=0.5
