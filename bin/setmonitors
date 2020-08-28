@@ -57,7 +57,10 @@ class Configuration:
 
     @classmethod
     def new(cls):
-        pass
+        position = max([m.rightborder for m in cls.monitors if m.enabled])
+        for m in cls.monitors:
+            if m.available:
+                position = m.defaults(position)
 
     @classmethod
     def set(cls):
@@ -93,12 +96,21 @@ class Monitor:
         self.rotation = rotation
 
     @property
+    def available(self):
+        return bool(self.device) and not self.enabled
+
+    @property
     def enabled(self):
         return bool(self.mode)
 
     @property
     def hidpi(self):
         return self.dpi and self.dpi > hidpi_threshold and '(HiDPI)' or ''
+
+    @property
+    def rightborder(self):
+        return (self.rotation in ['left', 'right']
+                and self.mode[1] or self.mode[0]) + self.position[0]
 
     @property
     def xrandr(self):
@@ -142,6 +154,13 @@ class Monitor:
         self.scale = eval(scale)
         self.rotation = rotation
 
+    def defaults(self, position):
+        self.position = (position, 0)
+        self.mode = self.pref
+        self.scale = (1, 1)
+        self.rotation = 'normal'
+        return self.rightborder
+
 
 def normalize_edid(edid):
     return ''.join(str(encode(edid, 'base64'), 'ascii').split())
@@ -178,7 +197,7 @@ def xrandr_main_info(monitors, match):
                 m.append(tuple(int(x) for x in match.group(6, 7)))
                 m.append([tuple(sorted((int(x) for x in match.group(4, 5)),
                                        reverse=True))])
-            m.append(match[8] or 'normal')
+                m.append(match[8] or 'normal')
         return True
 
 
