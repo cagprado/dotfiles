@@ -25,7 +25,8 @@ COMMAND+="    -smp 4,cores=2,threads=2"
 # memory
 COMMAND+="    -m $(echo "$(awk '/MemTotal/{print $2}' /proc/meminfo)/2000" | bc)M"
 # USB/Audio/Network
-COMMAND+="    -usb -device usb-tablet -soundhw hda"
+COMMAND+="    -usb -device usb-tablet"
+COMMAND+="    -device intel-hda -device hda-duplex"
 COMMAND+="    -nic user,model=virtio-net-pci,smb=$HOME/var/shared"
 # GPU
 if [[ $GPU_MODE -eq 0 ]]; then
@@ -49,7 +50,7 @@ COMMAND+="    -device virtserialport,chardev=spicechannel0,name=com.redhat.spice
 COMMAND+="    -chardev spicevmc,id=spicechannel0,name=vdagent"
 COMMAND+="    -spice unix,addr=/tmp/vm_spice.socket,disable-ticketing"
 # DISKS
-COMMAND+="    -drive file=hdd.qcow2,index=0,media=disk,format=qcow2,if=virtio"
+COMMAND+="    -drive file=hdd.qcow2,index=1,media=disk,format=qcow2,if=virtio"
 
 # create HD if not present
 if [[ ! -f hdd.qcow2 ]]; then
