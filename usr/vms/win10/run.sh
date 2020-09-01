@@ -50,6 +50,8 @@ COMMAND+="    -device virtserialport,chardev=spicechannel0,name=com.redhat.spice
 COMMAND+="    -chardev spicevmc,id=spicechannel0,name=vdagent"
 COMMAND+="    -spice unix,addr=/tmp/vm_spice.socket,disable-ticketing"
 # DISKS
+OVMF="/usr/share/edk2-ovmf/x64/OVMF.fd"
+COMMAND+="    -drive file=$OVMF,index=0,format=raw,if=pflash,readonly=on"
 COMMAND+="    -drive file=hdd.qcow2,index=1,media=disk,format=qcow2,if=virtio"
 
 # create HD if not present
