@@ -79,16 +79,15 @@ user_agent = alot/{version}
 [accounts]
   [[main]]
     address = cagprado@yandex.com
+    aliases = cagprado@if.usp.br,cagprado@alumni.usp.br,cagprado@ccnu.edu.cn
     realname = Caio Prado
-    sendmail_command = msmtpq -t --account=main
-    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
-    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
+    sendmail_command = msmtpq -t --read-envelope-from
+    draft_box = maildir://~/var/spool/mail/main/Drafts
+    sent_box = maildir://~/var/spool/mail/main/Sent
     sent_tags = yandex,sent
-    signature = /home/cagprado/.config/alot/sign_personal
-    signature_as_attachment = False
+    signature = ~/.config/alot/sign_personal
     sign_by_default = True
     gpg_key = 6F83271536316E64
-    encrypt_to_self = True
     [[[abook]]]
       type = shellcommand
       command = khard email --parsable
@@ -98,39 +97,12 @@ user_agent = alot/{version}
   [[work]]
     address = cagprado@zhejianglab.com
     realname = Caio Prado
-    sendmail_command = msmtpq -t --account=work
-    draft_box = maildir:///home/cagprado/var/spool/mail/work/Drafts
+    sendmail_command = msmtpq -t --read-envelope-from
+    draft_box = maildir://~/var/spool/mail/work/Drafts
     sent_tags = zjlab,sent
-    signature = /home/cagprado/.config/alot/sign_professional
-    signature_as_attachment = False
+    signature = ~/.config/alot/sign_professional
     sign_by_default = True
     gpg_key = 6F83271536316E64
-    encrypt_to_self = True
-
-  [[ccnu]]
-    address = cagprado@ccnu.edu.cn
-    realname = Caio Prado
-    sendmail_command = msmtpq -t --account=ccnu
-    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
-    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
-    sent_tags = ccnu,sent
-    signature = /home/cagprado/.config/alot/sign_professional
-    signature_as_attachment = False
-    sign_by_default = True
-    gpg_key = 6F83271536316E64
-    encrypt_to_self = True
-
-  [[secondary]]
-    address = caio.agprado@yandex.com
-    realname = Caio Prado
-    sendmail_command = msmtpq -t --account=secondary
-    draft_box = maildir:///home/cagprado/var/spool/mail/main/Drafts
-    sent_box = maildir:///home/cagprado/var/spool/mail/main/Sent
-    sent_tags = secondary,sent
-    signature = /home/cagprado/.config/alot/sign_professional
-    signature_as_attachment = False
-    sign_by_default = False
-    encrypt_to_self = False
 
 # TAGS ######################################################################
 [tags]
