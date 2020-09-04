@@ -11,7 +11,22 @@ hidpi_threshold = 180
 
 
 def main():
-    if parse_arguments():
+    parser = ArgumentParser(
+        description='''Set monitor output based on previous configuration or
+        save current configuration.  Without arguments it will try to set the
+        monitors using some previously stored configuration or set sane
+        defaults if none is found.''')
+    parser.add_argument(
+        '-s', action='store_true',
+        help='''Change the behaviour of the program in that it will save the
+        currently in use configuration of the monitors for later use.''')
+    parser.add_argument(
+        '-d', action='store_true',
+        help='''Force a time delay before doing anything''')
+    args = parser.parse_args()
+    args.d and sleep(1)
+
+    if args.s:
         Configuration.save()
 
     else:
@@ -241,22 +256,6 @@ def build_monitor_list():
          or xrandr_true_resolution(monitors, line))
 
     return sorted([Monitor(*m) for m in monitors])
-
-
-def parse_arguments():
-    parser = ArgumentParser(description='''Set monitor output based on previous
-                            configuration or save current configuration.
-                            Without arguments it will try to set the monitors
-                            using some previously stored configuration or set
-                            sane defaults if none is found.''')
-    parser.add_argument('-s', action='store_true', help='''Change the behaviour
-                        of the program in that it will save the currently in
-                        use configuration of the monitors for later use.''')
-    parser.add_argument('-d', action='store_true', help='''Force a time delay
-                        before doing anything''')
-    args = parser.parse_args()
-    args.d and sleep(1)
-    return args.s
 
 
 exit(main())
