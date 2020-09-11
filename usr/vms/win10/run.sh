@@ -9,13 +9,14 @@
 # Download virtio windows driver (before install):
 # https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
 
-GPU_MODE=0  # 0 - vxl    1 - GVTi    2 - Passthrough (not implemented)
 ## SETUP ENVIRONMENT ########################################################
 # disable HiDPI settings (SPICE won’t scale properly otherwise)
 export GDK_SCALE=1
 export GDK_DPI_SCALE=1
 
 ## SETUP VIRTUAL MACHINE ####################################################
+GPU_MODE=0  # 0 - vxl    1 - GVTi    2 - Passthrough (not implemented)
+
 # basic QEMU command
 COMMAND="qemu-system-x86_64 -monitor stdio -display spice-app,gl=on"
 # CPU/KVM
@@ -51,21 +52,27 @@ COMMAND+="    -chardev spicevmc,id=spicechannel0,name=vdagent"
 COMMAND+="    -spice unix,addr=/tmp/vm_spice.socket,disable-ticketing"
 # DISKS
 OVMF="/usr/share/edk2-ovmf/x64/OVMF.fd"
-COMMAND+="    -drive file=$OVMF,index=0,format=raw,if=pflash,readonly=on"
-COMMAND+="    -drive file=hdd.qcow2,index=1,media=disk,format=qcow2,if=virtio"
+COMMAND+="    -drive if=pflash,read-only,file=$OVMF"
+COMMAND+="    -drive if=virtio,media=disk,file=hdd.img,"
+COMMAND+="discard=unmap,detect-zeroes=unmap"
 
 # create HD if not present
-if [[ ! -f hdd.qcow2 ]]; then
-    if [[ -f hdd0.qcow2 ]]; then
+if [[ ! -f hdd.img ]]; then
+    if [[ -f hdd0.img ]]; then
         # create disk from overlay
-        qemu-img create -o backing_file=hdd0.qcow2,backing_fmt=qcow2 -f qcow2 hdd.qcow2
+        qemu-img create -o backing_file=hdd0.img,backing_fmt=qcow2 -f qcow2 hdd.img
     else
         # create empty disk and prepare installation
-        qemu-img create -f qcow2 hdd.qcow2 80G
-        COMMAND+=" -drive file=win10.iso,index=2,media=cdrom"
-        COMMAND+=" -drive file=virtio.iso,index=3,media=cdrom"
-        COMMAND+=" -boot order=d"
+        qemu-img create -f qcow2 hdd.img 80G
+        INSTALL="true"
     fi
+fi
+
+# force install regardless if we created HD file or not
+if [[ "$1" == "install" ]] && shift || [[ "$INSTALL" == "true" ]]; then
+    COMMAND+=" -drive index=1,media=cdrom,file=win10.iso"
+    COMMAND+=" -drive index=2,media=cdrom,file=virtio.iso"
+    COMMAND+=" -boot once=d"
 fi
 
 ## EXECUTE VM ###############################################################
@@ -84,5 +91,4 @@ elif [[ $GPU_MODE -eq 1 ]]; then
         $COMMAND $@
         sudowrite 1 "${GVT_PCI}/${GVT_GUID}/remove"
     fi
-
 fi
