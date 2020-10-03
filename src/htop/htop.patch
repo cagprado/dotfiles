@@ -1,6 +1,6 @@
 --- CRT.c.orig	2018-04-10 21:23:24.000000000 +0800
 +++ CRT.c	2018-08-09 21:43:38.619653456 +0800
-@@ -193,7 +193,7 @@
+@@ -95,7 +95,7 @@
        [LED_COLOR] = ColorPair(Green,Black),
        [TASKS_RUNNING] = A_BOLD | ColorPair(Green,Black),
        [PROCESS] = A_NORMAL,
@@ -9,7 +9,7 @@
        [PROCESS_TAG] = A_BOLD | ColorPair(Yellow,Black),
        [PROCESS_MEGABYTES] = ColorPair(Cyan,Black),
        [PROCESS_BASENAME] = A_BOLD | ColorPair(Cyan,Black),
-@@ -205,7 +205,7 @@
+@@ -107,7 +107,7 @@
        [PROCESS_THREAD] = ColorPair(Green,Black),
        [PROCESS_THREAD_BASENAME] = A_BOLD | ColorPair(Green,Black),
        [BAR_BORDER] = A_BOLD,
@@ -18,16 +18,16 @@
        [SWAP] = ColorPair(Red,Black),
        [GRAPH_1] = A_BOLD | ColorPair(Cyan,Black),
        [GRAPH_2] = ColorPair(Cyan,Black),
-@@ -227,7 +227,7 @@
+@@ -129,7 +129,7 @@
        [CPU_NICE_TEXT] = A_BOLD | ColorPair(Blue,Black),
        [CPU_NORMAL] = ColorPair(Green,Black),
-       [CPU_KERNEL] = ColorPair(Red,Black),
--      [CPU_IOWAIT] = A_BOLD | ColorPair(Black, Black),
+       [CPU_SYSTEM] = ColorPair(Red,Black),
+-      [CPU_IOWAIT] = A_BOLD | ColorPairGrayBlack,
 +      [CPU_IOWAIT] = ColorPairGrayBlack,
        [CPU_IRQ] = ColorPair(Yellow,Black),
        [CPU_SOFTIRQ] = ColorPair(Magenta,Black),
        [CPU_STEAL] = ColorPair(Cyan,Black),
-@@ -726,11 +726,18 @@
+@@ -685,11 +685,18 @@
        }
     }
  

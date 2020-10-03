@@ -5,27 +5,24 @@
 # Contributor: sekret <sekret at posteo.se>
 
 pkgname=htop
-pkgver=2.2.0
-pkgrel=3
+pkgver=3.0.2
+pkgrel=1
 pkgdesc="Interactive process viewer with solarized patch"
 arch=('i686' 'x86_64' 'armv7h')
 url="http://htop.sourceforge.net/"
 license=('GPL')
 depends=('ncurses')
-makedepends=('python2')
 optdepends=('lsof: show files opened by a process'
             'strace: attach to a running process')
 options=('!emptydirs')
-source=("http://hisham.hm/$pkgname/releases/$pkgver/$pkgname-$pkgver.tar.gz"
-        'htop.patch')
-sha512sums=('ec1335bf0e3e0387e5e50acbc508d0effad19c4bc1ac312419dc97b82901f4819600d6f87a91668f39d429536d17304d4b14634426a06bec2ecd09df24adc62e'
-SKIP)
+source=("https://dl.bintray.com/htop/source/$pkgname-$pkgver.tar.gz" 'htop.patch')
+sha512sums=('be25cb04a7f1e4004bda936674c36164f14112306cd32adc8a78f9160b1325705bd580eb44c5cf876fe8f371387f181190e947e4f25c4e8087da0cbfdbffd3b4' SKIP)
 
 prepare() {
   cd "$pkgname-$pkgver"
 
-  sed -i 's|ncursesw/curses.h|curses.h|' RichString.[ch] configure
-  sed -i 's|python|python2|' scripts/MakeHeader.py
+  #sed -i 's|ncursesw/curses.h|curses.h|' RichString.[ch] configure
+  #sed -i 's|python|python2|' scripts/MakeHeader.py
 
   # fix gray patch
   patch -p0 -N -i "$srcdir/htop.patch"
