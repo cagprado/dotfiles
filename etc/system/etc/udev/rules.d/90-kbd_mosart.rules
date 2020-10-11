@@ -1,3 +1,0 @@
-# vim: ft=udevrules
-# This rule ensures that my usb keyboard gets the right layout
-ACTION=="add", ATTRS{idVendor}=="062a", ATTRS{idProduct}=="470a", ENV{XKBMODEL}="pc105", ENV{XKBLAYOUT}="caio", ENV{XKBVARIANT}="us"
