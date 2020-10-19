@@ -15,6 +15,8 @@ export GNUPGHOME="$HOME/.gnupg"
 export TEXMFHOME="$HOME/.texmf"
 export TMPHOME="/tmp/cagprado"
 export LIBVA_DRIVER_NAME="iHD"
+export MOZ_USE_XINPUT2=1
+export MOZ_X11_EGL=1
 
 # xdg
 export XDG_DATA_HOME="$HOME/.local/share"
