@@ -17,13 +17,13 @@ xset s off -dpms
 export HIDPI=$($HOME/bin/setmonitors)
 
 # Set cursor theme
-cat >> $HOME/.Xresources <<-END
-	Xcursor.theme: capitaine-cursors
-	Xcursor.size: 48
-END
+echo "Xcursor.theme: capitaine-cursors" >> $HOME/.Xresources
 
 # Tune DPI scaling
 if [ "${HIDPI}" = true ]; then
+    # set cursor size
+    echo "Xcursor.size: 48" >> $HOME/.Xresources
+
     # set scale of common GUI toolkits
     export GDK_SCALE=2
     export GDK_DPI_SCALE=0.5
@@ -33,6 +33,9 @@ if [ "${HIDPI}" = true ]; then
     # GTK2 does not support scaling: set manually tuned HiDPI theme
     export GTK2_RC_FILES=$HOME/.config/gtkrc-2.0-HiDPI
 else
+    # set cursor size
+    echo "Xcursor.size: 32" >> $HOME/.Xresources
+
     # use subpixel for non-HiDPI monitors
     export FT2_SUBPIXEL_HINTING=2
 
