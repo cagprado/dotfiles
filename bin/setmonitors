@@ -42,7 +42,7 @@ class Configuration:
     def build(cls):
         cls.filename = __import__(__name__).__file__
         cls.monitors = build_monitor_list()
-        cls.id = crc32(encode(''.join(s.edid for s in cls.monitors)))
+        cls.id = sum([s.edid for s in cls.monitors])
         return cls.id
 
     @classmethod
@@ -53,9 +53,9 @@ class Configuration:
 
         if cfg:
             cfg = [x.split(':') for x in cfg[0].split(';')[1:]]
-            devices = [x[0] for x in cfg]
+            devices = [int(x[0]) for x in cfg]
             for m in cls.monitors:
-                m.device and m.update(*cfg[devices.index(m.device)][1:])
+                m.device and m.update(*cfg[devices.index(m.edid)][1:])
             return True
 
     @classmethod
@@ -96,7 +96,7 @@ class Configuration:
 class Monitor:
     """Describes the properties of monitors available to the system"""
 
-    def __init__(self, name, edid='', device=None, primary=None, dpi=None,
+    def __init__(self, name, edid=0, device=None, primary=None, dpi=None,
                  position=None, mode=[None, None], scale=None, rotation=None):
         """Initialize Monitor object"""
         self.name = name
@@ -142,7 +142,7 @@ class Monitor:
 
     def __repr__(self):
         return ':'.join([str(i) for i in [
-            self.device, self.primary, self.dpi,
+            self.edid, self.primary, self.dpi,
             self.position, self.mode, self.scale, self.rotation]])
 
     def __str__(self):
@@ -178,7 +178,8 @@ class Monitor:
 
 
 def normalize_edid(edid):
-    return ''.join(str(encode(edid, 'base64'), 'ascii').split())
+    edid = ''.join(str(encode(edid, 'base64'), 'ascii').split())
+    return crc32(encode(edid))
 
 
 def get_system_devices():
@@ -259,6 +260,5 @@ def build_monitor_list():
 
 
 exit(main())
-# setup: 2256794240;card0-eDP-1:True:259:(0, 0):(3000, 2000):(1.0, 1.0):normal
-# setup: 875068580;card0-eDP-1:True:158:(0, 0):(1920, 1080):(1.0, 1.0):normal
-# setup: 235771305;card0-eDP-1:True:158:(1440, 1480):(1920, 1080):(1.0, 1.0):normal;card0-HDMI-A-1:False:158:(0, 0):(2560, 1440):(1.0, 1.0):right
+# setup: 2256794240;2256794240:True:259:(0, 0):(3000, 2000):(1.0, 1.0):normal
+# setup: 5532027795;2256794240:True:259:(0, 0):(3000, 2000):(1.0, 1.0):normal;3275233555:False:259:(3000, 0):(1360, 768):(2.0, 2.0):normal
