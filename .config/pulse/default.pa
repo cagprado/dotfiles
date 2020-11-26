@@ -1,0 +1,6 @@
+.include /etc/pulse/default.pa
+.nofail
+  # mredson: set default profile to surround4.0
+  # others: ignore failure if card not available
+  set-card-profile alsa_card.pci-0000_00_1f.3 output:analog-surround-40+input:analog-stereo
+# vim: ft=conf

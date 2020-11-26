@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# simple script to change profile to hdmi on connection, do nothing otherwise
+# pulseaudio will automatically move away from profile on disconnection
+CARD_PATH="/sys/class/drm/card0/"
+for OUTPUT in $(cd "$CARD_PATH" && echo card*); do
+  OUT_STATUS=$(<"$CARD_PATH"/"$OUTPUT"/status)
+  if [[ $OUT_STATUS == connected ]]; then
+    case "$OUTPUT" in
+      "card0-DP-1") AUDIO_OUTPUT="hdmi-stereo";;
+      "card0-DP-2") AUDIO_OUTPUT="hdmi-stereo-extra1";;
+    esac
+  fi
+done
+if [[ -n "$AUDIO_OUTPUT" ]]; then
+  pactl set-card-profile alsa_card.pci-0000_00_1f.3 output:$AUDIO_OUTPUT+input:analog-stereo
+fi

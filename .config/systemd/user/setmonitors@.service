@@ -5,3 +5,4 @@ Description=Automatically setup monitors on connection/disconnection
 Type=oneshot
 RemainAfterExit=no
 ExecStart=/home/cagprado/bin/setmonitors -d
+ExecStart=/home/cagprado/bin/hdmisound
