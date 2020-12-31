@@ -5,7 +5,7 @@
 # Contributor: sekret <sekret at posteo.se>
 
 pkgname=htop
-pkgver=3.0.2
+pkgver=3.0.4
 pkgrel=1
 pkgdesc="Interactive process viewer with solarized patch"
 arch=('i686' 'x86_64' 'armv7h')
@@ -16,7 +16,7 @@ optdepends=('lsof: show files opened by a process'
             'strace: attach to a running process')
 options=('!emptydirs')
 source=("https://dl.bintray.com/htop/source/$pkgname-$pkgver.tar.gz" 'htop.patch')
-sha512sums=('be25cb04a7f1e4004bda936674c36164f14112306cd32adc8a78f9160b1325705bd580eb44c5cf876fe8f371387f181190e947e4f25c4e8087da0cbfdbffd3b4' SKIP)
+sha512sums=('SKIP' SKIP)
 
 prepare() {
   cd "$pkgname-$pkgver"
