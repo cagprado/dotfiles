@@ -5,7 +5,7 @@
 # Contributor: sekret <sekret at posteo.se>
 
 pkgname=htop
-pkgver=3.0.4
+pkgver=3.0.5
 pkgrel=1
 pkgdesc="Interactive process viewer with solarized patch"
 arch=('i686' 'x86_64' 'armv7h')

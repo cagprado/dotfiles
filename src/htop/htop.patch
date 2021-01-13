@@ -1,6 +1,6 @@
 --- CRT.c.orig	2020-12-31 09:55:03.341869750 +0800
 +++ CRT.c	2020-12-31 09:57:39.881184213 +0800
-@@ -117,7 +117,7 @@
+@@ -125,7 +125,7 @@
        [LED_COLOR] = ColorPair(Green, Black),
        [TASKS_RUNNING] = A_BOLD | ColorPair(Green, Black),
        [PROCESS] = A_NORMAL,
@@ -9,7 +9,7 @@
        [PROCESS_TAG] = A_BOLD | ColorPair(Yellow, Black),
        [PROCESS_MEGABYTES] = ColorPair(Cyan, Black),
        [PROCESS_GIGABYTES] = ColorPair(Green, Black),
-@@ -134,7 +134,7 @@
+@@ -142,7 +142,7 @@
        [PROCESS_COMM] = ColorPair(Magenta, Black),
        [PROCESS_THREAD_COMM] = ColorPair(Blue, Black),
        [BAR_BORDER] = A_BOLD,
@@ -18,7 +18,7 @@
        [SWAP] = ColorPair(Red, Black),
        [GRAPH_1] = A_BOLD | ColorPair(Cyan, Black),
        [GRAPH_2] = ColorPair(Cyan, Black),
-@@ -158,7 +158,7 @@
+@@ -166,7 +166,7 @@
        [CPU_NICE_TEXT] = A_BOLD | ColorPair(Blue, Black),
        [CPU_NORMAL] = ColorPair(Green, Black),
        [CPU_SYSTEM] = ColorPair(Red, Black),
@@ -27,16 +27,16 @@
        [CPU_IRQ] = ColorPair(Yellow, Black),
        [CPU_SOFTIRQ] = ColorPair(Magenta, Black),
        [CPU_STEAL] = ColorPair(Cyan, Black),
-@@ -369,7 +369,7 @@
+@@ -383,7 +383,7 @@
        [LED_COLOR] = ColorPair(Green, Black),
        [TASKS_RUNNING] = ColorPair(Green, Black),
-       [PROCESS] = ColorPair(Blue, Black),
+       [PROCESS] = ColorPair(Black, Black),
 -      [PROCESS_SHADOW] = A_BOLD | ColorPairGrayBlack,
 +      [PROCESS_SHADOW] = ColorPairGrayBlack,
-       [PROCESS_TAG] = ColorPair(Yellow, Blue),
+       [PROCESS_TAG] = ColorPair(White, Blue),
        [PROCESS_MEGABYTES] = ColorPair(Blue, Black),
        [PROCESS_GIGABYTES] = ColorPair(Green, Black),
-@@ -537,7 +537,7 @@
+@@ -550,7 +550,7 @@
        [LED_COLOR] = ColorPair(Green, Black),
        [TASKS_RUNNING] = A_BOLD | ColorPair(Green, Black),
        [PROCESS] = ColorPair(Cyan, Black),
@@ -45,7 +45,7 @@
        [PROCESS_TAG] = A_BOLD | ColorPair(Yellow, Black),
        [PROCESS_MEGABYTES] = A_BOLD | ColorPair(Green, Black),
        [PROCESS_GIGABYTES] = A_BOLD | ColorPair(Yellow, Black),
-@@ -655,7 +655,7 @@
+@@ -668,7 +668,7 @@
  
     for (int i = 0; i < LAST_COLORELEMENT; i++) {
        unsigned int color = CRT_colorSchemes[COLORSCHEME_DEFAULT][i];
@@ -54,7 +54,7 @@
     }
  
     halfdelay(*CRT_delay);
-@@ -787,7 +787,7 @@
+@@ -801,7 +801,7 @@
        }
     }
  
