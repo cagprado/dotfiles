@@ -27,6 +27,7 @@ table = {
     'confirmDelete':                          r'false',
     'cyclePreview':                           r'Preview;american-institute-of-physics.csl',
     'defaultBibtexKeyPattern':                r'[auth]:[year][shorttitle:abbr:lower]',
+    'defaultUnwantedBibtexKeyCharacters':     r'-`ʹ!;?^+',
     'downloadLinkedFiles':                    r'true',
     'externalJournalLists':                   r'/home/cagprado/usr/sync/default/library/journals.csv',
     'generateKeysBeforeSaving':               r'true',
