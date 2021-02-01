@@ -952,6 +952,53 @@ void legend(picture pic=currentpicture, int perline=1,
   add(pic, legend, Scale(position), align, filltype);
 }
 
+//   · Error blocks ««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+void drawbox(picture pic, pair z, pair m, pair M, pair dd, pen p) {
+  pic.add(new void(frame f, transform t) {
+    picture pp;
+    draw(pp, box(t*Scale(pic, z+m) - 0.5dd, t*Scale(pic, z+M) + 0.5dd), p);
+    add(f, pp.fit());
+  });
+  pic.addBox(Scale(pic, z+m), Scale(pic, z+M), -0.5dd+min(p), 0.5dd+max(p));
+}
+
+void graph_errorbar(picture, pair, pair, pair, pen, real) = graph.errorbar;
+void errorblock(picture pic, pair z, pair dp, pair dm, pen p=currentpen,
+                real size=0) {
+  size = size == 0 ? barsize(p) : size;
+  real dmx = -abs(dm.x);
+  real dmy = -abs(dm.y);
+  real dpx = abs(dp.x);
+  real dpy = abs(dp.y);
+  if (dmx != dpx && dmy != dpy)
+    drawbox(pic, z, (dmx, dmy), (dpx, dpy), 0, p);
+  else if (dmx != dpx)
+    drawbox(pic, z, (dmx, 0), (dpx, 0), (0, size), p);
+  else if (dmy != dpy)
+    drawbox(pic, z, (0, dmy), (0, dpy), (size, 0), p);
+}
+
+void errorblocks(picture pic=currentpicture, pair[] z, pair[] dp,
+                 pair[] dm={}, bool[] cond={}, pen p=currentpen,
+                 real size=0) {
+  errorbar = errorblock;
+  errorbars(pic, z, dp, dm, cond, p, size);
+  errorbar = graph_errorbar;
+}
+
+void errorblocks(picture pic=currentpicture, real[] x, real[] y,
+                 real[] dpx, real[] dpy, real[] dmx={}, real[] dmy={},
+                 bool[] cond={}, pen p=currentpen, real size=0) {
+  errorbar = errorblock;
+  errorbars(pic, x, y, dpx, dpy, dmx, dmy, cond, p, size);
+  errorbar = graph_errorbar;
+}
+
+void errorblocks(picture pic=currentpicture, real[] x, real[] y,
+                 real[] dpy, bool[] cond={}, pen p=currentpen, real size=0) {
+  errorblocks(pic,x,y,0*x,dpy,cond,p,size);
+}
+
 // Picture/pages management ««««««««««««««««««««««««««««««««««««««««««««««««1
 //   · 3D pictures «««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
 private void finish3d() {
@@ -1234,6 +1281,10 @@ struct H1 {
   real[] xE() { return xe.length == 0 ? 0*y : map(ypart, xe); }
   real[] ye() { return ye.length == 0 ? 0*y : map(xpart, ye); }
   real[] yE() { return ye.length == 0 ? 0*y : map(ypart, ye); }
+  real[] xSe() { return xSe.length == 0 ? 0*y : map(xpart, xSe); }
+  real[] xSE() { return xSe.length == 0 ? 0*y : map(ypart, xSe); }
+  real[] ySe() { return ySe.length == 0 ? 0*y : map(xpart, ySe); }
+  real[] ySE() { return ySe.length == 0 ? 0*y : map(ypart, ySe); }
 
   H1 add(real r)          { y += r; return this; }
   H1 multiply(real r)     { y *= r; return this; }
@@ -1335,69 +1386,71 @@ struct TextData {
       string line = fd;
       if (substr(line, 0, 1) != "#") {
         real x[] = fd.line();
+        fd.line(false);
         ncol = x.length;
         seek(fd, pos);
         break;
       }
       header.push(split(line, ": "));
     }
-
     header = transpose(header);
-    data = fd.dimension(0, ncol);
+
+    if (ncol == 1) {
+      for (real x[] = fd.read(1); x.length > 0; x = fd.read(1))
+        data.push(x);
+    } else {
+      data = fd.dimension(0, ncol);
+      data = transpose(data);
+    }
   }
 
   TextData select(... int idx[]) {
     TextData td = new TextData;
     td.header = header;
-    for (real[] line : data)
-      td.data.push(sequence(new real(int i) {
-        return line[idx[i]];
-      }, idx.length));
+    td.data = sequence(new real[](int i) {return data[idx[i]];}, idx.length);
     return td;
   }
 };
 
 H1 operator cast(TextData data) {
-  int idx = find(data.header[0] == "# format");
-  string fmt[] = split(data.header[1][idx], ",");
-
   string f[] = {"x","y","-dx","+dx","-sx","+sx","-dy","+dy","-sy","+sy"};
-  int cols[] = sequence(new int(int i) {return find(fmt==f[i]);}, f.length);
+  int idx = data.header.length > 0 ? find(data.header[0] == "# format") : -1;
+  string fmt[] = idx < 0
+    ? f[0:data.data.length]
+    :split(data.header[1][idx], ",");
+
+  int lines[] = sequence(new int(int i) {return find(fmt==f[i]);}, f.length);
   for (int i = 2; i < 10; i += 2)
-    if (cols[i] < 0)
-      cols[i] = cols[i+1];
+    if (lines[i] < 0)
+      lines[i] = lines[i+1];
 
   real[] x,y;
   pair[] xe, ye, xSe, ySe;
 
-  if (cols[0] >= 0) x    = column(data.data, cols[0]);
-  if (cols[1] >= 0) y    = column(data.data, cols[1]);
-  if (cols[2] >= 0) xe   = column(data.data, cols[2]);
-  if (cols[3] >= 0) xe  += column(data.data, cols[3])*I;
-  if (cols[4] >= 0) xSe  = column(data.data, cols[4]);
-  if (cols[5] >= 0) xSe += column(data.data, cols[5])*I;
-  if (cols[6] >= 0) ye   = column(data.data, cols[6]);
-  if (cols[7] >= 0) ye  += column(data.data, cols[7])*I;
-  if (cols[8] >= 0) ySe  = column(data.data, cols[8]);
-  if (cols[9] >= 0) ySe += column(data.data, cols[9])*I;
+  if (lines[0] >= 0) x    = data.data[lines[0]];
+  if (lines[1] >= 0) y    = data.data[lines[1]];
+  if (lines[2] >= 0) xe   = data.data[lines[2]];
+  if (lines[3] >= 0) xe  += data.data[lines[3]]*I;
+  if (lines[4] >= 0) xSe  = data.data[lines[4]];
+  if (lines[5] >= 0) xSe += data.data[lines[5]]*I;
+  if (lines[6] >= 0) ye   = data.data[lines[6]];
+  if (lines[7] >= 0) ye  += data.data[lines[7]]*I;
+  if (lines[8] >= 0) ySe  = data.data[lines[8]];
+  if (lines[9] >= 0) ySe += data.data[lines[9]]*I;
 
   return H1(x, y, xe, ye, xSe, ySe);
 }
 
 H2 operator cast(TextData data) {
-  real x[], y[], z[][], e[][];
-  if (data.data.length == 1) {
-    // read separate arrays: x, then y, then z then e
+  real x[], y[], z[][], e[][], data[][] = data.data;
+  if (data[0].length * data[1].length != data[2].length)
+    data = transpose(sort(transpose(data)));
 
-  } else if (data.data.length > 2) {
-    // read columns (x, y, z, error)
-    real data[][] = transpose(sort(data.data));
-    x = unique(data[0], false);
-    y = unique(data[1], false);
-    z = balance(data[2], x.length, y.length);
-    if (data.length == 4)
-      e = balance(data[3], x.length, y.length);
-  }
+  x = unique(data[0], false);
+  y = unique(data[1], false);
+  z = balance(data[2], x.length, y.length);
+  if (data.length == 4)
+    e = balance(data[3], x.length, y.length);
   return H2(x, y, z, e);
 }
 
@@ -1442,8 +1495,15 @@ guide[] graph(picture pic=currentpicture, H1 h, bool3 cond(real)=null,
 void errorbars(picture pic=currentpicture, H1 h, bool3 cond(real)=null,
                pen p=currentpen, real size=0) {
   real x[] = h.xc();
-  bool cond[] = cond == null ? new bool[] {} : map(cond, x);
-  errorbars(pic, x, h.y, h.xE(), h.yE(), h.xe(), h.ye(), cond, p, size);
+  bool c[] = cond == null ? new bool[] {} : map(cond, x);
+  errorbars(pic, x, h.y, h.xE(), h.yE(), h.xe(), h.ye(), c, p, size);
+}
+
+void errorblocks(picture pic=currentpicture, H1 h, bool3 cond(real)=null,
+               pen p=currentpen, real size=0) {
+  real x[] = h.xc();
+  bool c[] = cond == null ? new bool[] {} : map(cond, x);
+  errorblocks(pic, x, h.y, h.xSE(), h.ySE(), h.xSe(), h.ySe(), c, p, size);
 }
 
 bounds image(picture pic=currentpicture, H2 f, range range=Automatic,
