@@ -7,13 +7,8 @@ import palette;
 import stats;
 import contour;
 
-// LaTeX configuration TODO «««««««««««««««««««««««««««««««««««««««««««««««««««««1
+// LaTeX configuration «««««««««««««««««««««««««««««««««««««««««««««««««««««1
 // Redefine font size commands
-private string TeXFontSize(pen p, string s) {
-    static string TeX = "\renewcommand\%s{\fontsize{%f}{%f}\selectfont}";
-    return format(format(replace(TeX, "%s", s), fontsize(p)), lineskip(p));
-}
-
 restricted pen tiny         = fontsize( 6.00,  7.00);
 restricted pen scriptsize   = fontsize( 8.00,  9.50);
 restricted pen footnotesize = fontsize( 9.00, 11.00);
@@ -27,19 +22,39 @@ restricted pen Huge         = fontsize(24.88, 30.00);
 defaultpen(normalsize);
 
 // Write preamble
-texpreamble(
-  (error(input("../tex/definitions.tex", false)) ? "" : "\input{../tex/definitions.tex}")
-  + TeXFontSize(tiny,         "tiny")
-  + TeXFontSize(scriptsize,   "scriptsize")
-  + TeXFontSize(footnotesize, "footnotesize")
-  + TeXFontSize(small,        "small")
-  + TeXFontSize(normalsize,   "normalsize")
-  + TeXFontSize(large,        "large")
-  + TeXFontSize(Large,        "Large")
-  + TeXFontSize(LARGE,        "LARGE")
-  + TeXFontSize(huge,         "huge")
-  + TeXFontSize(Huge,         "Huge")
-);
+if (!settings.inlinetex) {
+  private bool localpackage(string name) {
+    if (error(input("../tex/" + name + ".sty", false)))
+      return false;
+    usepackage("../tex/" + name);
+    return true;
+  }
+
+  private string TeXFontSize(pen p, string s) {
+    static string TeX = "\renewcommand\%s{\fontsize{%f}{%f}\selectfont}";
+    return format(format(replace(TeX, "%s", s), fontsize(p)), lineskip(p));
+  }
+
+  if (localpackage("settings"))
+    localpackage("definitions");
+  else {
+    usepackage("amsmath");
+    usepackage("siunitx");
+  }
+
+  texpreamble(""
+    + TeXFontSize(tiny,         "tiny")
+    + TeXFontSize(scriptsize,   "scriptsize")
+    + TeXFontSize(footnotesize, "footnotesize")
+    + TeXFontSize(small,        "small")
+    + TeXFontSize(normalsize,   "normalsize")
+    + TeXFontSize(large,        "large")
+    + TeXFontSize(Large,        "Large")
+    + TeXFontSize(LARGE,        "LARGE")
+    + TeXFontSize(huge,         "huge")
+    + TeXFontSize(Huge,         "Huge")
+  );
+}
 
 // Pen definitions «««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
 //   · Plain scaling «««««««««««««««««««««««««««««««««««««««««««««««««««««««2
@@ -532,41 +547,6 @@ Palette[] gradient = {
 Palette currentgradient = gradient[0];
 
 // Helper function «««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
-//   · General math ««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
-real maxabs(real x, real y) {
-  return max(abs(x), abs(y));
-}
-
-// restrict number to interval
-int restrict(int a, int x, int b) {
-  return max(a, min(x, b));
-}
-
-real restrict(real a, real x, real b) {
-  return max(a, min(x, b));
-}
-
-// return angle considering picture aspect ratio
-real realangle(picture pic=currentpicture, real angle) {
-  bool unit = pic.xunitsize != 0 && pic.yunitsize != 0;
-  bool size = pic.xsize != 0 && pic.ysize != 0;
-  if (unit && (pic.keepAspect || !size))
-    return atan(tan(angle) * pic.yunitsize / pic.xunitsize);
-  else if (size && !pic.keepAspect)
-    return atan(tan(angle) * pic.ysize / pic.xsize);
-  return angle;
-}
-
-real realAngle(picture pic=currentpicture, real degrees) {
-  return degrees(realangle(pic, radians(degrees)));
-}
-
-// make simple real functions also act on pairs
-private typedef pair pfunc(pair);
-pfunc operator cast(real f(real)) {
-  return new pair(pair p) { return (f(p.x), f(p.y)); };
-}
-
 //   · Arrays ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
 // Returns (n, m) matrix from array
 real[][] balance(real data[], int n, int m) {
@@ -624,6 +604,63 @@ real[] unique(real v[], bool copy=true) {
     if (v[i] <= v[i-1])
       v.delete(i-1);
   return v;
+}
+
+//   · Math ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+real maxabs(real x, real y) {
+  return max(abs(x), abs(y));
+}
+
+// restrict number to interval
+int restrict(int a, int x, int b) {
+  return max(a, min(x, b));
+}
+
+real restrict(real a, real x, real b) {
+  return max(a, min(x, b));
+}
+
+// return angle considering picture aspect ratio
+real realangle(picture pic=currentpicture, real angle) {
+  bool unit = pic.xunitsize != 0 && pic.yunitsize != 0;
+  bool size = pic.xsize != 0 && pic.ysize != 0;
+  if (unit && (pic.keepAspect || !size))
+    return atan(tan(angle) * pic.yunitsize / pic.xunitsize);
+  else if (size && !pic.keepAspect)
+    return atan(tan(angle) * pic.ysize / pic.xsize);
+  return angle;
+}
+
+real realAngle(picture pic=currentpicture, real degrees) {
+  return degrees(realangle(pic, radians(degrees)));
+}
+
+// make simple real functions also act on pairs
+private typedef pair pfunc(pair);
+pfunc operator cast(real f(real)) {
+  return new pair(pair p) { return (f(p.x), f(p.y)); };
+}
+
+//   · Process «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+int shell(string commands, string pipe=">/dev/null 2>&1") {
+  return system(new string[] {"sh", "-c", commands + pipe});
+}
+
+private string fileprocess(string command) {
+  string fifo = format("asyprocess%d", rand());
+  while (shell("mkfifo " + fifo) != 0)
+    fifo = format("asyprocess%d", rand());
+  shell(command, '>"' + fifo + '" 2>&1 && rm "' + fifo + '" &!');
+  return fifo;
+}
+
+file process(string command, string comment="#", string mode="") {
+  return input(fileprocess(command), comment, mode);
+}
+
+//   · Strings «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««2
+string char(string s, int i) {
+  return substr(s, i, i+1);
 }
 
 // Graph tuning ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««1
@@ -764,8 +801,10 @@ void limits(picture pic=currentpicture, pair min=(-inf, -inf),
 
   // get automatic limits
   graph.limits((-inf, -inf), (inf, inf));
-  pair picmax = point(pic, NE);
-  pair picmin = point(pic, SW);
+  pair a = point(pic, NE);
+  pair b = point(pic, SW);
+  pair picmin = (min(a.x, b.x), min(a.y, b.y));
+  pair picmax = (max(a.x, b.x), max(a.y, b.y));
   pair logMin = Unscale(pic, Scale(pic, (-inf, -inf)) + (1, 1));
   picmin = (logMin.x < picmax.x ? max(logMin.x, picmin.x) : picmin.x,
             logMin.y < picmax.y ? max(logMin.y, picmin.y) : picmin.y);
@@ -823,9 +862,9 @@ void limits(picture pic=currentpicture, pair min=(-inf, -inf),
   if (pic.userSetx() && pic.userSety()) {
     // modification of fixedscaling(picture, pair, pair, pen, bool)
     pic.fixed = true;
-    pic.fixedscaling =
-      (0, 0, pic.xsize/abs(pic.userMax2().x-pic.userMin2().x),
-       0, 0, pic.ysize/abs(pic.userMax2().y-pic.userMin2().y));
+    pair userm = pic.userMax2() - pic.userMin2();
+    userm = (userm.x==0 ? 1 : abs(userm.x), userm.y==0 ? 1 : abs(userm.y));
+    pic.fixedscaling = (0, 0, pic.xsize/userm.x, 0, 0, pic.ysize/userm.y);
   }
 }
 
@@ -959,7 +998,7 @@ void drawbox(picture pic, pair z, pair m, pair M, pair dd, pen p) {
     draw(pp, box(t*Scale(pic, z+m) - 0.5dd, t*Scale(pic, z+M) + 0.5dd), p);
     add(f, pp.fit());
   });
-  pic.addBox(Scale(pic, z+m), Scale(pic, z+M), -0.5dd+min(p), 0.5dd+max(p));
+  draw(pic, Scale(pic, z+m) -- Scale(pic, z+M), nullpen);
 }
 
 void graph_errorbar(picture, pair, pair, pair, pen, real) = graph.errorbar;
@@ -1291,6 +1330,23 @@ struct H1 {
   H1 inverse()            { y = 1/y; return this; }
   H1 xscale(pair f(pair)) { x = map(f, x); return this; }
   H1 scale(real f(real))  { y = map(f, y); return this; }
+
+  H1 transpose() {
+    pair[] a = x, b = y;
+    x = b;
+    y = map(xpart, a);
+
+    a = xe;
+    b = ye;
+    xe = b;
+    ye = a;
+
+    a = xSe;
+    b = ySe;
+    xSe = b;
+    ySe = a;
+    return this;
+  }
 };
 
 // 2D histograms «««««««««««««««««««««««««««««««««««««««««««««««««««««««««««3
@@ -1374,83 +1430,123 @@ struct H2 {
 }
 
 // Data files ««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««3
-struct TextData {
+struct Data {
   restricted string header[][];
   restricted real   data[][];
 
   void operator init(string filename) {
-    file fd = input(filename);
+    file fd = input(filename, false).line();
+    if (error(fd))
+      fd = process("xzcat " + filename + ".xz").line();
 
-    int ncol;
-    for (int pos = 0; !eof(fd); pos = tell(fd)) {
-      string line = fd;
-      if (substr(line, 0, 1) != "#") {
-        real x[] = fd.line();
-        fd.line(false);
-        ncol = x.length;
-        seek(fd, pos);
-        break;
-      }
-      header.push(split(line, ": "));
+    // first read header
+    for (string line, c="#"; !eof(fd) && c == "#";) {
+      c = getc(fd);
+      line = fd;
+
+      if (c != "#")
+        data.push((real[]) split(replace(c+=line, '\t', ' ')));
+      else if (find(line, ":") > 1)
+        header.push(split(replace(line, " ", ""), ':'));
     }
     header = transpose(header);
 
-    if (ncol == 1) {
-      for (real x[] = fd.read(1); x.length > 0; x = fd.read(1))
-        data.push(x);
-    } else {
-      data = fd.dimension(0, ncol);
-      data = transpose(data);
-    }
+    // then read data
+    while(!eof(fd))
+      data.push(fd);
   }
 
-  TextData select(... int idx[]) {
-    TextData td = new TextData;
-    td.header = header;
-    td.data = sequence(new real[](int i) {return data[idx[i]];}, idx.length);
-    return td;
+  Data lines(... int idx[]) {
+    Data d = new Data;
+    d.header = header;
+    d.data = sequence(new real[](int i) {return data[idx[i]];}, idx.length);
+    return d;
   }
-};
 
-H1 operator cast(TextData data) {
-  string f[] = {"x","y","-dx","+dx","-sx","+sx","-dy","+dy","-sy","+sy"};
-  int idx = data.header.length > 0 ? find(data.header[0] == "# format") : -1;
-  string fmt[] = idx < 0
-    ? f[0:data.data.length]
-    :split(data.header[1][idx], ",");
+  Data columns(... int idx[]) {
+    Data d = new Data;
+    d.header = header;
+    d.data = map(new real[](real x[]) {
+      return sequence(new real(int i) {return x[idx[i]];}, idx.length);
+    }, data);
+    return d;
+  }
 
-  int lines[] = sequence(new int(int i) {return find(fmt==f[i]);}, f.length);
-  for (int i = 2; i < 10; i += 2)
-    if (lines[i] < 0)
-      lines[i] = lines[i+1];
+  Data range(int x1, int x2) {
+    Data d = new Data;
+    d.header = header;
+    d.data = data[x1:x2];
+    return d;
+  }
 
-  real[] x,y;
-  pair[] xe, ye, xSe, ySe;
+  Data transpose() {
+    Data d = new Data;
+    d.header = header;
+    d.data = transpose(data);
+    return d;
+  }
 
-  if (lines[0] >= 0) x    = data.data[lines[0]];
-  if (lines[1] >= 0) y    = data.data[lines[1]];
-  if (lines[2] >= 0) xe   = data.data[lines[2]];
-  if (lines[3] >= 0) xe  += data.data[lines[3]]*I;
-  if (lines[4] >= 0) xSe  = data.data[lines[4]];
-  if (lines[5] >= 0) xSe += data.data[lines[5]]*I;
-  if (lines[6] >= 0) ye   = data.data[lines[6]];
-  if (lines[7] >= 0) ye  += data.data[lines[7]]*I;
-  if (lines[8] >= 0) ySe  = data.data[lines[8]];
-  if (lines[9] >= 0) ySe += data.data[lines[9]]*I;
-
-  return H1(x, y, xe, ye, xSe, ySe);
+  string get(string name) {
+    int i = header.length > 0 ? find(header[0] == name) : -1;
+    return i<0 ? '' : header[1][i];
+  }
 }
 
-H2 operator cast(TextData data) {
-  real x[], y[], z[][], e[][], data[][] = data.data;
-  if (data[0].length * data[1].length != data[2].length)
-    data = transpose(sort(transpose(data)));
+H1 operator cast(Data data) {
+  string fmt[] = {"x","y","-dx","+dx","-dy","+dy","-sx","+sx","-sy","+sy"};
+  real d[][] = new real[fmt.length][];
 
-  x = unique(data[0], false);
-  y = unique(data[1], false);
-  z = balance(data[2], x.length, y.length);
-  if (data.length == 4)
-    e = balance(data[3], x.length, y.length);
+  string formats[] = split(data.get("format"), ',');
+  if (formats.length == 1)
+    d[0:data.data[0].length] = transpose(data.data);
+  else {
+    int idx = -1;
+    for (string f : formats)
+      d[find(fmt==f)] = column(data.data, ++idx);
+  }
+
+  return H1(d[0], d[1], d[2]+d[3]*I, d[4]+d[5]*I, d[6]+d[7]*I, d[8]+d[9]*I);
+}
+
+H1[] operator cast(Data data) {
+  string formats[] = split(data.get("format"), ',');
+
+  if (formats.length == 1)
+    return sequence(new H1(int i) {
+      return data.columns(0, i+1);
+    }, data.data[0].length-1);
+
+  real xi[] = column(data.data, find(split(data.get("format"), ',') == 'x'));
+
+  int splits[] = {0};
+  for (int i = 1; i < xi.length; ++i)
+    if (xi[i] < xi[i-1])
+      splits.push(i);
+  splits.push(xi.length);
+
+  return sequence(new H1(int i) {
+    return data.range(splits[i], splits[i+1]);
+  }, splits.length-1);
+}
+
+H2 operator cast(Data data) {
+  real x[], y[], z[][], e[][], d[][] = data.data;
+
+  if (d[0].length == d[2].length - 1) {
+    x = d[0];
+    y = column(d[1:], 0);
+    z = map(new real[](real x[]) {return x[1:];}, d[1:]);
+  }
+  else {
+    if (d[0].length * d[1].length != d[2].length)
+      d = transpose(d);
+    x = unique(d[0], false);
+    y = unique(d[1], false);
+    z = balance(d[2], x.length, y.length);
+    if (d.length == 4)
+      e = balance(d[3], x.length, y.length);
+  }
+
   return H2(x, y, z, e);
 }
 
