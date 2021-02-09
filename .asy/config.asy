@@ -1,7 +1,9 @@
 import settings;
-tex="xelatex";
-pdfviewer="xdg-open";
+
+outformat = "pdf";      // for opacity, even though xelatex defaults to pdf
+tex       = "xelatex";
+pdfviewer = "xdg-open";
 batchMask = true;
-render=4;
-iconify=true;
-prc=false;
+render    = 4;
+iconify   = true;
+prc       = false;
