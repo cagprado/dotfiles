@@ -1,0 +1,43 @@
+# Maintainer: Andy Kluger <https://t.me/andykluger>
+# Contributor: Markus Weimar <mail@markusweimar.de>
+pkgname=ttf-iosevka-custom
+pkgver=r2434.3aa456ab5
+pkgrel=1
+pkgdesc='My own customization of the well known Iosevka Font'
+arch=('any')
+url='https://be5invis.github.io/Iosevka/'
+license=('custom:OFL')
+makedepends=('git' 'nodejs>=12.16.0' 'npm' 'ttfautohint')
+depends=()
+source=(
+  #'https://github.com/be5invis/Iosevka/archive/master.zip'
+  'git+https://github.com/be5invis/Iosevka'
+  'private-build-plans.toml'
+)
+sha256sums=(
+  'SKIP'
+  '56dddc16c08ca52221abf75306494b302e96410e2cfd2925eb0aba9e0c2cac9b'
+)
+
+pkgver() {
+  cd Iosevka
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+  cp private-build-plans.toml Iosevka
+}
+
+build() {
+  cd Iosevka
+  npm install
+  npm update
+  npm run build -- --jCmd 6 ttf::${pkgname#*-}
+}
+
+package() {
+  install -d "${pkgdir}/usr/share/fonts/TTF"
+  install -m644 Iosevka/dist/*/ttf/*.ttf "${pkgdir}/usr/share/fonts/TTF/"
+  install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -m644 Iosevka/LICENSE.md "${pkgdir}/usr/share/licenses/${pkgname}/"
+}

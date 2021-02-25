@@ -1,0 +1,26 @@
+[buildPlans.iosevka-custom]
+family = "Iosevka for LaTeX"
+spacing = "term"
+serifs = "slab"
+
+  [buildPlans.iosevka-custom.variants]
+  inherits = "ss20"
+
+    [buildPlans.iosevka-custom.variants.design]
+    g = "double-storey-open"
+    m = "short-leg"
+    lower-lambda = "curly-turn"
+    one = "base-long-top-serif"
+    three = "flattop"
+    six = "closed-contour"
+    eight = "two-circles"
+    nine = "closed-contour"
+    asterisk = "hex-low"
+    underscore = "low"
+    caret = "low"
+    paren = "large-contour"
+    at = "fourfold"
+    dollar = "through-cap"
+    percent = "rings-continuous-slash"
+    lig-ltgteq = "slanted"
+    question = "corner"
