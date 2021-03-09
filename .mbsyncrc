@@ -41,19 +41,19 @@ Account work
 
 # MAIN
 Channel main
-Master :main:
-Slave :main-local:
+Far :main:
+Near :main-local:
 Patterns INBOX Drafts Spam Sent
 
 # WORK
 Channel work
-Master :work:
-Slave :work-local:
+Far :work:
+Near :work-local:
 Patterns INBOX Spam Sent
 
 Channel work-drafts
-Master :work:Draft
-Slave :work-local:Drafts
+Far :work:Draft
+Near :work-local:Drafts
 
 Group work
 Channel work
