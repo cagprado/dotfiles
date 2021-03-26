@@ -8,6 +8,7 @@ export _JAVA_OPTIONS="-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndF
 
 # Set keyboard and IM
 xkbcomp -I$HOME/.config/xkb $HOME/.config/xkb/custom.xkb $DISPLAY
+xset r rate 200 60
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
