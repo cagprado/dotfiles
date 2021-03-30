@@ -283,6 +283,14 @@ function precmd()
 
     # alert so terminal can blink on long commands
     echo -ne '\a'
+    # show cursor
+    tput cvvis
+}
+
+function preexec()
+{
+    # hide cursor
+    tput civis
 }
 
 function setprompt()
