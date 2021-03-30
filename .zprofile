@@ -7,7 +7,7 @@
 export HOSTNAME=$(hostname)
 
 export EDITOR="vim"
-export TERMINAL="termite"
+export TERMINAL="kitty"
 export BROWSER="qutebrowser"
 
 export CFG_COMMAND="/usr/bin/git --git-dir=$HOME/.cfg --work-tree=$HOME"
