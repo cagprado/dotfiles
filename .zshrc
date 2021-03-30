@@ -138,10 +138,14 @@ function select-cursor() {
 }
 
 # set zle mode functions
-function zle-line-init() { echoti smkx 2>/dev/null; select-cursor }
 function zle-keymap-select() { select-cursor }
-function zle-line-finish() { echoti rmkx 2>/dev/null }
-function vi-replace-chars() { echo -n $cursor_replace; zle .vi-replace-chars -- "$@"; echo -n $cursor_normal }
+function zle-line-init()     { echoti cvvis; echoti bel; select-cursor }
+function zle-line-finish()   { echoti civis }
+function vi-replace-chars()  {
+  echo -n $cursor_replace
+  zle .vi-replace-chars -- "$@"
+  echo -n $cursor_normal
+}
 
 zle -N zle-line-init
 zle -N zle-keymap-select
@@ -280,17 +284,6 @@ function precmd()
             fi
         fi
     fi
-
-    # alert so terminal can blink on long commands
-    echo -ne '\a'
-    # show cursor
-    tput cvvis
-}
-
-function preexec()
-{
-    # hide cursor
-    tput civis
 }
 
 function setprompt()
