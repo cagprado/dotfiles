@@ -1,0 +1,31 @@
+patch:
+  ascii_composer:
+    switch_key:
+      Control_L: inline_ascii
+      Control_R: commit_text
+      Shift_L: noop
+      Shift_R: noop
+  key_binder:
+    bindings:
+      # dead keys fix
+      - { when: always, accept: dead_grave, send: grave }
+      - { when: always, accept: Shift+dead_tilde, send: asciitilde }
+      - { when: always, accept: Shift+dead_circumflex, send: asciicircum }
+      - { when: always, accept: dead_acute, send: apostrophe }
+      - { when: always, accept: Shift+dead_diaeresis, send: quotedbl }
+      # flip page
+      - { when: has_menu, accept: "[", send: Page_Up }
+      - { when: has_menu, accept: "]", send: Page_Down }
+  schema_list:
+    - schema: luna_pinyin
+    - schema: wubi86
+  switcher:
+    caption: " "
+    fold_options: false
+    hotkeys:
+      - Control+grave
+      - Control+dead_grave
+      - Control+Shift+grave
+      - Control+Shift+dead_grave
+      - F4
+    option_list_separator: ' │ '

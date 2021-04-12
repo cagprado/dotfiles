@@ -7,7 +7,7 @@ ONCE_PROGRAMS+=("pasystray")                    # audio
 ONCE_PROGRAMS+=("cbatticon -i standard BAT0")   # battery
 ONCE_PROGRAMS+=("blueman-applet")               # bluetooth
 ONCE_PROGRAMS+=("picom --experimental-backend") # compositor
-ONCE_PROGRAMS+=("fcitx -r")                     # keyboard IM
+ONCE_PROGRAMS+=("fcitx5 -r")                    # keyboard IM
 ONCE_PROGRAMS+=("nm-applet")                    # network
 ONCE_PROGRAMS+=("hp-systray")                   # printer
 # utils
