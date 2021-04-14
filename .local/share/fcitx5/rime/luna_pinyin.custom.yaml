@@ -1,4 +1,6 @@
 patch:
+  schema:
+    name: "󱌱 朙月拼音"
   switches:
     - name: ascii_mode
       states: ['󱌲','󰸲']

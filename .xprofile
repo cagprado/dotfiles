@@ -7,7 +7,6 @@ export FREETYPE_PROPERTIES="truetype:interpreter-version=38"
 export _JAVA_OPTIONS="-Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel -Dswing.crossplatformlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel -Djdk.gtk.version=3 -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dsun.java2d.opengl=true"
 
 # Set keyboard and IM
-xkbcomp -I$HOME/.config/xkb $HOME/.config/xkb/custom.xkb $DISPLAY
 xset r rate 200 60
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx

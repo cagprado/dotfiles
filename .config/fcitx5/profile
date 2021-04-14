@@ -2,13 +2,13 @@
 # Group Name
 Name=Default
 # Layout
-Default Layout=us
+Default Layout=custom-nodeadkeys
 # Default Input Method
 DefaultIM=rime
 
 [Groups/0/Items/0]
 # Name
-Name=keyboard-us
+Name=keyboard-custom
 # Layout
 Layout=
 
@@ -28,7 +28,7 @@ Layout=
 # Name
 Name=keyboard-th-tis
 # Layout
-Layout=th-tis
+Layout=
 
 [GroupOrder]
 0=Default
