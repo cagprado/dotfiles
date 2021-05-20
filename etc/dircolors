@@ -33,6 +33,7 @@ EXEC     1;32
 # source code text
 *Makefile  32
 *.ly       32
+*.lua      32
 *.asy      32
 *.tex      32
 *.h        32
