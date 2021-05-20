@@ -1,27 +1,35 @@
-# Interactive shell (not run by scripts)
-
-# Check if we'll spawn tmux #################################################
-if which tmux >/dev/null 2>&1 && [[ -z "$TMUX" ]]; then
-    ID=$(tmux ls -F '#{session_id}:#{?session_attached,attached,detached}' |& grep -m1 detached | cut -d: -f1)
-    [[ -n "$ID" ]] && TMUXCOMM="tmux attach-session -t $ID" || TMUXCOMM="tmux new-session"
-    if [[ -o login ]]; then
-        $=TMUXCOMM && exit
-    else
-        exec $=TMUXCOMM
-    fi
-fi
-
-# Options ###################################################################
-unsetopt bgnice
-setopt notify longlistjobs extendedglob globdots autocd correct autonamedirs
-setopt histignoredups appendhistory histverify histignorespace autolist
-setopt autopushd pushdsilent pushdtohome pushdminus pushdignoredups
+# Options                                                                {{{1
+# directories
+setopt auto_cd            # just type dir name for cd
+setopt auto_pushd         # auto push dir to dir stack
+setopt pushd_ignore_dups  # ignore duplicates in stack
+setopt pushd_minus        # exchange + and -
+setopt pushd_silent       # don't print dir when pushd
+setopt pushd_to_home      # pushd with no arguments means home
+# completion
+setopt auto_list          # auto list choices on ambiguous completion
+setopt auto_name_dirs     # variable holds dir name auto becomes namedir
+setopt glob_complete      # don't expand glob when completing
+setopt hash_list_all      # hash cmdline for accurate completion (maybe slow)
+# expansion
+setopt extended_glob      # special glob chars: # ~ ^
+# history
+setopt append_history     # append to histfile instead of overwritting it
+setopt hist_ignore_dups   # ignore duplicate entries in histfile
+setopt hist_ignore_space  # if command starts with space, don't save it
+setopt hist_verify        # first expand history into new cmdline
+# input/output
+setopt correct            # offers correction to typed commands/arguments
+# jobs
+setopt auto_continue      # disowned jobs automatically continued
+setopt no_bg_nice         # don't lower bg jobs priority
+setopt long_list_jobs     # job notifications in long format
+setopt notify             # print job status immediately
 
 # Autoload functions from zsh scripts! Only +x files are selected
-# Old way, keep in case the new one doesn't work: (){ setopt localoptions histsubstpattern; for func in $ZSH_FUNCTIONS/*(N-.x:t); autoload -U $func }
 for func in $ZSH_FUNCTIONS/*(.x:t); do autoload -Uz $func; done
 
-# Aliases ###################################################################
+# Aliases                                                                {{{1
 
 # jobs and interface
 alias d='dirs -v'
@@ -40,6 +48,7 @@ alias lsa='ls -A'
 alias lsl='ls -l'
 alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
 alias pacmanips='dig +short $(grep "^Server" /etc/pacman.conf /etc/pacman.d/mirrorlist | cut -d/ -f3 | sort -u) | sed -ne "/^[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}$/p" | xclip -selection clipboard'
+alias sudoedit='EDITOR="vim -d" sudoedit'
 
 # compiler
 alias asy='asy -nosafe'
@@ -85,7 +94,7 @@ scripts()
     #for FILE in $BIN/*(.x); do echo $FILE; done
 }
 
-# Colors and fonts ##########################################################
+# Colors and fonts                                                       {{{1
 [[ -r $HOME/etc/dircolors ]] && eval $(dircolors "$HOME/etc/dircolors")
 export LESS_TERMCAP_so=$(tput setaf 3; tput smso)     # begin standout
 export LESS_TERMCAP_se=$(tput sgr0; tput rmso)        # end standout
@@ -95,7 +104,7 @@ export LESS_TERMCAP_md=$(tput bold;)                  # begin bold
 export LESS_TERMCAP_mb=$(tput blink)                  # starts blink
 export LESS_TERMCAP_me=$(tput sgr0)                   # end blink/bold/standout/underline
 
-# Completion ################################################################
+# Completion                                                             {{{1
 zmodload zsh/complist
 autoload -U compinit && compinit
 zstyle ':completion:*::::' completer _expand _complete _ignored _approximate
@@ -109,7 +118,7 @@ zstyle ':completion:*' rehash true
 zstyle ':completion:*' hosts $(awk '/^Host [^*]/ { print $2 }' $HOME/.ssh/config | sort -u)
 [[ -f "/usr/share/doc/pkgfile/command-not-found.zsh" ]] && source /usr/share/doc/pkgfile/command-not-found.zsh || :
 
-# ZLE and Keybindings #######################################################
+# ZLE and keybindings                                                    {{{1
 
 bindkey -v                         # use vim mode
 bindkey '^?' backward-delete-char  # backspace past insert point
@@ -166,7 +175,7 @@ bindkey -a "${terminfo[knp]}"      history-beginning-search-forward
 bindkey    "^[q"                   push-line-or-edit  # Alt+q
 bindkey -a "^[q"                   push-line-or-edit  # Alt+q
 
-# Extra Interface ###########################################################
+# Extra Interface                                                        {{{1
 
 # History
 HISTFILE="$HOME/.zshhist"
@@ -213,7 +222,7 @@ zle -N                 cdUndoKey
 bindkey '^[[1;3A'      cdParentKey  # alt-up
 bindkey '^[[1;3D'      cdUndoKey    # alt-left
 
-# Prompt ####################################################################
+# Prompt                                                                 {{{1
 function term_check()
 {
     if [[ -n "${TMUX}" && -n "${commands[tmux]}" ]]; then
