@@ -6,7 +6,7 @@
 # GENERIC VARIABLES #########################################################
 export HOSTNAME=$(hostname)
 
-export EDITOR="vim"
+export EDITOR="nvim"
 export TERMINAL="kitty"
 export BROWSER="qutebrowser"
 

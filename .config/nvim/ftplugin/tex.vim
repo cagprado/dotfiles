@@ -1,11 +1,13 @@
 " Vim filetype plugin file
 " Language: laTeX
 
-setl tw=0 cc=80
+setl tw=0 cc=78 cole=2
 
 " ft-tex-syntax
-let g:tex_conceal = ''
+let g:tex_conceal = 'abdmgs'
 let g:tex_comment_nospell = 1
+let g:vimtex_syntax_conceal_cites = { 'type': 'icon', 'icon': ' ' }
+
 
 " vimtex
 let g:vimtex_format_enabled = 1
@@ -38,6 +40,7 @@ let g:vimtex_fold_types = {
 \           'slide',
 \           'frame',
 \           'hypersetup',
+\           'sisetup',
 \           'tikzset',
 \           'pgfplotstableread',
 \           'lstset',
