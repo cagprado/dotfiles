@@ -82,7 +82,7 @@ setup{
   LineNr                     = {b3, b1, no, no},
   SignColumn                 = {b3, b1, no, no},
   StatusLine                 = {b5, b2, no, no},
-  StatusLineNC               = {bA, bB, no, no},
+  StatusLineNC               = {b4, b2, no, no},
   VertSplit                  = {b1, b1, no, no},
   ColorColumn                = {b0, b8, rv, no},
   CursorColumn               = {no, b1, no, no},
