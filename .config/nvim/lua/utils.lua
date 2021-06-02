@@ -147,13 +147,157 @@ map('', '/', [[/\v]], {silent=false})
 --• spell cycle                                                          {{{1
 local languages = {'', 'en_us', 'pt_br'}
 function cycle_spell()
-  if not b.slang then b.slang = 0 end
-  b.slang = (b.slang + 1) % #languages
-
-  command = b.slang == 0 and 'setlocal no' or 'setlocal '
-  ex(command..'spell spelllang='..languages[1+b.slang])
+  b.slang = (b.slang or 1) % #languages + 1
+  setb.spl = languages[b.slang]
+  setw.spell = setb.spl:len() > 0
 end
 map('' , '<F12>',      ':lua cycle_spell()<CR>')
 map('!', '<F12>', '<C-O>:lua cycle_spell()<CR>')
+
+--• status line                                                          {{{1
+-- - helper functions                                                    {{{2
+setg.statusline = '%{execute("call v:lua.update_statusline()")}'
+
+local function sl_normalize(items, normal_hl)
+  if not items then return {} end
+  normal_hl = normal_hl or 'StatusLine'
+
+  for k, v in pairs(items) do
+    v = (type(v) == 'table') and {unpack(v)} or {v}
+
+    if type(v[1]) ~= 'function' then
+      local text = v[1]
+      v[1] = function() return text end
+    end
+    v[2] = '%#' .. (v[2] or normal_hl) .. '#'
+
+    items[k] = v
+  end
+
+  return items
+end
+
+local function statusline(active, inactive, specials)
+  local statusline = {}
+  for _, special in ipairs(specials or {}) do
+    table.insert(statusline, {
+      items     = sl_normalize({unpack(special, 2)}),
+      condition = special[1]
+    })
+  end
+
+  table.insert(statusline, {
+    items     = sl_normalize(active),
+    condition = function()
+      return call.win_getid() == tonumber(g.actual_curwin)
+    end
+  })
+
+  table.insert(statusline, {
+    items     = sl_normalize(inactive, 'StatusLineNC'),
+    condition = function() return true end
+  })
+
+  update_statusline = function()
+    local items
+    for _, type in ipairs(statusline) do
+      if type.condition() then
+        items = type.items
+        break
+      end
+    end
+
+    setw.stl = setg.stl
+    for _, item in ipairs(items) do
+      setw.stl = setw.stl .. item[2] .. item[1]() .. '%*'
+    end
+  end
+end
+
+local sl_mode_colors = {
+  n = 'SLModeNormal',       c = 'SLModeCommand',  i = 'SLModeInsert',
+  R = 'SLModeReplace',      r = 'SLModeConfirm',  t = 'SLModeConfirm',
+  ['!'] = 'SLModeConfirm',  v = 'SLModeVisual',
+}
+
+local function sl_mode_set()
+  local hl = sl_mode_colors[call.mode():sub(1, 1)] or sl_mode_colors.v
+  ex('hi! link SLMode '..hl)
+end
+
+local function mod8w(x)
+  local integer, fraction = math.modf(3.875*x)
+  return integer, math.floor(8*fraction)
+end
+
+-- - items                                                               {{{2
+local sl_sep   = '%='
+local sl_lmode = function() sl_mode_set() return '█ ' end
+local sl_rmode = ' █'
+
+local function sl_filesize()
+  local size = call.getfsize(call.expand('%:p'))
+  if size <= 0 then return (' '):rep(6) end
+  local e = math.min(5, math.floor(math.log(size)/math.log(1024)))
+  return ('%5s '):format(math.floor(size / math.pow(1024, e))
+    ..({'', 'K', 'M', 'G', 'T', 'P'})[e+1])
+end
+
+local function sl_filename()
+  local info
+  if setb.filetype == 'help' and not setb.modifiable then
+    info = call.expand('%:t:r') .. ' 󰋗 '
+  else
+    info = call.expand('%:~:.')
+    if info:len() > 0 then
+      local flags = (setb.ro or not setb.ma)
+        and (setb.mod and '󰏮 ' or '󰌾 ')
+        or  (setb.mod and '󰏫 ' or '')
+        ..  ({dos=' ', mac=' ', unix=''})[setb.ff]
+      if flags:len() > 0 then
+        info = info .. ' ' .. flags
+      end
+    end
+  end
+
+  local width = math.max(1, math.floor(0.5*call.winwidth(0)) - 16)
+  return ('%%.%d(%s%%)'):format(width, call.printf('%-'..width..'S', info))
+end
+
+local bar = {
+  {'▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'},
+  {'█', '🮋', '🮊', '🮉', '▐', '🮈', '🮇', '▕'}
+}
+
+local function sl_location()
+  local l1, l2, last = call.line('w0'), call.line('w$'), call.line('$')
+  local rate = l2/last
+  local step = math.max(0.125/3, (l2-l1)/last)
+
+  local fill, part = mod8w(math.max(0, rate-step))
+  local p = (' '):rep(fill) .. bar[2][part+1]
+
+  local tmp = fill
+  fill, part = mod8w(rate)
+  p = p .. bar[1][8]:rep(fill-tmp) .. bar[1][part+1] .. (' '):rep(3-fill)
+
+  return '%4l %#SLRuler#' .. p .. '%* %-4v'
+end
+
+local function sl_spellcheck()
+  return setw.spell and ('󰓆  [%s] '):format(setb.spl:sub(1, 2)) or ''
+end
+
+statusline({
+  -- active
+  {sl_lmode, 'SLMode'},
+  sl_filesize, sl_filename, sl_location, sl_sep, sl_spellcheck,
+  --'branch', 'diff',
+  {sl_rmode, 'SLMode'}
+},
+  -- inactive
+  {sl_lmode, (' '):rep(6), sl_filename, sl_sep, sl_rmode}
+)
+
 
 -- vim: fdm=marker

@@ -261,6 +261,7 @@ setup{
   SLModeVisual               = {bE, b2, no, no},
   SLModeConfirm              = {b8, b2, no, no},
   SLDelimiter                = {b2, no, no, no},
+  SLRuler                    = {b4, b1, no, no},
 }
 
 ---- airline
