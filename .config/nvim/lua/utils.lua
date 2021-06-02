@@ -1,15 +1,15 @@
 --• API shortcuts                                                    {{{1
 -- define some common aliases
-g, w, b, t, v = vim.g, vim.w, vim.b, vim.t, vim.v
-ex   = vim.cmd
-env  = vim.env
-call = vim.fn
-setg = vim.o
-setb = vim.bo
-setw = vim.wo
+local g, w, b, t, v = vim.g, vim.w, vim.b, vim.t, vim.v
+local ex   = vim.cmd
+local env  = vim.env
+local call = vim.fn
+local setg = vim.o
+local setb = vim.bo
+local setw = vim.wo
 
 -- search for scope defined global-local variables
-function opt(name)
+local function opt(name)
   function get(dict)
     success, value = pcall(function() return dict[name] end)
     return success and value or nil
@@ -17,15 +17,15 @@ function opt(name)
   return get(vim.bo) or get(vim.wo) or get(vim.o)
 end
 
--- shortcut for defining key maps
-function map(mode, lhs, rhs, opts)
+-- shortcut for keymaps
+local function map(mode, lhs, rhs, opts)
   vim.api.nvim_set_keymap(mode, lhs, rhs,
     vim.tbl_extend('force', {noremap=true, silent=true}, opts or {})
   )
 end
 
--- shortcut for defining autocommands
-function au(event, filter, command)
+-- shortcut for autocommands
+local function au(event, filter, command)
   ex('autocmd UserGroup '..event..' '..filter..' '..command)
 end
 
@@ -137,7 +137,6 @@ map('', '<C-L>', '<C-W>l')
 function restore_cursor()
   if call.line([['"]]) <= call.line('$') then
     ex 'normal! g`"'
-    return 1
   end
 end
 au('BufReadPost', '*', 'lua restore_cursor()')
