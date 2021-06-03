@@ -225,11 +225,6 @@ local function sl_mode_set()
   ex('hi! link SLMode '..hl)
 end
 
-local function mod8w(x)
-  local integer, fraction = math.modf(3.875*x)
-  return integer, math.floor(8*fraction)
-end
-
 -- - items                                                               {{{2
 local sl_sep   = '%='
 local sl_lmode = function() sl_mode_set() return '█ ' end
@@ -264,24 +259,32 @@ local function sl_filename()
   return ('%%.%d(%s%%)'):format(width, call.printf('%-'..width..'S', info))
 end
 
-local bar = {
-  {'▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'},
-  {'█', '🮋', '🮊', '🮉', '▐', '🮈', '🮇', '▕'}
-}
-
 local function sl_location()
-  local l1, l2, last = call.line('w0'), call.line('w$'), call.line('$')
-  local rate = l2/last
-  local step = math.max(0.125/3, (l2-l1)/last)
+  local l1 = call.line('w0')
+  local l2 = call.line('w$')
+  local nl = call.line('$')
+  local wd = math.max(7, math.floor(0.5 + 32 * (l2-l1) / nl))
+  local rate = math.floor((32-wd) * l1 / (nl+l1-l2))
+  nl = (32 - wd - rate) / 8
 
-  local fill, part = mod8w(math.max(0, rate-step))
-  local p = (' '):rep(fill) .. bar[2][part+1]
+  local p = (' '):rep(rate / 8)
+  rate = math.floor(rate % 8)
 
-  local tmp = fill
-  fill, part = mod8w(rate)
-  p = p .. bar[1][8]:rep(fill-tmp) .. bar[1][part+1] .. (' '):rep(3-fill)
+  if rate > 0 then
+    p = p .. ({'🮋','🮊','🮉','▐','🮈','🮇','▕'})[rate]
+    wd = wd - (8-rate)
+  end
 
-  return '%4l %#SLRuler#' .. p .. '%* %-4v'
+  p = p .. ('█'):rep(wd / 8)
+  rate = math.floor(wd % 8)
+
+  if rate > 0 then
+    p = p .. ({'▏','▎','▍','▌','▋','▊','▉'})[rate]
+  end
+
+  p = p .. (' '):rep(nl)
+
+  return '%4l %#SLRuler#'..p..'%* %-4v'
 end
 
 local function sl_spellcheck()
@@ -298,6 +301,5 @@ statusline({
   -- inactive
   {sl_lmode, (' '):rep(6), sl_filename, sl_sep, sl_rmode}
 )
-
 
 -- vim: fdm=marker
