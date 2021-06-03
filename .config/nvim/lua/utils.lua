@@ -245,6 +245,10 @@ local function sl_filename()
   else
     info = call.expand('%:~:.')
     if info:len() > 0 then
+      if setb.fenc:len() > 0 and setb.fenc ~= 'utf-8' then
+        info = info .. (' [%s]'):format(setb.fenc)
+      end
+
       local flags = (setb.ro or not setb.ma)
         and (setb.mod and '󰏮 ' or '󰌾 ')
         or  (setb.mod and '󰏫 ' or '')
@@ -263,8 +267,8 @@ local function sl_location()
   local l1 = call.line('w0')
   local l2 = call.line('w$')
   local nl = call.line('$')
-  local wd = math.max(7, math.floor(0.5 + 32 * (l2-l1) / nl))
-  local rate = math.floor((32-wd) * l1 / (nl+l1-l2))
+  local wd = math.max(7, math.floor(0.5 + 32 * (l2-l1+1) / nl))
+  local rate = math.floor((32-wd) * l1 / (nl+l1-l2-1))
   nl = (32 - wd - rate) / 8
 
   local p = (' '):rep(rate / 8)
@@ -287,14 +291,21 @@ local function sl_location()
   return '%4l %#SLRuler#'..p..'%* %-4v'
 end
 
-local function sl_spellcheck()
-  return setw.spell and ('󰓆  [%s] '):format(setb.spl:sub(1, 2)) or ''
+local function sl_flags()
+  local flags = {}
+
+  -- spell check
+  if setw.spell then
+    flags[#flags+1] = ('%s󰓆 '):format(({pt_br = '󰫽', en_us = '󰫲'})[setb.spl])
+  end
+
+  return table.concat(flags, ' ')
 end
 
 statusline({
   -- active
   {sl_lmode, 'SLMode'},
-  sl_filesize, sl_filename, sl_location, sl_sep, sl_spellcheck,
+  sl_filesize, sl_filename, sl_location, sl_sep, sl_flags,
   --'branch', 'diff',
   {sl_rmode, 'SLMode'}
 },
