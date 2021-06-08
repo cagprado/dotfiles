@@ -155,80 +155,85 @@ map('' , '<F12>',      ':lua cycle_spell()<CR>')
 map('!', '<F12>', '<C-O>:lua cycle_spell()<CR>')
 
 --• status line                                                          {{{1
--- - helper functions                                                    {{{2
+-- - interface                                                           {{{2
 setg.statusline = '%{execute("call v:lua.update_statusline()")}'
 
-local function sl_normalize(items, normal_hl)
-  if not items then return {} end
-  normal_hl = normal_hl or 'StatusLine'
-
-  for k, v in pairs(items) do
-    v = (type(v) == 'table') and {unpack(v)} or {v}
-
-    if type(v[1]) ~= 'function' then
-      local text = v[1]
-      v[1] = function() return text end
-    end
-    v[2] = '%#' .. (v[2] or normal_hl) .. '#'
-
-    items[k] = v
-  end
-
-  return items
-end
-
-local function statusline(active, inactive, specials)
-  local statusline = {}
-  for _, special in ipairs(specials or {}) do
-    table.insert(statusline, {
-      items     = sl_normalize({unpack(special, 2)}),
-      condition = special[1]
-    })
-  end
-
-  table.insert(statusline, {
-    items     = sl_normalize(active),
-    condition = function()
+local function statusline(...)
+  local statusline = {
+    {items={}},
+    {items={}, condition=function()
       return call.win_getid() == tonumber(g.actual_curwin)
-    end
-  })
+    end}
+  }
 
-  table.insert(statusline, {
-    items     = sl_normalize(inactive, 'StatusLineNC'),
-    condition = function() return true end
-  })
+  for _, item in ipairs({...}) do
+    -- make sure item is a table
+    item = type(item) ~= 'table' and {item} or item
+
+    -- items should be functions
+    for i = 1, 2 do
+      if type(item[i]) == 'string' then
+        local text = item[i]
+        item[i] = function() return text end
+      end
+    end
+
+    -- organize items following conditions
+    if item.condition then
+      local items
+      for i = 2, #statusline-1 do
+        if statusline[i].condition == item.condition then
+          items = statusline[i].items
+          break
+        end
+      end
+
+      if not items then
+        table.insert(statusline, 2, {items={}, condition=item.condition})
+        items = statusline[2].items
+      end
+
+      table.insert(items, item[1])
+    else
+      if item[1] then
+        table.insert(statusline[#statusline].items, item[1])
+      end
+      if item[2] then
+        item[2] = item[2] == true and item[1] or item[2]
+        table.insert(statusline[1].items, item[2])
+      end
+    end
+  end
 
   update_statusline = function()
-    local items
-    for _, type in ipairs(statusline) do
-      if type.condition() then
-        items = type.items
+    local items = statusline[1].items
+    for i = 2, #statusline do
+      if statusline[i].condition() then
+        items = statusline[i].items
         break
       end
     end
 
     setw.stl = setg.stl
     for _, item in ipairs(items) do
-      setw.stl = setw.stl .. item[2] .. item[1]() .. '%*'
+      setw.stl = setw.stl .. item()
     end
   end
 end
 
-local sl_mode_colors = {
-  n = 'SLModeNormal',       c = 'SLModeCommand',  i = 'SLModeInsert',
-  R = 'SLModeReplace',      r = 'SLModeConfirm',  t = 'SLModeConfirm',
-  ['!'] = 'SLModeConfirm',  v = 'SLModeVisual',
-}
-
-local function sl_mode_set()
-  local hl = sl_mode_colors[call.mode():sub(1, 1)] or sl_mode_colors.v
-  ex('hi! link SLMode '..hl)
+-- - helper functions                                                    {{{2
+local function sl_highlight(name)
+  return name and ('%#'..name..'#') or '%*'
 end
 
--- - items                                                               {{{2
-local sl_sep   = '%='
-local sl_lmode = function() sl_mode_set() return '█ ' end
-local sl_rmode = ' █'
+local function sl_mode_color()
+  ex('hi! link SLMode ' .. (({
+    c = 'SLModeCommand',     i = 'SLModeInsert',      n = 'SLModeNormal',
+    R = 'SLModeReplace',     r = 'SLModeConfirm',     t = 'SLModeConfirm',
+    v = 'SLModeVisual',  ['!'] = 'SLModeConfirm'
+  }) [call.mode():sub(1, 1)] or 'SLModeVisual'))
+  return sl_highlight('SLMode')
+end
 
 local function sl_filesize()
   local size = call.getfsize(call.expand('%:p'))
@@ -239,24 +244,12 @@ local function sl_filesize()
 end
 
 local function sl_filename()
-  local info
-  if setb.filetype == 'help' and not setb.modifiable then
-    info = call.expand('%:t:r') .. ' 󰋗 '
-  else
-    info = call.expand('%:~:.')
-    if info:len() > 0 then
-      if setb.fenc:len() > 0 and setb.fenc ~= 'utf-8' then
-        info = info .. (' [%s]'):format(setb.fenc)
-      end
+  local info = (setb.filetype == 'help' and not setb.modifiable)
+    and ('󰋗  ' .. call.expand('%:t:r')) or call.expand('%:~:.')
 
-      local flags = (setb.ro or not setb.ma)
-        and (setb.mod and '󰏮 ' or '󰌾 ')
-        or  (setb.mod and '󰏫 ' or '')
-        ..  ({dos=' ', mac=' ', unix=''})[setb.ff]
-      if flags:len() > 0 then
-        info = info .. ' ' .. flags
-      end
-    end
+  -- encoding
+  if setb.fenc:len() > 0 and setb.fenc ~= 'utf-8' then
+    info = info .. (' [%s]'):format(setb.fenc)
   end
 
   local width = math.max(1, math.floor(0.5*call.winwidth(0)) - 16)
@@ -294,23 +287,47 @@ end
 local function sl_flags()
   local flags = {}
 
+  -- modification status
+  if setb.ro or not setb.ma then
+    flags[#flags+1] = setb.mod and '󰏮 ' or '󰌾 '
+  elseif setb.mod then
+    flags[#flags+1] = '󰏫 '
+  end
+
+  -- file format
+  local format = ({dos=' ', mac=' ', unix=''})[setb.ff]
+  if format then
+    flags[#flags+1] = format
+  end
+
+  -- filetype
+
   -- spell check
   if setw.spell then
     flags[#flags+1] = ('%s󰓆 '):format(({pt_br = '󰫽', en_us = '󰫲'})[setb.spl])
   end
 
-  return table.concat(flags, ' ')
+  return table.concat(flags)
 end
 
-statusline({
-  -- active
-  {sl_lmode, 'SLMode'},
-  sl_filesize, sl_filename, sl_location, sl_sep, sl_flags,
+-- - items                                                               {{{2
+statusline(
+  sl_mode_color,
+  {'█ ',           '█       '},
+  sl_highlight,
+  sl_filesize,
+  {sl_filename,     true},
+  sl_location,
+  {'%=',            true},
+  {sl_flags,        true},
+  sl_mode_color(),
+  {' █',           true}
   --'branch', 'diff',
-  {sl_rmode, 'SLMode'}
-},
-  -- inactive
-  {sl_lmode, (' '):rep(6), sl_filename, sl_sep, sl_rmode}
 )
 
+--  {function ()
+--    --ex('hi! link Test SLMode gui=reverse')
+--    --ex('hi Test gui=reverse')
+--    return ' █%#Test#hahaha' end, 'SLMode'}
+--},
 -- vim: fdm=marker
