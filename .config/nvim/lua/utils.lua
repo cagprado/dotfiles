@@ -158,12 +158,19 @@ map('!', '<F12>', '<C-O>:lua cycle_spell()<CR>')
 -- - interface                                                           {{{2
 setg.statusline = '%{execute("call v:lua.update_statusline()")}'
 
+local sl_conditions = {
+  is_active = function()
+    return call.win_getid() == tonumber(g.actual_curwin)
+  end,
+  name_is = function(name)
+    return function() return call.expand('%') == name end
+  end,
+}
+
 local function statusline(...)
   local statusline = {
     {items={}},
-    {items={}, condition=function()
-      return call.win_getid() == tonumber(g.actual_curwin)
-    end}
+    {items={}, condition=sl_conditions.is_active}
   }
 
   for _, item in ipairs({...}) do
@@ -301,6 +308,27 @@ local function sl_flags()
   end
 
   -- filetype
+  flags[#flags+1] = ({
+    c                 = '󰙱 ',
+    cpp               = '󰙲 ',
+    cs                = '󰌛 ',
+    css               = '󰌜 ',
+    fortran           = '󱈚 ',
+    go                = '󰟓 ',
+    haskell           = '󰲒 ',
+    html              = '󰌝 ',
+    java              = '󰬷 ',
+    javascript        = '󰌞 ',
+    kotlin            = '󱈙 ',
+    lua               = '󰢱 ',
+    markdown          = '󰍔 ',
+    php               = '󰌟 ',
+    python            = '󰌠 ',
+    r                 = '󰟔 ',
+    ruby              = '󰴭 ',
+    swift             = '󰛥 ',
+    typescript        = '󰛦 ',
+  })[setb.ft] or ''
 
   -- spell check
   if setw.spell then
@@ -320,14 +348,15 @@ statusline(
   sl_location,
   {'%=',            true},
   {sl_flags,        true},
-  sl_mode_color(),
-  {' █',           true}
   --'branch', 'diff',
+  sl_mode_color(),
+  {' █',           true},
+
+  {function()
+    return sl_conditions.is_active()
+      and (sl_mode_color() .. ('█'):rep(call.winwidth(0)))
+      or ''
+  end, condition=sl_conditions.name_is('[packer]')}
 )
 
---  {function ()
---    --ex('hi! link Test SLMode gui=reverse')
---    --ex('hi Test gui=reverse')
---    return ' █%#Test#hahaha' end, 'SLMode'}
---},
 -- vim: fdm=marker
