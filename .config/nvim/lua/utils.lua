@@ -37,7 +37,7 @@ au('WinLeave',                      '*', 'setl nocursorline')
 function foldtext()
   -- check commentstring definition
   if not b.cms then
-    b.cms = '()'..setb.cms:gsub('%p', '%%%1')
+    b.cms = '()'..(setb.cms == '' and '^%s' or setb.cms):gsub('%p', '%%%1')
       :gsub('%%%%s$', '().*()')
       :gsub('%%%%s',  '().-()')
       ..'%s*()'
