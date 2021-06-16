@@ -1,5 +1,5 @@
 [buildPlans.iosevka-custom]
-family = "Iosevka for LaTeX"
+family = "Iosevka Custom"
 spacing = "term"
 serifs = "slab"
 
@@ -9,12 +9,12 @@ serifs = "slab"
     [buildPlans.iosevka-custom.variants.design]
     g = "double-storey-open"
     m = "short-leg"
-    lower-lambda = "curly-turn"
     one = "base-long-top-serif"
     three = "flattop"
     six = "closed-contour"
     eight = "two-circles"
     nine = "closed-contour"
+    lower-lambda = "curly-turn"
     asterisk = "hex-low"
     underscore = "low"
     caret = "low"
