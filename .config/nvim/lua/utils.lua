@@ -252,7 +252,7 @@ end
 
 local function sl_filename()
   local info = (setb.filetype == 'help' and not setb.modifiable)
-    and ('󰋗  ' .. call.expand('%:t:r')) or call.expand('%:~:.')
+    and ('['..call.expand('%:t:r')..']') or call.expand('%:~:.')
 
   -- encoding
   if setb.fenc:len() > 0 and setb.fenc ~= 'utf-8' then
@@ -309,6 +309,7 @@ local function sl_flags()
 
   -- filetype
   flags[#flags+1] = ({
+    -- mdi-languages
     c                 = '󰙱 ',
     cpp               = '󰙲 ',
     cs                = '󰌛 ',
@@ -328,7 +329,12 @@ local function sl_flags()
     ruby              = '󰴭 ',
     swift             = '󰛥 ',
     typescript        = '󰛦 ',
-  })[setb.ft] or ''
+    -- others
+    help              = '󰋗 ',
+    vim               = ' ',
+    sh                = ' ',
+    zsh               = ' ',
+  })[setb.ft] or setb.ft
 
   -- spell check
   if setw.spell then
