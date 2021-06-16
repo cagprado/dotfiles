@@ -19,5 +19,4 @@
 [mergetool "nvim"]
 	cmd = nvim -d $REMOTE $LOCAL
 [url "git@github.com:"]
-#[url "https://github.com.cnpmjs.org/"]
 	insteadOf = https://github.com/
