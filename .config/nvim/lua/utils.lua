@@ -330,9 +330,15 @@ local function sl_flags()
     swift             = '󰛥 ',
     typescript        = '󰛦 ',
     -- others
+    asy               = '󰄪 ',
+    datafile          = '󰣟 ',
+    diff              = '󰢪 ',
+    gitcommit         = '󰊢 ',
     help              = '󰋗 ',
-    vim               = ' ',
     sh                = ' ',
+    tex               = '󱓷 ',
+    text              = '󰧭 ',
+    vim               = ' ',
     zsh               = ' ',
   })[setb.ft] or setb.ft
 
