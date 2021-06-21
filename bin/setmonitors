@@ -247,7 +247,7 @@ def build_monitor_list():
     xrandr = run(['xrandr', '--prop'], capture_output=True, text=True)
     xrandr = xrandr.stdout.replace('\n\t\t', '').splitlines()
 
-    pattern = re.compile(r'(\w+) (dis)?connected ?(primary)? (?:(\d+)x(\d+)[+]'
+    pattern = re.compile(r'(\S+) (dis)?connected ?(primary)? (?:(\d+)x(\d+)[+]'
                          r'(\d+)[+](\d+) ?(\w+)?)?')
 
     monitors = []
