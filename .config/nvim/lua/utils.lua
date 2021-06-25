@@ -156,8 +156,6 @@ map('!', '<F12>', '<C-O>:lua cycle_spell()<CR>')
 
 --• status line                                                          {{{1
 -- - interface                                                           {{{2
-setg.statusline = '%{execute("call v:lua.update_statusline()")}'
-
 local sl_conditions = {
   is_active = function()
     return call.win_getid() == tonumber(g.actual_curwin)
@@ -221,12 +219,13 @@ local function statusline(...)
       end
     end
 
-    setw.stl = setg.stl
+    setw.stl = '%{execute("call v:lua.update_statusline()")}'
     for _, item in ipairs(items) do
       setw.stl = setw.stl .. item()
     end
   end
 end
+setg.statusline = '%{execute("call v:lua.update_statusline()")}'
 
 -- - helper functions                                                    {{{2
 local function sl_highlight(name)
