@@ -148,8 +148,7 @@ function select-cursor() {
 
 # set zle mode functions
 function zle-keymap-select() { select-cursor }
-function zle-line-init()     { echoti cvvis; echoti bel; select-cursor }
-function zle-line-finish()   { echoti civis }
+function zle-line-init()     { echoti bel; select-cursor }
 function vi-replace-chars()  {
   echo -n $cursor_replace
   zle .vi-replace-chars -- "$@"
@@ -158,7 +157,6 @@ function vi-replace-chars()  {
 
 zle -N zle-line-init
 zle -N zle-keymap-select
-zle -N zle-line-finish
 zle -N vi-replace-chars
 
 # bind special keys (insert and command modes)
