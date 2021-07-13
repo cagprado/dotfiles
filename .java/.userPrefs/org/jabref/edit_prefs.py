@@ -29,7 +29,7 @@ table = {
     'defaultBibtexKeyPattern':                r'[auth]:[year][shorttitle:abbr:lower]',
     'defaultUnwantedBibtexKeyCharacters':     r'-`ʹ!;?^+',
     'downloadLinkedFiles':                    r'true',
-    'externalJournalLists':                   r'/home/cagprado/usr/sync/default/library/journals.csv',
+    'externalJournalLists':                   r'/home/cagprado/usr/sync/files/library/journals.csv',
     'generateKeysBeforeSaving':               r'true',
     'importFileDirPattern':                   r'files',
     'importFileNamePattern':                  r'[bibtexkey]',
