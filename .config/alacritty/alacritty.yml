@@ -1,7 +1,7 @@
 font:
   size: 15.5
   normal:
-    family: Iosevka Fixed SS17
+    family: Iosevka Term SS17
 
 scrolling:
   history: 100000
