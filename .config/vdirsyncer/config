@@ -1,40 +1,36 @@
 # vim: ft=cfg
 
 [general]
-	status_path = "~/.config/vdirsyncer/status"
+	status_path = "~/usr/sync/auto/vdirsyncer/status"
 
 # CONTACTS ##################################################################
 [storage local_contacts]
 	type = "filesystem"
-	path = "~/.config/vdirsyncer/data/contacts"
+	path = "~/usr/sync/auto/vdirsyncer/data"
 	fileext = ".vcf"
 	encoding = "utf-8"
 
 [storage remote_contacts]
 	type = "carddav"
-	url = "https://contacts.icloud.com"
-	username = "cagprado@yandex.com"
-	password.fetch = ["command", "pass", "appleid/dav"]
+	url = "http://192.168.1.100:8080"
 
 [pair contacts]
 	a = "local_contacts"
 	b = "remote_contacts"
 	metadata = ["displayname"]
 	conflict_resolution = ["command", "vimdiff"]
-	collections = [["contacts", "contacts", "card"]]
+	collections = [["contacts", "contacts", "addressbook"]]
 
 # CALENDAR ##################################################################
 [storage local_calendar]
 	type = "filesystem"
-	path = "~/.config/vdirsyncer/data/calendars"
+	path = "~/usr/sync/auto/vdirsyncer/data/calendars"
 	fileext = ".ics"
 	encoding = "utf-8"
 
 [storage remote_calendar]
 	type = "caldav"
-	url = "https://caldav.icloud.com"
-	username = "cagprado@yandex.com"
-	password.fetch = ["command", "pass", "appleid/dav"]
+	url = "http://192.168.1.100:8080"
 
 [pair calendar]
 	a = "local_calendar"
@@ -42,8 +38,6 @@
 	metadata = ["color", "displayname"]
 	conflict_resolution = ["command", "vimdiff"]
 	collections = [
-		["personal", "personal", "56FB9884-FB3E-4ACC-AC19-87142D308D63"],
-		["work", "work", "AF2E4FCB-AF78-48E4-875F-FB05A3652371"],
-		["study", "study", "F8D278B9-B48F-4573-B056-CA81625A3355"],
-		["exercise", "exercise", "C6E9D1A0-991F-4A5B-858D-C15B5CD95288"],
-		["tasks", "tasks", "CCA66167-6F53-4761-A1AF-FB9C6F28CDC7"]]
+		["work", "work", "work"],
+		["study", "study", "study"],
+		["personal", "personal", "personal"]]
