@@ -1,9 +1,0 @@
-[Unit]
-Description=Dynamic DNS Update Timer
-
-[Timer]
-OnBootSec=0
-OnUnitActiveSec=4min
-
-[Install]
-WantedBy=timers.target

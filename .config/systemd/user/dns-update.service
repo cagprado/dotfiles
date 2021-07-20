@@ -1,5 +1,0 @@
-[Unit]
-Description=Dynamic DNS update
-
-[Service]
-ExecStart=/home/cagprado/.config/systemd/user/scripts/dns-update.zsh

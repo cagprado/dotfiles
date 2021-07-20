@@ -1,9 +1,0 @@
-[Unit]
-Description=Contacts Update Timer
-
-[Timer]
-OnBootSec=0
-OnUnitActiveSec=60min
-
-[Install]
-WantedBy=timers.target

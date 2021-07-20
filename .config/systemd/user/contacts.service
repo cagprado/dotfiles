@@ -1,5 +1,0 @@
-[Unit]
-Description=vdirsyncer update
-
-[Service]
-ExecStart=/bin/zsh -c '~/bin/zsh/contacts-update'
