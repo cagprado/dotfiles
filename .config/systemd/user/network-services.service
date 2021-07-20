@@ -1,0 +1,8 @@
+[Unit]
+Description=Check for internet and start relevant services
+
+[Service]
+ExecStart=/home/cagprado/.config/systemd/user/scripts/network-services.zsh
+
+[Install]
+WantedBy=basic.target

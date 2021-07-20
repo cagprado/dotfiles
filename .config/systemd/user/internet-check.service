@@ -1,8 +1,0 @@
-[Unit]
-Description=Internet connection check
-
-[Service]
-ExecStart=/home/cagprado/.config/systemd/user/scripts/internet-check.zsh
-
-[Install]
-WantedBy=basic.target

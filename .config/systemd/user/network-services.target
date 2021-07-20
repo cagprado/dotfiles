@@ -1,4 +1,0 @@
-[Unit]
-Description=Network services
-Wants=mail.timer
-Wants=contacts.timer
