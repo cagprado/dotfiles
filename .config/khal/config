@@ -1,4 +1,3 @@
-# vim: ft=dosini
 [default]
   highlight_event_days = True
   print_new = event
@@ -27,20 +26,10 @@
   [[contacts]]
     type = birthdays
     color = 2
-    path = ~/.config/vdirsyncer/data/contacts/contacts
+    path = ~/usr/sync/auto/vdirsyncer/data/contacts
 
-  [[personal]]
+  [[calendars]]
     type = calendar
-    path = ~/.config/vdirsyncer/data/calendars/personal
+    path = ~/usr/sync/auto/vdirsyncer/data/calendars
 
-  [[work]]
-    type = calendar
-    path = ~/.config/vdirsyncer/data/calendars/work
-
-  [[study]]
-    type = calendar
-    path = ~/.config/vdirsyncer/data/calendars/study
-
-  [[exercise]]
-    type = calendar
-    path = ~/.config/vdirsyncer/data/calendars/exercise
+# vim: ft=dosini
