@@ -1,0 +1,25 @@
+[user]
+	name = Caio Prado
+	email = cagprado@yandex.com
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	cm = commit
+	wd = diff --word-diff
+	lg = prettylog
+[push]
+	default = tracking
+[pull]
+	ff = only
+[merge]
+	tool = nvim
+[mergetool]
+	keepBackup = false
+	prompt = false
+[mergetool "nvim"]
+	cmd = nvim -d $REMOTE $LOCAL
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[init]
+	defaultBranch = master
