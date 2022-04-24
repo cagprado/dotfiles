@@ -1,0 +1,489 @@
+include ".gtkrc-2.0"
+
+gtk-font-name                   = "Sans Serif,  18"
+gtk-icon-sizes                  = "
+  panel-applications-menu=48,48
+ :panel-menu=48,48
+ :panel=32,32
+ :panel-button=32,32
+ :gtk-menu=32,32
+ :gtk-large-toolbar=48,48
+ :gtk-small-toolbar=32,32
+ :gtk-button=32,32
+ :gtk-dialog=64,64
+"
+
+style "default-hidpi" {
+  xthickness  = 2
+  ythickness  = 2
+  GtkWidget::tooltip-radius                   = 4
+  GtkToolbar::internal-padding                = 10
+  GtkToolButton::icon-spacing                 = 8
+
+  GtkSeparatorMenuItem::horizontal-padding    = 6
+  GtkSeparatorMenuItem::separator-height      = 2
+
+  GtkCheckMenuItem::indicator-size            = 36
+  GtkRadioMenuItem::indicator-size            = 36
+
+  GtkScrollbar::slider-width                  = 40
+  GtkScrollbar::stepper-size                  = 8
+  GtkRange::slider-width                      = 14
+
+  GtkVScale::slider_width                     = 40
+  GtkVScale::slider_length                    = 40
+  GtkVScale::value-spacing                    = 4
+  GtkVScale::stepper-size                     = 28
+
+  GtkHScale::slider_width                     = 40
+  GtkHScale::slider_length                    = 40
+  GtkHScale::value-spacing                    = 4
+  GtkHScale::stepper-size                     = 28
+
+  GtkMenuBar::internal-padding                = 6
+
+  GtkNotebook::tab-overlap                    = 2
+  GtkNotebook::tab-curvature                  = 6
+
+  GtkCheckButton::indicator_size              = 26
+  GtkCheckButton::indicator_spacing           = 6
+
+  GtkTreeView::expander-size                  = 24
+  GtkTreeView::vertical-separator             = 2
+  GtkTreeView::horizontal-separator           = 8
+  GtkTreeView::grid-line-width                = 2
+  GtkTreeView::tree-line-width                = 2
+
+  GtkProgressBar::min-horizontal-bar-height   = 16
+  GtkProgressBar::min-vertical-bar-width      = 16
+
+  engine "pixmap" {
+    # Check Buttons
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = NORMAL
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-unchecked@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = PRELIGHT
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-unchecked-hover@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = ACTIVE
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-unchecked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = SELECTED
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-unchecked@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = INSENSITIVE
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-unchecked-insensitive@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = NORMAL
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-checked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = PRELIGHT
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-checked-hover@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = ACTIVE
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-checked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = SELECTED
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-checked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = CHECK
+      recolorable      = TRUE
+      state            = INSENSITIVE
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/check-checked-insensitive@2.png"
+      overlay_stretch  = FALSE
+    }
+
+    # Radio Buttons
+    image {
+      function         = OPTION
+      state            = NORMAL
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = PRELIGHT
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-hover@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = ACTIVE
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = SELECTED
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = INSENSITIVE
+      shadow           = OUT
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-insensitive@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = NORMAL
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-checked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = PRELIGHT
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-checked-hover@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = ACTIVE
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-checked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = SELECTED
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-checked-active@2.png"
+      overlay_stretch  = FALSE
+    }
+    image {
+      function         = OPTION
+      state            = INSENSITIVE
+      shadow           = IN
+      overlay_file     = "../../../../../usr/share/themes/Breeze/assets/radio-checked-insensitive@2.png"
+      overlay_stretch  = FALSE
+    }
+  }
+}
+
+style "button-hidpi" {
+  xthickness  = 8
+  ythickness  = 10
+}
+
+style "togglebutton-hidpi" {
+  xthickness  = 8
+  ythickness  = 10
+}
+
+style "spinbutton-hidpi" = "default" {
+  xthickness  = 6
+  ythickness  = 6
+  GtkWidget::interior_focus = 2
+}
+
+style "menu_item-hidpi" {
+  xthickness  = 4
+  ythickness  = 8
+}
+
+style "menubar_item-hidpi" {
+  xthickness  = 4
+  ythickness  = 4
+}
+
+style "entry-hidpi" {
+  xthickness  = 8
+  ythickness  = 8
+}
+
+style "combobox_entry-hidpi" {
+  xthickness = 6
+  ythickness = 8
+}
+
+style "combobox_entry_button-hidpi" {
+  xthickness = 12
+}
+
+style "notebook-hidpi" {
+  xthickness    = 10
+  ythickness    = 4
+}
+
+style "range-hidpi" {
+  engine "pixmap" {
+    image {
+      function      = BOX
+      detail        = "trough"
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-trough-horizontal@2.png"
+      border        = { 50, 50, 14, 14 }   #large borders while LibreOffice won't use GtkScrollbar::stepper-spacing=1
+      stretch       = TRUE
+      orientation   = HORIZONTAL
+    }
+    image {
+      function      = BOX
+      detail        = "trough"
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-trough-vertical@2.png"
+      border        = { 0, 0, 8, 8 }
+      border        = { 14, 14, 50, 50 }
+      stretch       = TRUE
+      orientation   = VERTICAL
+    }
+
+    # Horizontal
+    image {
+      function        = SLIDER
+      state           = NORMAL
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border          = { 0, 0, 0, 0 }
+      stretch         = TRUE
+      overlay_file    = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked@2.png"
+      overlay_stretch = FALSE
+      orientation     = HORIZONTAL
+    }
+    image {
+      function        = SLIDER
+      state           = PRELIGHT
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border          = { 0, 0, 0, 0 }
+      stretch         = TRUE
+      overlay_file    = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-active@2.png"
+      overlay_stretch = FALSE
+      orientation     = HORIZONTAL
+    }
+    image {
+      function        = SLIDER
+      state           = INSENSITIVE
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border          = { 0, 0, 0, 0 }
+      stretch         = TRUE
+      overlay_file    = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-insensitive@2.png"
+      overlay_stretch = FALSE
+      orientation     = HORIZONTAL
+    }
+
+    # Vertical
+    image {
+      function        = SLIDER
+      state           = NORMAL
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border          = { 0, 0, 0, 0 }
+      stretch         = TRUE
+      overlay_file    = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked@2.png"
+      overlay_stretch = FALSE
+      orientation     = VERTICAL
+    }
+    image {
+      function        = SLIDER
+      state           = PRELIGHT
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border          = { 0, 0, 0, 0 }
+      stretch         = TRUE
+      overlay_file    = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-active@2.png"
+      overlay_stretch = FALSE
+      orientation     = VERTICAL
+    }
+
+    image {
+      function        = SLIDER
+      state           = INSENSITIVE
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border          = { 0, 0, 0, 0 }
+      stretch         = TRUE
+      overlay_file    = "../../../../../usr/share/themes/Breeze/assets/radio-unchecked-insensitive@2.png"
+      overlay_stretch = FALSE
+      orientation     = VERTICAL
+    }
+
+    # Function below removes ugly boxes
+    image {
+      function    = BOX
+      file        = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      border      = { 6, 6, 6, 6 }
+      stretch     = TRUE
+    }
+  }
+}
+
+style "scrollbar-hidpi" {
+  engine "pixmap" {
+    image {
+      function      = BOX
+      detail        = "trough"
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-trough-horizontal@2.png"
+      border        = { 50, 50, 14, 14 }   #large borders while LibreOffice won't use GtkScrollbar::stepper-spacing=1
+      stretch       = TRUE
+      orientation   = HORIZONTAL
+    }
+    image {
+      function      = BOX
+      detail        = "trough"
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-trough-vertical@2.png"
+      border        = { 14, 14, 50, 50 }
+      stretch       = TRUE
+      orientation   = VERTICAL
+    }
+
+    # Sliders
+    image {
+      function      = SLIDER
+      state         = NORMAL
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-horizontal@2.png"
+      border        = { 10, 10, 10, 10 }
+      stretch       = TRUE
+      orientation   = HORIZONTAL
+    }
+    image {
+      function      = SLIDER
+      state         = ACTIVE
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-horizontal-hover@2.png"
+      border        = { 10, 10, 10, 10 }
+      stretch       = TRUE
+      orientation   = HORIZONTAL
+    }
+    image {
+      function      = SLIDER
+      state         = PRELIGHT
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-horizontal-hover@2.png"
+      border        = { 10, 10, 10, 10 }
+      stretch       = TRUE
+      orientation   = HORIZONTAL
+    }
+    image {
+      function      = SLIDER
+      state         = INSENSITIVE
+      file          = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-horizontal@2.png"
+      border        = { 10, 10, 10, 10 }
+      stretch       = TRUE
+      orientation   = HORIZONTAL
+    }
+
+    # X Verticals
+    image {
+      function        = SLIDER
+      state           = NORMAL
+      file            = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-vertical@2.png"
+      border          = { 10, 10, 10, 10 }
+      stretch         = TRUE
+      orientation     = VERTICAL
+    }
+    image {
+      function        = SLIDER
+      state           = ACTIVE
+      file            = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-vertical-hover@2.png"
+      border          = { 10, 10, 10, 10 }
+      stretch         = TRUE
+      orientation     = VERTICAL
+    }
+    image {
+      function        = SLIDER
+      state           = PRELIGHT
+      file            = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-vertical-hover@2.png"
+      border          = { 10, 10, 10, 10 }
+      stretch         = TRUE
+      orientation     = VERTICAL
+    }
+    image {
+      function        = SLIDER
+      state           = INSENSITIVE
+      file            = "../../../../../usr/share/themes/Breeze/assets/scrollbar-slider-vertical@2.png"
+      border          = { 10, 10, 10, 10 }
+      stretch         = TRUE
+      orientation     = VERTICAL
+    }
+    image {
+      function        = STEPPER
+      file            = "../../../../../usr/share/themes/Breeze/assets/null.png"
+      stretch         = TRUE
+    }
+  }
+}
+
+style "toolbuttons-hidpi" {
+  xthickness                = 4
+  ythickness                = 4
+  GtkWidget::focus_padding  = 4
+}
+
+style "frame-hidpi" {
+  xthickness      = 2
+  ythickness      = 2
+}
+
+style "tooltips-hidpi" {
+  xthickness  = 16
+  ythickness  = 8
+}
+
+class "GtkWidget"                   style "default-hidpi"
+class "GtkScrollbar"                style "scrollbar-hidpi"
+class "GtkButton"                   style "button-hidpi"
+class "GtkEntry"                    style "entry-hidpi"
+class "GtkOldEditable"              style "entry-hidpi"
+class "GtkSpinButton"               style "spinbutton-hidpi"
+class "GtkNotebook"                 style "notebook-hidpi"
+class "GtkRange"                    style "range-hidpi"
+class "GtkFrame"                    style "frame-hidpi"
+class "GtkToolButton"               style "toolbuttons-hidpi"
+class "GtkToggleButton"             style "togglebutton-hidpi"
+
+widget_class "*<GtkMenuItem>*"                              style "menu_item-hidpi"
+widget_class "*<GtkMenuBar>.<GtkMenuItem>*"                 style "menubar_item-hidpi"
+widget_class "*Tool*GtkButton"                              style "toolbuttons-hidpi"
+widget_class "*<GtkComboBox>*"                              style "button-hidpi"
+widget_class "*<GtkComboBoxEntry>*"                         style "combobox_entry-hidpi"
+widget_class "*<GtkComboBoxEntry>*<GtkButton>"              style "combobox_entry_button-hidpi"
+widget_class "*<GtkCombo>*"                                 style "combobox_entry-hidpi"
+widget_class "*<GtkCombo>.<GtkButton>"                      style "combobox_entry_button-hidpi"
+widget_class "*<GtkFileChooserDialog>*GtkToggleButton*"     style "toolbuttons-hidpi"
+widget_class "*<GtkFileChooserDialog>*GtkComboBox*"         style "button-hidpi"
+widget "gtk-tooltip*"                                       style "tooltips-hidpi"

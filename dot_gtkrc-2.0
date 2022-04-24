@@ -1,0 +1,27 @@
+gtk-font-name                   = "Sans Serif,  9"
+gtk-theme-name                  = "Breeze"
+gtk-icon-theme-name             = "breeze"
+gtk-enable-animations           = 1
+gtk-toolbar-style               = 3
+gtk-menu-images                 = 1
+gtk-button-images               = 1
+gtk-alternative-button-order    = 1
+gtk-primary-button-warps-slider = 0
+
+# change accent color
+gtk-color-scheme = "selected_bg_color:#926ee4"
+gtk-color-scheme = "button_active:#926ee4"
+
+style "default-accent" {
+  bg[SELECTED]   = @selected_bg_color
+  base[SELECTED] = @selected_bg_color
+  base[ACTIVE]   = @selected_bg_color
+}
+
+style "menu_item-accent"
+{
+  bg[PRELIGHT]      = @button_active
+}
+
+class        "GtkWidget"       style "default-accent"
+widget_class "*<GtkMenuItem>*" style "menu_item-accent"
