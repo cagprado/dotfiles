@@ -1,0 +1,107 @@
+# .zprofile - login shell initialization file
+
+[[ "$(id -gn)" == "$USERNAME" ]] && umask 002 || umask 022
+
+# • path and zsh functions                                               {{{1
+
+export PATH="$HOME/bin:$PATH"
+for file in $HOME/.{zshenv,zprofile,zshrc,zlogout}; do
+  [[ $file -ot $file.zwc ]] || zcompile $file
+done
+
+function zshfunctions() {
+  [[ -d "$FUNCTIONS" ]] && zcompile -Uz $FUNCTIONS $FUNCTIONS/*(.x) || :
+}
+zshfunctions
+
+# • system setup                                                         {{{1
+
+export EDITOR="nvim"
+export TERMINAL="foot"
+export MAKEFLAGS='-j -Otarget'
+
+export PAPERSIZE="a4"
+export PRINTER="kmc368"
+
+export LESS="-cx3MRFX"
+export LESSCOLORIZER="pygmentize"
+export LESSOPEN="| lesspipe %s"
+
+# • graphic system (wayland/x11)                                         {{{1
+
+export DE="generic"
+export SAL_USE_VCLPLUGIN=qt5
+export QT_QPA_PLATFORMTHEME="qt5ct"
+export LIBVA_DRIVER_NAME="iHD"
+
+export QT_IM_MODULE="fcitx"
+export GTK_IM_MODULE="fcitx"
+export XMODIFIERS="@im=fcitx"
+
+read _JAVA_OPTIONS <<end
+  -Dsun.java2d.opengl=true -Dawt.useSystemAAFontSettings=on \
+  -Dswing.aatext=true
+end
+export _JAVA_OPTIONS
+export _JAVA_AWT_WM_NONREPARENTING=1
+export JAVA_FONTS="/usr/share/fonts/TTF"
+
+# • Location specific configuration                                      {{{1
+
+if [[ "$TTY" == "/dev/tty1" ]]; then
+  # first TTY automatically run GUI
+  exec startx
+
+elif [[ "$TTY" =~ "/dev/tty[2-9]" ]]; then
+  # local TTY: set some pretty colors
+  tput setab 7
+  tput setaf 0
+  echo -ne "\e]P04d4d4c\e]P8000000"
+  echo -ne "\e]P1c82829\e]P9ff3334"
+  echo -ne "\e]P2718c00\e]PA9ec400"
+  echo -ne "\e]P3f5871f\e]PBeab700"
+  echo -ne "\e]P44271ae\e]PC5795e6"
+  echo -ne "\e]P58959a8\e]PDb777e0"
+  echo -ne "\e]P63e999f\e]PE54ced6"
+  echo -ne "\e]P7fafafa\e]PF8e908c"
+  echo -ne "\e[8]\e[1;15]"
+  clear
+
+else
+  # remote login shell
+  export REMOTE_SESSION=true
+
+  # first get rid of LD_LIBRARY_PATH poison =P
+  unsetopt GLOBAL_RCS
+  unset LD_LIBRARY_PATH
+
+  # then fix some common version problems
+  [[ "${$(make -v)[3]}" -lt 4 ]] && export MAKEFLAGS='-j'
+
+  # now load some environment specific configuration
+  if [[ -f "/cvmfs/alice.cern.ch/etc/login.sh" ]]; then
+      export ALIVERSIONS="VO_ALICE@ROOT::v5-34-30,VO_ALICE@pythia::v8186"
+      source /cvmfs/alice.cern.ch/etc/login.sh
+  fi
+
+  # gcc
+  if [[ -d "$LOCALBUILDS/gcc" ]]; then
+      export CC="$LOCALBUILDS/gcc/bin/gcc"
+      export CXX="$LOCALBUILDS/gcc/bin/g++"
+      export CPP="$LOCALBUILDS/gcc/bin/cpp"
+      export F77="$LOCALBUILDS/gcc/bin/gfortran"
+      export FC="$LOCALBUILDS/gcc/bin/gfortran"
+      export LDFLAGS="-fPIC -Wl,-rpath,$LOCALBUILDS/gcc/lib64"
+      export MANPATH="$LOCALBUILDS/gcc/share/man:$(manpath 2>/dev/null)"
+      PATH="$LOCALBUILDS/gcc/bin:$PATH"
+  fi
+
+  # local builds
+  [[ -d "$LOCALBUILDS/cmake"  ]] && PATH="$LOCALBUILDS/cmake/bin:$PATH"
+  [[ -d "$LOCALBUILDS/python" ]] && PATH="$LOCALBUILDS/python/bin:$PATH"
+  [[ -d "$LOCALBUILDS/hepmc"  ]] && PATH="$LOCALBUILDS/hepmc/bin:$PATH"
+  [[ -d "$LOCALBUILDS/pythia" ]] && PATH="$LOCALBUILDS/pythia/bin:$PATH"
+  [[ -d "$LOCALBUILDS/root5"  ]] && PATH="$LOCALBUILDS/root5/bin:$PATH"
+  [[ -d "$LOCALBUILDS/root"   ]] && PATH="$LOCALBUILDS/root/bin:$PATH"
+  [[ -d "$LOCALBUILDS/neovim" ]] && PATH="$LOCALBUILDS/neovim/bin:$PATH"
+fi

@@ -1,0 +1,9 @@
+# ZSH Configuration - Logout
+
+if [[ "$TTY" =~ "/dev/tty[0-9]" ]]; then
+  # Reset linux console colors and cursor
+  tput setaf 7
+  tput setab 0
+  echo -en '\e]R\e[8]\e[?c\e[1;6]'
+  clear
+fi
