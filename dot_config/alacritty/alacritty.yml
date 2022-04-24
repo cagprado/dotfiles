@@ -1,0 +1,39 @@
+window:
+  dynamic_padding: true  # spread additional padding evenly around content  #
+  decorations: none
+
+font:
+  normal:
+    family: Iosevka Term SS17
+  size: 13.5
+  builtin_box_drawing: false
+
+cursor:
+  unfocused_hollow: true
+
+colors:
+  transparent_background_colors: true
+  primary:
+    background: '#fafafa'
+    foreground: '#4d4d4d'
+    dim_foreground: '#a3a3a3'
+
+  normal:
+    black:   '#4d4d4d'
+    red:     '#c82829'
+    green:   '#718c00'
+    yellow:  '#f5871f'
+    blue:    '#4271ae'
+    magenta: '#8959a8'
+    cyan:    '#3e999f'
+    white:   '#fafafa'
+
+  dim:
+    black:   '#a3a3a3'
+    red:     '#e19191'
+    green:   '#b5c37d'
+    yellow:  '#f7c08c'
+    blue:    '#9eb5d4'
+    magenta: '#c1a9d1'
+    cyan:    '#9cc9cc'
+    white:   '#fafafa'
