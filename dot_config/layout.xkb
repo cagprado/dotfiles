@@ -1,0 +1,62 @@
+xkb_keymap {
+  xkb_compatibility { include "complete"              };
+  xkb_geometry      { include "pc(pc105)"             };
+  xkb_keycodes      { include "evdev+aliases(qwerty)" };
+  xkb_types         { include "complete"              };
+  xkb_symbols {
+    include "pc+inet(evdev)+level3(ralt_switch)"
+    name[group1]="Custom";
+
+    key <TLDE> { [dead_grave,   dead_tilde,      questiondown,         exclamdown           ] }; //  `   ~   ¿   ¡
+    key <AE01> { [1,            exclam,          EuroSign,             oneeighth            ] }; //  1   !   €   ⅛
+    key <AE02> { [2,            at,              yen,                  onequarter           ] }; //  2   @   ¥   ¼
+    key <AE03> { [3,            numbersign,      sterling,             threeeighths         ] }; //  3   #   £   ⅜
+    key <AE04> { [4,            dollar,          U2113,                onehalf              ] }; //  4   $   ℓ   ½
+    key <AE05> { [5,            percent,         division,             fiveeighths          ] }; //  5   %   ÷   ⅝
+    key <AE06> { [6,            dead_circumflex, dead_caron,           threequarters        ] }; //  6   ^   ˇ   ¾
+    key <AE07> { [7,            ampersand,       dead_macron,          seveneighths         ] }; //  7   &   ¯   ⅞
+    key <AE08> { [8,            asterisk,        infinity,             multiply             ] }; //  8   *   ∞   ×
+    key <AE09> { [9,            parenleft,       partdifferential,     nabla                ] }; //  9   (   ∂   ∇
+    key <AE10> { [0,            parenright,      emptyset,             zerosubscript        ] }; //  0   )   ∅   ₀
+    key <AE11> { [minus,        underscore,      endash,               emdash               ] }; //  -   _   –   —
+    key <AE12> { [equal,        plus,            plusminus,            U2213                ] }; //  =   +   ±   ∓
+
+    key <AD01> { [q,            Q,               U03D5,                U2135                ] }; //  q   Q   ϕ   ℵ
+    key <AD02> { [w,            W,               Greek_omega,          Greek_OMEGA          ] }; //  w   W   ω   Ω
+    key <AD03> { [e,            E,               Greek_epsilon,        U03f5                ] }; //  e   E   ε   ϵ
+    key <AD04> { [r,            R,               Greek_rho,            U211c                ] }; //  r   R   ρ   ℜ
+    key <AD05> { [t,            T,               Greek_tau,            dagger               ] }; //  t   T   τ   †
+    key <AD06> { [y,            Y,               Greek_psi,            Greek_PSI            ] }; //  y   Y   ψ   Ψ
+    key <AD07> { [u,            U,               Greek_upsilon,        Greek_UPSILON        ] }; //  u   U   υ   Υ
+    key <AD08> { [i,            I,               Greek_iota,           U2111                ] }; //  i   I   ι   ℑ
+    key <AD09> { [o,            O,               Greek_theta,          Greek_THETA          ] }; //  o   O   θ   Θ
+    key <AD10> { [p,            P,               Greek_pi,             Greek_PI             ] }; //  p   P   π   Π
+    key <AD11> { [bracketleft,  braceleft,       leftsinglequotemark,  leftdoublequotemark  ] }; //  [   {   ‘   “
+    key <AD12> { [bracketright, braceright,      rightsinglequotemark, rightdoublequotemark ] }; //  ]   }   ’   ”
+    key <BKSL> { [backslash,    bar,             notequal,             U2016                ] }; //  \   |   ≠   ‖
+
+    key <AC01> { [a,            A,               Greek_alpha,          U212B                ] }; //  a   A   α   Å
+    key <AC02> { [s,            S,               Greek_sigma,          Greek_SIGMA          ] }; //  s   S   σ   Σ
+    key <AC03> { [d,            D,               Greek_delta,          Greek_DELTA          ] }; //  d   D   δ   Δ
+    key <AC04> { [f,            F,               Greek_phi,            Greek_PHI            ] }; //  f   F   φ   Φ
+    key <AC05> { [g,            G,               Greek_gamma,          Greek_GAMMA          ] }; //  g   G   γ   Γ
+    key <AC06> { [h,            H,               hstroke,              U220F                ] }; //  h   H   ħ   ∏
+    key <AC07> { [j,            J,               integral,             U2211                ] }; //  j   J   ∫   ∑
+    key <AC08> { [k,            K,               Greek_kappa,          notsign              ] }; //  k   K   κ   ¬
+    key <AC09> { [l,            L,               Greek_lambda,         Greek_LAMBDA         ] }; //  l   L   λ   Λ
+    key <AC10> { [semicolon,    colon,           degree,               ssharp               ] }; //  ;   :   °   ß
+    key <AC11> { [dead_acute,   dead_diaeresis,  masculine,            ordfeminine          ] }; //  '   "   º   ª
+
+    key <AB01> { [z,            Z,               Greek_zeta,           lessthanequal        ] }; //  z   Z   ζ   ≤
+    key <AB02> { [x,            X,               Greek_chi,            greaterthanequal     ] }; //  x   X   χ   ≥
+    key <AB03> { [c,            C,               Greek_xi,             Greek_XI             ] }; //  c   C   ξ   Ξ
+    key <AB04> { [v,            V,               Greek_nu,             squareroot           ] }; //  v   V   ν   √
+    key <AB05> { [b,            B,               Greek_beta,           guillemotleft        ] }; //  b   B   β   «
+    key <AB06> { [n,            N,               Greek_eta,            guillemotright       ] }; //  n   N   η   »
+    key <AB07> { [m,            M,               Greek_mu,             U266B                ] }; //  m   M   μ   ♫
+    key <AB08> { [comma,        less,            ccedilla,             Ccedilla             ] }; //  ,   <   ç   Ç
+    key <AB09> { [period,       greater,         periodcentered,       U203F                ] }; //  .   >   ·   ‿
+    key <AB10> { [slash,        question,        ellipsis,             U2044                ] }; //  /   ?   …   ⁄ (fraction bar)
+  };
+};
+// vim: ft=xkb tw=0 nowrap
