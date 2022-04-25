@@ -1,0 +1,227 @@
+# vim: ft=dircolors
+# special types                                                          {{{1
+NORMAL                  00
+FILE                    00
+LINK                    35
+DIR                   1;34
+ORPHAN                7;31
+MISSING               7;31
+FIFO                  7;34
+SOCK                  7;34
+BLK                   7;34
+CHR                   7;34
+CAPABILITY            7;34
+MULTIHARDLINK         7;34
+OTHER_WRITABLE        7;34
+SETGID                7;34
+SETUID                7;34
+STICKY                7;34
+STICKY_OTHER_WRITABLE 7;34
+EXEC                  1;32
+
+# text                                                                   {{{1
+
+# cryptography
+*.gpg      34
+*.gpg      34
+*.pgp      34
+*.asc      34
+*.3des     34
+*.aes      34
+*.enc      34
+
+# regular text
+*.txt      36
+*.org      36
+*.md       36
+*.cfg      36
+*.conf     36
+
+# source code text
+*Makefile  32
+*.ly       32
+*.lua      32
+*.asy      32
+*.tex      32
+*.h        32
+*.hpp      32
+*.hxx      32
+*.H        32
+*.HXX      32
+*.c        32
+*.C        32
+*.cpp      32
+*.cxx      32
+*.inc      32
+*.f        32
+*.F        32
+*.f90      32
+*.F90      32
+*.for      32
+*.objc     32
+*.sh       32
+*.csh      32
+*.zsh      32
+*.el       32
+*.vim      32
+*.java     32
+*.pl       32
+*.pm       32
+*.py       32
+*.rb       32
+*.hs       32
+*.php      32
+*.htm      32
+*.html     32
+*.shtml    32
+*.xml      32
+*.qml      32
+*.rdf      32
+*.css      32
+*.js       32
+*.man      32
+
+# images
+*.bmp      33
+*.cgm      33
+*.dl       33
+*.emf      33
+*.eps      33
+*.gif      33
+*.jpeg     33
+*.jpg      33
+*.JPG      33
+*.mng      33
+*.pbm      33
+*.pcx      33
+*.pdf      33
+*.pgm      33
+*.png      33
+*.ppm      33
+*.pps      33
+*.ppsx     33
+*.svg      33
+*.svgz     33
+*.tga      33
+*.tif      33
+*.tiff     33
+*.xbm      33
+*.xcf      33
+*.xpm      33
+*.xwd      33
+*.xwd      33
+*.yuv      33
+
+# audio / video
+*.aac    1;33
+*.au     1;33
+*.flac   1;33
+*.mid    1;33
+*.midi   1;33
+*.mka    1;33
+*.mp3    1;33
+*.mpa    1;33
+*.mpeg   1;33
+*.mpg    1;33
+*.ogg    1;33
+*.ra     1;33
+*.wav    1;33
+
+*.anx    1;33
+*.asf    1;33
+*.avi    1;33
+*.axv    1;33
+*.flc    1;33
+*.fli    1;33
+*.flv    1;33
+*.gl     1;33
+*.m2v    1;33
+*.m4v    1;33
+*.mkv    1;33
+*.mov    1;33
+*.mp4    1;33
+*.mp4v   1;33
+*.mpeg   1;33
+*.mpg    1;33
+*.nuv    1;33
+*.ogm    1;33
+*.ogv    1;33
+*.ogx    1;33
+*.qt     1;33
+*.rm     1;33
+*.rmvb   1;33
+*.swf    1;33
+*.vob    1;33
+*.webm   1;33
+*.wmv    1;33
+*.3gp    1;33
+
+# documents and binary files
+*.ods      31
+*.odt      31
+*.pdf      31
+*.ps       31
+*.div      31
+*.djvu     31
+*.doc      31
+*.docx     31
+*.rtf      31
+*.dot      31
+*.dotx     31
+*.xls      31
+*.xlsx     31
+*.ppt      31
+*.pptx     31
+*.fla      31
+*.psd      31
+*.root    ;31
+
+# archives, compressed
+*.7z     1;35
+*.apk    1;35
+*.arj    1;35
+*.bin    1;35
+*.bz     1;35
+*.bz2    1;35
+*.cab    1;35  # Win
+*.deb    1;35
+*.dmg    1;35  # OSX
+*.gem    1;35
+*.gz     1;35
+*.iso    1;35
+*.jar    1;35
+*.msi    1;35  # Win
+*.rar    1;35
+*.rpm    1;35
+*.tar    1;35
+*.tbz    1;35
+*.tbz2   1;35
+*.tgz    1;35
+*.tx     1;35
+*.war    1;35
+*.xpi    1;35
+*.xz     1;35
+*.z      1;35
+*.Z      1;35
+*.zip    1;35
+*.zst    1;35
+
+# unimportant files
+*.org_archive 97
+*.dat      97
+*.log      97
+*~         97
+*#         97
+*.bak      97
+*.BAK      97
+*.old      97
+*.OLD      97
+*.off      97
+*.OFF      97
+*.dist     97
+*.DIST     97
+*.orig     97
+*.ORIG     97
+*.swp      97
+*.swo      97
+**,v       97
