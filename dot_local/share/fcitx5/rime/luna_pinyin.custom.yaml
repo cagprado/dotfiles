@@ -1,0 +1,13 @@
+patch:
+  schema:
+    name: "拼音"
+  switches:
+    - name: full_shape
+      states: ['󱎖','󰝥']
+      reset: 0
+    - name: simplification
+      states: ['繁','简']
+      reset: 1
+    - name: ascii_punct
+      states: ['。','．']
+      reset: 0
