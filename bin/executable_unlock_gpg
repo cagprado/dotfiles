@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [[ -z "$HOME" ]]; then exec su "$PAM_USER" "$0"; fi
+
+# automatically cache passphrases for given keys using PAM_PASS
+read PAM_PASS
+keylist="$HOME/.gnupg/auto_unlock"
+if [[ -f "$keylist" ]]; then
+  while read keygrip; do
+    /usr/lib/gnupg/gpg-preset-passphrase --preset -P "$PAM_PASS" "$keygrip"
+  done < "$keylist"
+fi
