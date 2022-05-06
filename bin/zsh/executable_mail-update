@@ -1,0 +1,24 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help
+
+local DESC="Send mail and check for new mails."
+local USAGE="%Busage:%b $0"
+
+local HELP=false
+local SUMMARY=false
+if ! parse_cmdline 'h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $0 $USAGE $DESC && return
+
+$HOME/bin/msmtp-queue -r    # send all
+afew -m                     # reorganize mails (only one host should do it)
+notmuch search --output=files is:delete | xargs -d'\n' -L 1 rm -f # remove deleted
+
+mbsync -a                   # sync imap
+notmuch new                 # update database
+afew -tn                    # initial tags
+
+pkill -SIGRTMIN+10 i3blocks # tip i3 to update mail count

@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+if [[ "$1" = "-H" ]]; then
+  print -P -f "%${LIST_WIDTH}s  %s\n" "%B$0%b" "Prints argument to stdout formatted bold."
+  return
+fi
+
+echo "\e[1m$@\e[0m"

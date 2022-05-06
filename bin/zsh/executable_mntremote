@@ -1,0 +1,71 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help err
+
+# PARSE COMMAND LINE ########################################################
+local NAME="$0"
+local DESC="Mount remote SSH path."
+local USAGE="%Busage:%b [options] <host>"
+local LONGHELP
+LONGHELP=$(<<END
+Mounts remote SSH filesystem using sshfs utility.  By default, it creates
+a directory in $HOME/mnt where the filesystem will be mounted.
+
+Available options are:
+  %B-u%b
+      Umount remote filesystem and clear directories.
+  %B-p MOUNTROOT%b
+      Use MOUNTROOT instead of $HOME/mnt.  Note that this option must be
+      issued again when unmounting filesystem.
+END
+)
+local MOUNTROOT="$HOME/mnt"
+local HOST=""
+local UMOUNT=false
+local HELP=false
+local SUMMARY=false
+local ERROR=false
+
+if !  parse_cmdline '=HOST h|help>HELP H|summary>SUMMARY u>UMOUNT :p>MOUNTROOT' $@; then
+  print -P "Error parsing command line...\n$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $NAME $USAGE $DESC $LONGHELP && return
+
+# no hostname: error
+if [[ -z "$HOST" ]]; then
+    err "Hostname cannot be empty"
+    ERROR=true
+
+elif $UMOUNT; then
+    EXECUTED_STEPS=0
+
+    # it is mounted, try to umount, halt if fail
+    if $(mount | grep -q $MOUNTROOT/$HOST); then
+        fusermount3 -u "$MOUNTROOT/$HOST" || return $?
+        ((EXECUTED_STEPS+=1))
+    fi
+
+    # unmounted guaranteed, clean up, halt if fail
+    if [[ -d "$MOUNTROOT/$HOST" ]]; then
+        rmdir "$MOUNTROOT/$HOST" || return $?
+        ((EXECUTED_STEPS+=1))
+    fi
+
+    # try to remove the base mountroot, ignore this step in any failure
+    [[ -d "$MOUNTROOT" ]] && rmdir "$MOUNTROOT" >/dev/null 2>&1
+
+    # if no steps were executed, return 1 (mimic 'umount' command that
+    # returns non-zero status if there was nothing to unmount)
+    # return 0 otherwise, since the previous commands were okay
+    [[ $EXECUTED_STEPS -gt 0 ]] || return $?
+
+else
+    mkdir -p "$MOUNTROOT/$HOST"
+    sshfs -o idmap=user -o follow_symlinks -o transform_symlinks "$HOST:" "$MOUNTROOT/$HOST" -C || return $?
+fi
+
+if $ERROR; then
+  print -P "Error parsing command line...\n$USAGE"
+  return 1
+fi

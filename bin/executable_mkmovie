@@ -1,0 +1,56 @@
+#!/bin/zsh
+setopt numeric_glob_sort
+
+INPUT="$1"
+EXT="${INPUT##*.}"
+
+if [[ "$EXT" == "pdf" ]]; then
+  echo "Convert pdf file to video..."
+  OUTPUT="${INPUT%.*}.mkv"
+  TMPNAME="mkmovie-$$"
+
+  pdfseparate "$INPUT" $TMPNAME-%d.pdf
+  parallel convert -define png:color-type=2 -flatten -density 300 {} {.}.png ::: $TMPNAME-*.pdf
+  ffmpeg -y -r 12 -i $TMPNAME-%d.png -vf "scale=1920:trunc(ow/a/2)*2" -c:v libx264 -preset slow -crf 19 -c:a null ${INPUT%.pdf}.mkv
+  rm ${TMPNAME}-*.{pdf,png}
+else
+  MODE="$2"
+
+  if [[ "$MODE" == "latex" ]]; then
+    OUTPUT="${INPUT%.*}_converted"
+    echo "Converting video to be suitable for laTeX use..."
+
+    # thumbnail
+    ffmpeg -y -i "$INPUT" -an -vframes 1 -ss 0 "$OUTPUT.png"
+
+    # .avi MPEG CODEC
+    ffmpeg -y -i "$INPUT"\
+      -c:v mpeg4 -q:v 3 \
+      -c:a libmp3lame -ar 44100 -ac 2 -b:a 192k\
+      -pix_fmt yuv420p -r 12 -vf "scale=1280:trunc(ow/a/2)*2"\
+      "$OUTPUT.avi"
+    
+    # .mp4 X264 CODEC
+    #ffmpeg -y -i "$INPUT"\
+    #  -c:v libx264 -profile:v baseline -b:v 2m -x264opts keyint=30\
+    #  -c:a libfaac -ar 44100 -ac 2 -b:a 192k\
+    #  -pix_fmt yuv420p -r 12 -vf "scale=1280:trunc(ow/a/2)*2"\
+    #  "$OUTPUT.mp4"
+
+    # .swf FLV CODEC
+    #ffmpeg -y -i "$INPUT"\
+    #  -c:v flv1 -q:v 3 \
+    #  -c:a libmp3lame -ar 44100 -ac 2 -b:a 192k\
+    #  -pix_fmt yuv420p -r 12 -vf "scale=1280:trunc(ow/a/2)*2"\
+    #  "$OUTPUT.swf"
+  else
+    OUTPUT="${INPUT%.*}_converted.mp4"
+    echo "Converting video to be suitable for Android playback..."
+
+    ffmpeg -y -i "$INPUT"\
+      -c:v libx264 -profile:v baseline -b:v 2m -x264opts keyint=30\
+      -c:a libfaac -ar 44100 -ac 2 -b:a 192k\
+      -pix_fmt yuv420p -r 30 -vf "scale=1280:trunc(ow/a/2)*2"\
+      "$OUTPUT"
+  fi
+fi

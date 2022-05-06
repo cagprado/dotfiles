@@ -1,0 +1,28 @@
+#!/bin/sh
+
+opt='--all --color --graph'
+fmt='♫%C(4 bold)%h%C(red)‿%s‿%C(5 bold)%cr%C(red)♫%C(auto)♫%D♫%C(red)'
+fil=$(cat <<-'__END__'
+	function graph(s) {
+	  gsub("[^ *|/\\\\]", "",    s)
+	  gsub("[|]\\\\",     "├─╮", s)
+	  gsub("[|]/",        "├─╯", s)
+	  gsub("[|]",         "│",   s)
+	  gsub("[*]",         "├",   s)
+	  return "[31m" s "[m"
+	}
+	{
+	  $1 = graph($1)
+	  if ($4 == "") {
+	    print $1 $2
+	  } else {
+	    $4 = $1 "‿" $3 $4 $5
+	    gsub(" ├", "", $4)
+	    gsub("├", NR==1 ? "" : "│", $4)
+	    print $4 "\n" $1 $2
+	  }
+	}
+	__END__
+)
+
+git log $opt --pretty="$fmt" | awk -F♫ "$fil" | column -ts‿ | less

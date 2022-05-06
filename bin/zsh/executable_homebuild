@@ -1,0 +1,87 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help msg err
+
+# PARSE COMMAND LINE ########################################################
+local NAME="$0"
+local DESC="Build local package using Arch's PKGBUILD as baseline"
+local USAGE="%Busage:%b <PKGBUILD> [-p install_prefix]"
+local LONGHELP
+LONGHELP=$(<<END
+Builds a local package to be extracted manually by using PKGBUILD from
+ArchLinux as guideline.
+
+  %B<PKGBUILD>%b
+      Location of PKGBUILD file.
+  %B-p install_prefix%b
+      Path where the package is intented to be extracted. [$HOME/usr/local]
+END
+)
+local HELP=false
+local SUMMARY=false
+local PKGBUILD=""
+local INSTALL_PREFIX="$LOCALBUILDS"
+if !  parse_cmdline '=PKGBUILD h|help>HELP H|summary>SUMMARY :p>INSTALL_PREFIX' $@; then
+    print -P "Error parsing command line...\n$USAGE"
+    return 1
+fi
+help $HELP $SUMMARY $NAME $USAGE $DESC $LONGHELP && return
+
+if [[ ! -r "$PKGBUILD" ]]; then
+    err "Missing PKGBUILD file '$PKGBUILD'..."
+    print -P "$USAGE"
+    return 1
+fi
+
+# Get dir of PKGBUILD
+PKGBUILDDIR=$(dirname $PKGBUILD)
+
+# Change some things in the PKGBUILD file:
+PKGBUILD="$(sed \
+    -e 's,/usr/,${INSTALL_PREFIX}/$pkgname/,g' \
+    -e 's,/usr,${INSTALL_PREFIX}/$pkgname,g' \
+    -e 's,/etc,${INSTALL_PREFIX}/$pkgname/etc,g' \
+    $PKGBUILD)"
+
+zsh -s <<END
+autoload +X parse_cmdline help msg err
+unset options
+
+$PKGBUILD
+INSTALL_PREFIX=$INSTALL_PREFIX
+msg "Building package '\$pkgname' to '$INSTALL_PREFIX'."
+
+# prepare directory for building
+rm -rf build_\$pkgname
+mkdir -p build_\$pkgname/src
+mkdir -p build_\$pkgname/pkg
+srcdir=\$(readlink -f build_\$pkgname/src)
+pkgdir=\$(readlink -f build_\$pkgname/pkg)
+
+# copy src files
+for FILE in \$source; do
+    FILENAME=\$(basename \$FILE)
+    if [[ -e "$PKGBUILDDIR/\$FILENAME" ]]; then
+        cp "$PKGBUILDDIR/\$FILENAME" \$srcdir
+    else
+        wget -P \$srcdir \$FILE
+    fi
+
+    tar xf \$srcdir/\$FILENAME -C \$srcdir 2>/dev/null || :
+done
+
+cd \$srcdir
+prepare || :
+
+cd \$srcdir
+build || return 1
+
+cd \$srcdir
+package || return 1
+
+cd \$pkgdir
+mv ./$INSTALL_PREFIX/\$pkgname ./$INSTALL_PREFIX/\$pkgname-\$pkgver
+ln -s \$pkgname-\$pkgver ./$INSTALL_PREFIX/\$pkgname
+tar cf ../../\$pkgname-\$pkgver.pkg.tar ./$INSTALL_PREFIX
+xz ../../\$pkgname-\$pkgver.pkg.tar
+END

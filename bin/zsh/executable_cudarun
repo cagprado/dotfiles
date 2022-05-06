@@ -1,0 +1,33 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help
+
+local NAME="$0"
+local DESC="Execute command in SAMPAWN061 where CUDA is installed."
+local USAGE="%Busage:%b $NAME command"
+
+# parse command line
+local HELP=false
+local SUMMARY=false
+local COMMAND=''
+
+if !  parse_cmdline '.COMMAND h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "Error parsing command line...\n$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $NAME $USAGE $DESC '' && return
+if [[ -z "$COMMAND" ]]; then
+  print -P "No command given...\n$USAGE"
+  return 1
+fi
+
+# execute function
+if [[ ! "$HOSTNAME" =~ "sampa" ]]; then
+  echo "ERROR: This script should be called only from sampa cluster..."
+  return 1
+fi
+
+ssh sampawn061 "zsh -s" <<END
+cd $DIR
+$*
+END

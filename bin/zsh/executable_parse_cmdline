@@ -1,0 +1,179 @@
+#!/bin/zsh
+
+# limit number of local variables to avoid external conflict
+local -A v
+local i j
+v[name]="$0"
+v[desc]="Parses arguments from command line."
+v[usage]="%Busage:%b $v[name] %Uspec%u %Uargs%u\n%B   or:%b $v[name] option"
+v[longhelp]=$(<<END
+$v[usage]
+$v[desc]
+
+The second form can be used to get this help page, either with %B-h%b, %B--help%b or
+%B--long-help%b A short summary can be obtained with %B-H%b, %B--short-help%b or
+%B--summary%b.
+
+The first form parses command line arguments using a given %Uspec%u. In this
+case, %Uargs%u are the arguments to be parsed.
+
+The %Uspec%u parameter is a list of specifications from command line options,
+separated by spaces. Quotation is usually needed for more than one
+specification. A specification can be of the following forms:
+  %B=VARNAME%b or %B.VARNAME%b
+      Specifies that positional parameters are accepted and defines VARNAME
+      to hold their values. VARNAME will contain all parameters that are not
+      options or arguments to options. If %B.%b is given, rather than %B=%b, then
+      parsing of options will stop as soon as a positional parameter is
+      found. Parsing will always stop at -- and what comes after it is pushed
+      to VARNAME.
+      IMPORTANT NOTE: this specification, if used, must be unique and the
+      first one in the list of specifications.
+  %B[:+]OPTION[|SYNONYMS...]>VARNAME%b
+      Specifies an option to be parsed. OPTION is a letter to be recognized
+      with one single dash, or a name to be recognized with double dash.
+      SYNONYMS can be added separated by %B|%b. VARNAME is the name of the
+      variable that will contain the result of the parsing.  The default
+      behavior is that the option is a flag and its presence should be
+      considered a true value while abscence maintains the previous value of
+      VARNAME allowing for default behaviours in scripts.  If spec is
+      prepended with %B+%b the option becomes a flag that accepts both - (true)
+      and + (false) prefixes. If %B:%b is specified instead, the option takes an
+      argument. It is assumed that the next item in command line is that
+      argument. VARNAME contains true or false if option is a flag, or it
+      contains the argument of the option otherwise.
+      Examples:
+        h|help|long-help>HELP
+          HELP gets true if -h, --help or --longhelp are given.
+        +f|flag>FLAG
+          FLAG gets true if -f or --flag are given, and false if +f is given.
+        :o|output>OUTFILE
+          OUTFILE gets the argument after -o or --output.
+END
+)
+
+if [[ $#@ -lt 2 ]]; then
+  case $1 in
+    -H|--short-help|--summary)
+      print -P -f "%${LIST_WIDTH}s  %s\n" "%B$v[name]%b" "$v[desc]"
+      ;;
+    -h|--help|--long-help)
+      print -P "$v[longhelp]"
+      ;;
+    '')
+      print -P "$v[usage]"
+      return 1
+      ;;
+  esac
+  return
+fi
+
+# CHECK IF FIRST SPEC ALLOWS ARGUMENTS (NON-OPTIONS)
+v[stop]=false
+if [[ "${1[1]}" = "=" || "${1[1]}" = "." ]]; then
+  # if used dot, will stop parsing at the first positional argument
+  [[ "${1[1]}" = "." ]] && v[stop]=true || :
+  argv[1]="${1[2,-1]}"
+
+  # the rest of the spec is the variable where to put the arguments
+  v[argsname]="${1%% *}"
+
+  # now we skip the first specification
+  [[ "${1#* }" = "$1" ]] && argv[1]='' || argv[1]=${1#* }
+fi
+
+# PARSE SPECIFICATIONS
+v[counter]=1
+for i in $=1; do
+  # get name of variable to hold option
+  eval "v[user_name_$v[counter]]=${i#*>}"
+  i=${i%>*}
+
+  # get mode: option|flag
+  v[plus]=false
+  if [[ "$i[1]" = ":" ]]; then
+    eval "v[user_mode_$v[counter]]=option"
+    i=${i[2,-1]}
+  elif [[ "$i[1]" = "+" ]]; then
+    v[plus]=true
+    eval "v[user_mode_$v[counter]]=flag"
+    eval "$v[user_name_$v[counter]]=\${$v[user_name_$v[counter]]:-false}"
+    i=${i[2,-1]}
+  else
+    eval "v[user_mode_$v[counter]]=flag"
+    eval "$v[user_name_$v[counter]]=\${$v[user_name_$v[counter]]:-false}"
+  fi
+  # setup dictionary for the different options synonyms
+  for j in ${(s.|.)i}; do
+    if [[ $#j -gt 1 ]]; then # long option: double dash
+      eval "v[user_option_--$j]=$v[counter]"
+    else                     # short option: single dash
+      eval "v[user_option_-$j]=$v[counter]"
+      $v[plus] && eval "v[user_option_+$j]=$v[counter]"
+    fi
+  done
+
+  ((v[counter]+=1))
+done
+shift
+
+# FINALLY PARSE COMMAND LINE OPTIONS
+v[error]=false
+v[havearguments]=false
+while [[ $#@ -gt 0 ]]; do
+  # first fix quotes
+  1=${1//\'/\\x27}
+  # -- stop parsing
+  if [[ "$1" = "--" ]]; then
+    shift
+    if [[ -z "$v[argsname]" ]]; then
+      v[error]=true
+      echo "ERROR: Positional parameters not allowed..."
+    else
+      v[leftover]=$(echo -E "\"$^@\"")
+      $v[havearguments] && eval "$v[argsname]+=($v[leftover])" || eval "$v[argsname]=($v[leftover])"
+      v[havearguments]=true
+    fi
+    break
+
+  # option
+  elif [[ "${1[1]}" = "+" || "${1[1]}" = "-" ]]; then
+    eval "v[option]=$v[user_option_$1]"
+
+    # deal with option depending on type
+    if [[ -z "$v[option]" ]]; then
+      # unknown option
+      echo "ERROR: Unknown option $1..."
+      v[error]=true
+      break
+    elif [[ "$v[user_mode_$v[option]]" = "option" ]]; then
+      # option with argument: next arg is the argument
+      eval "$v[user_name_$v[option]]='$2'"
+      shift
+    else
+      # flag
+      if [[ "${1[1]}" = "+" ]]; then
+        eval "$v[user_name_$v[option]]=false"
+      else
+        eval "$v[user_name_$v[option]]=true"
+      fi
+    fi
+
+  # positional argument
+  else
+    [[ -z "$v[argsname]" ]] && v[error]=true && echo "ERROR: Positional parameters not allowed..." && break
+
+    if $v[stop]; then
+      v[leftover]=$(echo -E "'$^@'")
+      eval "$v[argsname]=($v[leftover])"
+      break
+    else
+      $v[havearguments] && eval "$v[argsname]+=('$1')" || eval "$v[argsname]=('$1')"
+      v[havearguments]=true
+    fi
+  fi
+
+  shift
+done
+
+$v[error] && return 1 || return 0

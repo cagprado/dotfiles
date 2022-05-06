@@ -1,0 +1,37 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help
+
+local DESC="Execute command under ALIROOT environment."
+local USAGE="%Busage:%b $0 command"
+
+# parse command line
+local HELP=false
+local SUMMARY=false
+local COMMAND=''
+
+
+if ! parse_cmdline '.COMMAND h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "Error parsing command line...\n$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $0 $USAGE $DESC '' && return
+if [[ -z "$COMMAND" ]]; then
+  print -P "No command given...\n$USAGE"
+  return 1
+fi
+
+# execute function in subshell so it won't mess with environment
+(
+  local CC=""
+  local CXX=""
+  local CPP=""
+  local F77=""
+  local FC=""
+  local LDFLAGS=""
+  local -a localpath; localpath=("${(@)path:#$HOME/usr/local/gcc/bin}")
+  local -a path; path=($localpath)
+
+  eval $(alienv printenv $ALIVERSIONS)
+  eval $COMMAND
+)

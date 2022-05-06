@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [[ "$XDG_SESSION_TYPE" == 'wayland' ]]; then
+  FLAGS='--enable-features=UseOzonePlatform --ozone-platform=wayland'
+else
+  FLAGS=''
+fi
+exec /usr/bin/wechat-uos $FLAGS

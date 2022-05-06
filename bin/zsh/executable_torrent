@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+if [[ "$1" = "-H" ]]; then
+    print -P -f "%${LIST_WIDTH}s  %s\n" "%B$0%b" "Transmission client wrapper for mredson server."
+    return
+fi
+
+if [[ "$(hostnamectl hostname)" = "mredson" ]]; then
+    transmission-remote localhost:9091 -n $(pass transmission/login):$(pass transmission/password) "$@"
+else
+    echo "not in mredson..."
+fi

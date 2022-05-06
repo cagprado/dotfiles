@@ -1,0 +1,21 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help
+
+local USAGE="%Busage:%b $0 files..."
+local DESC="Replace spaces for underlines in filenames."
+
+local -a FILES
+local HELP=false
+local SUMMARY=false
+if ! parse_cmdline '=FILES h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $0 $USAGE $DESC && return
+
+[[ -z $FILES ]] && echo "No file given..." && return 1
+
+for FILE in $FILES; do
+  mv "$FILE" $(tr ' ' '_' <<< "$FILE")
+done

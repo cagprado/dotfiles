@@ -1,0 +1,56 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help msg war err checkgit
+
+local USAGE="%Busage:%b $0 [-d CLONEDIR] TEMPLATE"
+local DESC="Clones and configures a working dir based on template."
+local LONGHELP
+LONGHELP=$(<<END
+  %B-d CLONEDIR%b
+      Chooses where to put the template files. It defaults to current dir if
+      no path is given.
+END
+)
+
+local TEMPLATEDIR="$HOME/src/templates"
+local CLONEDIR="$(pwd)"
+local TEMPLATE=''
+
+local HELP=false
+local SUMMARY=false
+if ! parse_cmdline '=TEMPLATE h|help|long-help>HELP H|short-help|summary>SUMMARY :d>CLONEDIR' $@; then
+  print -P "$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $0 $USAGE $DESC $LONGHELP && return
+
+# check commandline
+if [[ -z "$TEMPLATE" ]]; then
+  err "ERROR: missing template name in commandline..."
+  print -P "$USAGE"
+  return 1
+fi
+
+# check clonedir
+if [[ ! -d "$CLONEDIR" ]]; then
+  msg "Directory $CLONEDIR does not exists. Creating dir '$CLONEDIR'..."
+  mkdir -p $CLONEDIR
+fi
+
+# test if template exists
+if [[ -d "$TEMPLATEDIR/$TEMPLATE" ]]; then
+  # copy files to working dir
+  msg "Copying files..."
+  cp -r "$TEMPLATEDIR/$TEMPLATE"/*(D) "$CLONEDIR/"
+else
+  err "ERROR: template '$TEMPLATE' doesn't exist..."
+  return 2
+fi
+
+# check if we need to configure the template
+if [[ -x "$CLONEDIR/configure.sh" ]]; then
+  (
+    cd $CLONEDIR
+    ./configure.sh
+  )
+fi

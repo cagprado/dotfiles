@@ -1,0 +1,38 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help
+
+local DESC="Check if git working dir is up-to-date with repository."
+local USAGE="%Busage:%b $0 [path]"
+
+local HELP=false
+local SUMMARY=false
+local GITDIR='.'
+if ! parse_cmdline '=GITDIR h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $0 $USAGE $DESC && return
+
+#local GITCOMMAND="git -C $GITDIR" # newer version
+local GITCOMMAND="git --git-dir=$GITDIR/.git --work-tree=$GITDIR" # older version (sampa)
+
+local ERROR=false
+$=GITCOMMAND checkout master >/dev/null 2>&1
+$=GITCOMMAND remote update >/dev/null 2>&1 || ERROR=true
+
+local LOCAL=$($=GITCOMMAND rev-parse @{0})
+local REMOTE=$($=GITCOMMAND rev-parse @{u})
+local BASE=$($=GITCOMMAND merge-base @{0} @{u})
+
+if [[ "$LOCAL" = "$REMOTE" ]]; then
+  echo "up-to-date"
+elif [[ "$LOCAL" = "$BASE" ]]; then
+  echo "pull"
+elif [[ "$REMOTE" = "$BASE" ]]; then
+  echo "push"
+else
+  echo "diverged"
+fi
+
+$ERROR && return 1 || return 0

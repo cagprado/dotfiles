@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline help
+
+local DESC="Check for new contacts or calendars in icloud."
+local USAGE="%Busage:%b $0"
+
+local HELP=false
+local SUMMARY=false
+if ! parse_cmdline 'h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "$USAGE"
+  return 1
+fi
+help $HELP $SUMMARY $0 $USAGE $DESC && return
+
+vdirsyncer metasync
+vdirsyncer sync

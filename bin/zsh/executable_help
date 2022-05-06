@@ -1,0 +1,44 @@
+#!/bin/zsh
+
+autoload +X parse_cmdline
+
+local NAME="$0"
+local DESC="Test and print help from command."
+local USAGE="%Busage:%b $NAME helpbool summarybool cmdname cmdusage cmddesc cmdhelp"
+
+local HELP=false
+local SUMMARY=false
+local -a ARGS
+if ! parse_cmdline '=ARGS h|help|long-help>HELP H|short-help|summary>SUMMARY' $@; then
+  print -P "Error parsing command line...\n$USAGE"
+  return 1
+fi
+
+if $HELP; then
+  print -P "$USAGE\n$DESC"
+  return
+elif $SUMMARY; then
+  print -P -f "%${LIST_WIDTH}s  %s\n" "%B$NAME%b" "$DESC"
+  return
+fi
+
+HELP=$ARGS[1]
+SUMMARY=$ARGS[2]
+NAME=$ARGS[3]
+USAGE=$ARGS[4]
+DESC=$ARGS[5]
+HELPSTRING=$ARGS[6]
+
+if $HELP; then
+  if [[ -z "$HELPSTRING" ]]; then
+    print -P "$USAGE\n$DESC"
+  else
+    print -P "$USAGE\n$DESC\n\n$HELPSTRING"
+  fi
+  return
+elif $SUMMARY; then
+  print -P -f "%${LIST_WIDTH}s  %s\n" "%B$NAME%b" "$DESC"
+  return
+fi
+
+return 1
