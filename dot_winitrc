@@ -1,0 +1,19 @@
+# wayland specific variables
+export MOZ_ENABLE_WAYLAND=1
+
+# gtk on wayland won't read settings.ini on its own
+config="$HOME/.config/gtk-3.0/settings.ini"
+if [[ -f "$config" ]]; then
+  function set_config() {
+    value="$(grep "$2" "$config" | sed 's/.*\s*=\s*//')"
+    gsettings set 'org.gnome.desktop.interface' "$1" "$value"
+  }
+  set_config gtk-theme    'gtk-theme-name'
+  set_config icon-theme   'gtk-icon-theme-name'
+  set_config cursor-theme 'gtk-cursor-theme-name'
+  set_config font-name    'gtk-font-name'
+  unset -f set_config
+fi
+
+exec sway
+# vim: ft=sh
