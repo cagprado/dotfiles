@@ -27,6 +27,9 @@ export LESS="-cx3MRFX"
 export LESSCOLORIZER="pygmentize"
 export LESSOPEN="| lesspipe %s"
 
+unset  SSH_AGENT_PID
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"
+
 # • graphic system (wayland/x11)                                         {{{1
 
 export DE="generic"
