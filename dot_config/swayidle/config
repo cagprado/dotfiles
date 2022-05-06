@@ -1,0 +1,4 @@
+# turn off screen after 5 seconds
+timeout 5 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
+
+# vim: ft=conf

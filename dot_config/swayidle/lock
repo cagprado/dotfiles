@@ -1,0 +1,11 @@
+# 2 min: dim backlight
+timeout 120 'brightnessctl -s s 1'        resume 'brightnessctl -r'
+# 5 min: turn off screen
+timeout 300 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
+
+# when locking screen check if not already locked
+# also add a new swayidle that may use shorter timeouts for the screen
+lock         'pgrep -x swaylock || (swayidle & swaylock ; kill %%)'
+before-sleep 'loginctl lock-session'
+
+# vim: ft=conf
