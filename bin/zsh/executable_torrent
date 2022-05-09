@@ -6,7 +6,7 @@ if [[ "$1" = "-H" ]]; then
 fi
 
 if [[ "$(hostnamectl hostname)" = "mredson" ]]; then
-    transmission-remote localhost:9091 -n $(pass transmission/login):$(pass transmission/password) "$@"
+    transmission-remote localhost:9091 -n ${$(pass transmission | tac | tr '\n' :)%:} "$@"
 else
     echo "not in mredson..."
 fi

@@ -1,7 +1,9 @@
 #!/bin/sh
 
-DIR="/home/cagprado/.msmtp.queue/"
+DIR="$HOME/.msmtp.queue/"
 
 while SIGNAL=$(inotifywait -e delete $DIR); do
-  [ "$SIGNAL" == "$DIR DELETE,ISDIR .lock" ] && /home/cagprado/bin/msmtp-queue -r
+  if [[ "$SIGNAL" == "$DIR DELETE,ISDIR .lock" ]]; then
+    $HOME/bin/msmtp-queue -r
+  fi
 done
