@@ -46,7 +46,9 @@
     "rpc-host-whitelist": "",
     "rpc-host-whitelist-enabled": true,
     "rpc-password": "
-      {{- $pass := pass "transmission" }}
+      {{- $user := output "pass" "transmission" | splitList "\n" }}
+      {{- $pass := index $user 0 }}
+      {{- $user  = index $user 1 }}
       {{- $file := "/.config/transmission-daemon/settings.json" }}
       {{- $file  = glob (print .chezmoi.homeDir $file) }}
       {{- if empty $file | not }}
@@ -64,7 +66,7 @@
     ",
     "rpc-port": 9091,
     "rpc-url": "/transmission/",
-    "rpc-username": "{{ (output "pass" "transmission" | split "\n")._1 }}",
+    "rpc-username": "{{ $user }}",
     "rpc-whitelist": "127.0.0.1,::1",
     "rpc-whitelist-enabled": true,
     "scrape-paused-torrents-enabled": true,
