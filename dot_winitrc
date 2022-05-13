@@ -15,5 +15,5 @@ if [[ -f "$config" ]]; then
   unset -f set_config
 fi
 
-exec sway
+exec sway --unsupported-gpu
 # vim: ft=sh
