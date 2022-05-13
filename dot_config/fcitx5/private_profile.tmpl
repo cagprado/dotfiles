@@ -4,7 +4,10 @@ Name=Default
 # Layout
 Default Layout=custom-nodeadkeys
 # Default Input Method
-DefaultIM=rime
+{{- $file := print .chezmoi.homeDir "/.config/fcitx5/profile" | glob }}
+{{- if empty $file | not }}
+{{-   index $file 0 | include | regexFind "\nDefaultIM=[^\n]*" }}
+{{- end }}
 
 [Groups/0/Items/0]
 # Name
