@@ -1,0 +1,3 @@
+{{- if ne .chezmoi.hostname "mredson" }}
+.config/transmission-daemon
+{{- end }}
