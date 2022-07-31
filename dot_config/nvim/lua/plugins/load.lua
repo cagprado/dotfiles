@@ -10,7 +10,7 @@ packer.install()
 
 -- check if at least one plugin needs updating (once a day)
 -- NOTE: it only checks git based packages (TODO: improve)
-local today = os.time(os.date('!*t', math.floor(os.time()/86400)*86400))
+local today = math.floor(os.time()/86400)*86400
 local plugins_path = vim.fn.stdpath('data')..'/site/pack/packer/'
 local plugins = vim.fn.globpath(plugins_path, '*/*')
 
