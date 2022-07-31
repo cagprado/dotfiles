@@ -1,1 +1,10 @@
-{{- output "pass" "config/ssh" -}}
+Host *
+  ServerAliveInterval 240
+  StrictHostKeyChecking accept-new
+  Compression yes
+
+{{ if eq .chezmoi.hostname "mredson" -}}
+{{ output "pass" "config/ssh" }}
+{{ end -}}
+
+# vim: ft=sshconfig
