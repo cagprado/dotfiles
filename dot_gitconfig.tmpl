@@ -1,6 +1,6 @@
 [user]
 	name = Caio Prado
-	email = cagprado@yandex.com
+	email = {{ .email }}
 [alias]
 	st = status
 	co = checkout
@@ -8,16 +8,14 @@
 	cm = commit
 	wd = diff --word-diff
 	lg = prettylog
-[push]
-	default = tracking
 [pull]
 	ff = only
 [merge]
-	tool = nvim
+	tool = vim
 [mergetool]
 	keepBackup = false
 	prompt = false
-[mergetool "nvim"]
-	cmd = nvim -d $REMOTE $LOCAL
+[mergetool "vim"]
+	cmd = vim -d $REMOTE $LOCAL
 [init]
 	defaultBranch = master
