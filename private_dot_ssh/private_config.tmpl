@@ -1,6 +1,6 @@
 Host *
   ServerAliveInterval 240
-  StrictHostKeyChecking accept-new
+  StrictHostKeyChecking ask
   Compression yes
 
 {{ if eq .chezmoi.hostname "mredson" -}}
