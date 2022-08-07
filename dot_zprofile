@@ -4,6 +4,7 @@
 
 # • path and zsh functions                                               {{{1
 
+export LD_LIBRARY_PATH=""
 export PATH="$HOME/bin:$PATH"
 for file in $HOME/.{zshenv,zprofile,zshrc,zlogout}; do
   [[ $file -ot $file.zwc ]] || zcompile $file
@@ -16,8 +17,8 @@ zshfunctions
 
 # • system setup                                                         {{{1
 
-export EDITOR="nvim"
-export TERMINAL="foot"
+export EDITOR="vim"
+export TERMINAL="alacritty"
 export MAKEFLAGS='-j -Otarget'
 
 export PAPERSIZE="a4"
@@ -49,6 +50,15 @@ export _JAVA_OPTIONS
 export _JAVA_AWT_WM_NONREPARENTING=1
 export JAVA_FONTS="/usr/share/fonts/TTF"
 
+# • Local development configuration                                      {{{1
+
+local="$HOME/usr/local"
+for dir in $local/*(-/); do
+  [[ -d "$dir/bin"   ]] && PATH="$dir/bin:$PATH"
+  [[ -d "$dir/lib"   ]] && LD_LIBRARY_PATH="$dir/lib:$LD_LIBRARY_PATH"
+  [[ -d "$dir/lib64" ]] && LD_LIBRARY_PATH="$dir/lib64:$LD_LIBRARY_PATH"
+done
+
 # • Location specific configuration                                      {{{1
 
 if [[ "$TTY" == "/dev/tty1" ]]; then
@@ -74,37 +84,18 @@ else
   # remote login shell
   export REMOTE_SESSION=true
 
-  # first get rid of LD_LIBRARY_PATH poison =P
+  # ignore other system-wide zsh configuration
   unsetopt GLOBAL_RCS
-  unset LD_LIBRARY_PATH
 
-  # then fix some common version problems
+  # set TZ to my time zone on remote servers
+  export TZ='CST+6'
+
+  # fix some common version problems
   [[ "${$(make -v)[3]}" -lt 4 ]] && export MAKEFLAGS='-j'
 
-  # now load some environment specific configuration
-  if [[ -f "/cvmfs/alice.cern.ch/etc/login.sh" ]]; then
-      export ALIVERSIONS="VO_ALICE@ROOT::v5-34-30,VO_ALICE@pythia::v8186"
-      source /cvmfs/alice.cern.ch/etc/login.sh
+  # overwrite local system
+  if [[ -d "$local/vim" ]] then
+    export VIM="$local/vim/share/vim"
+    export VIMRUNTIME="$VIM/vim90"
   fi
-
-  # gcc
-  if [[ -d "$LOCALBUILDS/gcc" ]]; then
-      export CC="$LOCALBUILDS/gcc/bin/gcc"
-      export CXX="$LOCALBUILDS/gcc/bin/g++"
-      export CPP="$LOCALBUILDS/gcc/bin/cpp"
-      export F77="$LOCALBUILDS/gcc/bin/gfortran"
-      export FC="$LOCALBUILDS/gcc/bin/gfortran"
-      export LDFLAGS="-fPIC -Wl,-rpath,$LOCALBUILDS/gcc/lib64"
-      export MANPATH="$LOCALBUILDS/gcc/share/man:$(manpath 2>/dev/null)"
-      PATH="$LOCALBUILDS/gcc/bin:$PATH"
-  fi
-
-  # local builds
-  [[ -d "$LOCALBUILDS/cmake"  ]] && PATH="$LOCALBUILDS/cmake/bin:$PATH"
-  [[ -d "$LOCALBUILDS/python" ]] && PATH="$LOCALBUILDS/python/bin:$PATH"
-  [[ -d "$LOCALBUILDS/hepmc"  ]] && PATH="$LOCALBUILDS/hepmc/bin:$PATH"
-  [[ -d "$LOCALBUILDS/pythia" ]] && PATH="$LOCALBUILDS/pythia/bin:$PATH"
-  [[ -d "$LOCALBUILDS/root5"  ]] && PATH="$LOCALBUILDS/root5/bin:$PATH"
-  [[ -d "$LOCALBUILDS/root"   ]] && PATH="$LOCALBUILDS/root/bin:$PATH"
-  [[ -d "$LOCALBUILDS/neovim" ]] && PATH="$LOCALBUILDS/neovim/bin:$PATH"
 fi
